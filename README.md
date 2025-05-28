@@ -21,7 +21,6 @@ EvoKasir adalah sistem Point of Sale (POS) berbasis Laravel yang mendukung fitur
 -   Blade Template + TailwindCSS
 -   Chart.js
 -   MySQL / MariaDB
--   Sanctum (API Auth)
 -   Carbon (DateTime)
 -   Laravel Eloquent ORM
 
