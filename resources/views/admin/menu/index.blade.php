@@ -6,6 +6,7 @@
 
 @section('content')
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8">
+
         <!-- Success Message -->
         @if (session('success'))
             <div id="success-alert"
@@ -68,16 +69,17 @@
                         <tr class="border-b border-gray-700 hover:bg-gray-700/50 transition-all duration-200">
                             <td class="py-3 sm:py-4 px-4 sm:px-6 text-gray-300">{{ $loop->iteration }}</td>
                             <td class="py-3 sm:py-4 px-4 sm:px-6">
-                                <img src="{{ asset('storage/menu/' . $menu->image) }}" alt="{{ $menu->name }}"
+                                <img src="{{ asset('storage/' . $menu->image) }}" alt="{{ $menu->name }}"
                                     class="w-16 sm:w-20 rounded-md shadow-md hover:scale-105 transition-all duration-200">
                             </td>
                             <td class="py-3 sm:py-4 px-4 sm:px-6 text-gray-300">{{ $menu->name }}</td>
-                            <td class="py-3 sm:py-4 px-4 sm:px-6 text-gray-400">{{ ucfirst($menu->getCategory->name) }}</td>
+                            <td class="py-3 sm:py-4 px-4 sm:px-6 text-gray-400">{{ ucfirst($menu->getCategory->name) }}
+                            </td>
                             <td class="py-3 sm:py-4 px-4 sm:px-6 text-gray-400">
                                 @if (is_null($menu->description) || $menu->description === '')
                                     <span class="italic text-gray-500">Tidak ada deskripsi</span>
                                 @else
-                                    {{ Str::limit($menu->description, 50, '...') }}
+                                    {!! Str::limit($menu->description, 50, '...') !!}
                                 @endif
                             </td>
                             <td class="py-3 sm:py-4 px-4 sm:px-6 text-gray-300">{{ $menu->stock }}</td>
@@ -118,7 +120,7 @@
             <!-- Pagination -->
             <div class="py-4 px-4 sm:px-6">
                 @if ($menus->hasPages())
-                    {{ $menus->links('vendor.pagination.tailwind') }}
+                    {{ $menus->links() }}
                 @endif
             </div>
         </div>

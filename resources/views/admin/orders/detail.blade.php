@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('title')
-    Detail Pesanan - {{ $order->order_code }} - {{ $mitra->mitra_code }} - EvoKasir
+    Detail Pesanan - {{ $order->order_code }} - {{ $mitra->mitra_name }} - EvoKasir
 @endsection
 
 @section('content')

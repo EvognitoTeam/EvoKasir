@@ -5,6 +5,7 @@ namespace App\Services;
 use Midtrans\Snap;
 use Midtrans\Config;
 use Midtrans\CoreApi;
+use Illuminate\Support\Facades\Log;
 
 class MidtransService
 {
@@ -12,7 +13,7 @@ class MidtransService
     {
         // Konfigurasi Midtrans
         Config::$serverKey = env('MIDTRANS_SERVER_KEY');
-        Config::$isProduction =  env('MIDTRANS_IS_PRODUCTION'); // true jika sudah go live
+        Config::$isProduction = filter_var(env('MIDTRANS_IS_PRODUCTION'), FILTER_VALIDATE_BOOLEAN);
         Config::$isSanitized = true;
         Config::$is3ds = true;
     }
@@ -31,6 +32,7 @@ class MidtransService
                 'acquirer' => 'gopay',
             ],
         ];
+        Log::info('Midtrans Params: ', $params);
 
         return CoreApi::charge($params); // <- KUNCI UTAMA
     }

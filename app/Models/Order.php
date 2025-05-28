@@ -12,7 +12,30 @@ class Order extends Model
     use HasFactory, SoftDeletes;
 
     protected $table = 'orders';
-    protected $fillable = ['order_code', 'mitra_id', 'user_id', 'name', 'email', 'table_number', 'status', 'total_price', 'discount', 'totalAfterDiscount', 'payment_method', 'payment_status', 'transaction_id', 'qr_string', 'payment_type', 'qr_url', 'expiry_time'];
+    protected $fillable = [
+        'order_code',
+        'mitra_id',
+        'user_id',
+        'name',
+        'email',
+        'table_number',
+        'status',
+        'is_cashouted',
+        'total_price',
+        'discount',
+        'totalAfterDiscount',
+        'payment_method',
+        'payment_status',
+        'transaction_id',
+        'qr_string',
+        'payment_type',
+        'qr_url',
+        'expiry_time'
+    ];
+
+    protected $casts = [
+        'is_cashouted' => 'boolean',
+    ];
 
     // Order.php
     public function items()

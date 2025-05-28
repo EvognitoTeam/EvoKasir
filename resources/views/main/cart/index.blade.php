@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'Keranjang Belanja - {{ $mitra->mitra_name }} - EvoKasir')
+@section('title')
+    Keranjang Belanja - {{ $mitra->mitra_name }} - EvoKasir
+@endsection
 
 @section('content')
     <section class="bg-gray-900 py-10 sm:py-12 overflow-hidden">
@@ -22,12 +24,25 @@
             <h1 class="text-2xl sm:text-3xl font-extrabold text-coral-500 mb-6 animate-text-reveal">🛒 Keranjang Belanja
             </h1>
 
+            {{-- Success Message --}}
             @if (session('success'))
                 <div
                     class="mb-6 p-4 bg-teal-500/20 text-teal-400 rounded-lg border border-teal-400/50 shadow animate-fade-in">
                     {{ session('success') }}
                 </div>
             @endif
+
+            {{-- Validation Errors --}}
+            @if ($errors->any())
+                <div class="mb-6 p-4 bg-red-500/20 text-red-400 rounded-lg border border-red-400/50 shadow animate-fade-in">
+                    <ul class="list-disc pl-5 space-y-1">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
 
             @if (session('cart'))
                 <div class="space-y-4 sm:space-y-6">
@@ -37,7 +52,7 @@
                             <!-- Bagian Gambar & Info -->
                             <div class="flex items-start space-x-4 w-full md:w-2/3">
                                 <div class="w-20 h-20 sm:w-24 sm:h-24 overflow-hidden rounded-lg border border-gray-700">
-                                    <img src="{{ $item['image'] ? asset('storage/menu/' . $item['image']) : 'https://dummyimage.com/300x200/cccccc/000000.png&text=No+Image' }}"
+                                    <img src="{{ $item['image'] ? asset('storage/' . $item['image']) : 'https://dummyimage.com/300x200/cccccc/000000.png&text=No+Image' }}"
                                         alt="{{ $item['name'] }}"
                                         class="w-full h-full object-cover transform hover:scale-110 transition-all duration-300">
                                 </div>
@@ -87,7 +102,7 @@
                     class="mt-6 bg-gray-800/90 backdrop-blur-md p-4 sm:p-6 rounded-2xl shadow-lg flex justify-between items-center animate-scale-in">
                     <h3 class="text-lg sm:text-xl font-semibold text-coral-500">Total Harga:</h3>
                     <p id="totalPrice" class="text-lg sm:text-xl font-bold text-teal-400">
-                        Rp{{ number_format(session('totalPrice', 0), 0, ',', '.') }}
+                        Rp{{ number_format($totalPrice, 0, ',', '.') }}
                     </p>
                 </div>
 

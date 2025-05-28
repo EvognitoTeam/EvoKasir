@@ -54,6 +54,7 @@ class AdminAuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
+            'role' => 'required|string',
         ]);
 
         $user = new User();
@@ -61,6 +62,7 @@ class AdminAuthController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
+        $user->role = $request->role;
         $user->save();
 
         return redirect()->route('admin.users.index', ['slug' => $slug])

@@ -136,35 +136,75 @@
                     <div
                         class="bg-gray-800/90 backdrop-blur-md p-4 sm:p-6 rounded-2xl shadow-lg bg-gradient-to-b from-gray-800 to-gray-900/80 animate-scale-in sticky top-20">
                         <h3 class="text-lg sm:text-xl font-semibold text-coral-500 mb-4">Pilih Metode Pembayaran</h3>
+                        @php
+                            $isLoggedIn = Auth::check();
+                            $user = Auth::user();
+                            // $selectedTable = session('table');
+                            $lockedTableId = session('table'); // diasumsikan berisi ID meja, seperti "3"
+                        @endphp
+
                         <form action="{{ route('cart.store', ['slug' => $slug]) }}" method="POST">
                             @csrf
+
+                            {{-- NAMA --}}
                             <div class="mb-4">
                                 <label for="name"
                                     class="block mb-2 text-sm sm:text-base text-gray-300 font-semibold">Nama Anda*</label>
                                 <input type="text" name="name" id="name"
+                                    value="{{ old('name', $isLoggedIn ? $user->name : '') }}"
                                     class="border border-gray-700 rounded-lg p-2 sm:p-3 w-full text-gray-300 bg-gray-900 focus:outline-none focus:ring-2 focus:ring-coral-500 transition-all duration-200"
-                                    placeholder="Masukkan Nama Anda" required>
+                                    placeholder="Masukkan Nama Anda" required {{ $isLoggedIn ? 'disabled' : '' }}>
+                                @if ($isLoggedIn)
+                                    <p class="text-xs text-teal-400 mt-1 italic">Nama ini diambil dari akun Anda dan tidak
+                                        bisa diubah.</p>
+                                @endif
                             </div>
+                            @if ($isLoggedIn)
+                                <input type="hidden" name="name" value="{{ $user->name }}">
+                                <input type="hidden" name="email" value="{{ $user->email }}">
+                            @endif
+
+
+                            {{-- EMAIL --}}
                             <div class="mb-4">
                                 <label for="email"
                                     class="block mb-2 text-sm sm:text-base text-gray-300 font-semibold">Email Anda*</label>
                                 <input type="email" name="email" id="email"
+                                    value="{{ old('email', $isLoggedIn ? $user->email : '') }}"
                                     class="border border-gray-700 rounded-lg p-2 sm:p-3 w-full text-gray-300 bg-gray-900 focus:outline-none focus:ring-2 focus:ring-coral-500 transition-all duration-200"
-                                    placeholder="Masukkan Email Anda" required>
+                                    placeholder="Masukkan Email Anda" required {{ $isLoggedIn ? 'disabled' : '' }}>
+                                @if ($isLoggedIn)
+                                    <p class="text-xs text-teal-400 mt-1 italic">Email ini diambil dari akun Anda dan tidak
+                                        bisa diubah.</p>
+                                @endif
                             </div>
+
+                            {{-- NO MEJA --}}
                             <div class="mb-4">
                                 <label for="table_number"
-                                    class="block mb-2 text-sm sm:text-base text-gray-300 font-semibold">Pilih Nomor
-                                    Meja*</label>
+                                    class="block mb-2 text-sm sm:text-base text-gray-300 font-semibold">Pilih Meja*</label>
                                 <select name="table_number" id="table_number"
                                     class="border border-gray-700 rounded-lg p-2 sm:p-3 w-full text-gray-300 bg-gray-900 focus:outline-none focus:ring-2 focus:ring-coral-500 transition-all duration-200"
-                                    required>
-                                    <option value="" selected disabled>Pilih Meja Anda</option>
+                                    required {{ $lockedTableId ? 'readonly disabled' : '' }}>
+                                    <option value="" disabled {{ $lockedTableId ? '' : 'selected' }}>Pilih Meja Anda
+                                    </option>
+
                                     @foreach ($tables as $table)
-                                        <option value="{{ $table->id }}">{{ $table->table_name }}</option>
+                                        <option value="{{ $table->id }}"
+                                            {{ $lockedTableId == $table->table_code ? 'selected' : 'disabled' }}>
+                                            {{ $table->table_name }}
+                                        </option>
                                     @endforeach
                                 </select>
+                                @if (!empty($lockedTableId))
+                                    <p class="text-xs text-teal-400 mt-1 italic">
+                                        Meja ini diambil dari session Anda dan tidak bisa diubah.
+                                    </p>
+                                @endif
+
                             </div>
+
+                            {{-- METODE PEMBAYARAN --}}
                             <div class="mb-4">
                                 <input type="hidden" name="payment_method" id="payment_method" value="cash">
                                 <div class="grid grid-cols-2 gap-4">
@@ -187,11 +227,14 @@
                                     </div>
                                 </div>
                             </div>
+
+                            {{-- SUBMIT --}}
                             <button type="submit"
                                 class="w-full bg-teal-500 hover:bg-teal-600 text-white py-2 sm:py-3 px-4 sm:px-6 rounded-lg text-base sm:text-lg font-semibold shadow-md transition-all duration-200 transform hover:scale-105">
                                 Bayar Sekarang
                             </button>
                         </form>
+
                     </div>
                 </div>
             </div>

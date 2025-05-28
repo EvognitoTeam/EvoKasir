@@ -98,7 +98,7 @@
                     <input type="file" name="image" id="image" accept="image/*"
                         class="mt-1 block w-full text-sm sm:text-base text-gray-400 border border-gray-700 rounded-lg bg-gray-900 p-2 sm:p-3 focus:outline-none focus:ring-2 focus:ring-coral-500 transition-all duration-200 @error('image') border-red-500 @enderror">
                     @if ($menu->image)
-                        <img src="{{ asset('storage/menu/' . $menu->image) }}" alt="{{ $menu->name }}"
+                        <img src="{{ asset('storage/' . $menu->image) }}" alt="{{ $menu->name }}"
                             class="mt-2 w-32 sm:w-40 h-32 sm:h-40 object-cover rounded-lg shadow-md hover:scale-105 transition-all duration-200">
                     @endif
                     @error('image')

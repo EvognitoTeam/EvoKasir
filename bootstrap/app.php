@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Properly register the 'auth_admin' middleware
         $middleware->alias([
             'auth_admin' => \App\Http\Middleware\AuthAdmin::class,
+            'role' => \App\Http\Middleware\RoleMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

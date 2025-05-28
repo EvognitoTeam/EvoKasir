@@ -22,7 +22,7 @@
     <!-- Header -->
     <nav class="bg-gray-800 text-white py-3 sm:py-4 sticky top-0 z-50 shadow-lg">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-            <a href="{{ route('menu.index', ['slug' => $slug]) }}"
+            <a href="{{ route('user.index', ['slug' => $slug]) }}"
                 class="text-lg sm:text-xl lg:text-2xl font-semibold text-coral-500 hover:text-coral-400 transition-all duration-200 transform hover:scale-105 animate-text-reveal">Evokasir</a>
             <button id="menu-toggle" class="sm:hidden text-white focus:outline-none">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -50,6 +50,28 @@
                         </span>
                     @endif
                 </a>
+                @auth
+                    <a href="{{ route('user.profile', ['slug' => $slug]) }}"
+                        class="text-gray-300 text-sm sm:text-base lg:text-lg hover:text-teal-400 transition-all duration-200 transform hover:scale-105 animate-nav">
+                        Profil
+                    </a>
+                    <form method="POST" action="{{ route('user.logout', ['slug' => $slug]) }}">
+                        @csrf
+                        <button type="submit"
+                            class="text-gray-300 text-sm sm:text-base lg:text-lg hover:text-teal-400 transition-all duration-200 transform hover:scale-105 animate-nav">
+                            Logout
+                        </button>
+                    </form>
+                @else
+                    <a href="{{ route('user.login', ['slug' => $slug]) }}"
+                        class="text-gray-300 text-sm sm:text-base lg:text-lg hover:text-teal-400 transition-all duration-200 transform hover:scale-105 animate-nav">
+                        Login
+                    </a>
+                    <a href="{{ route('user.register', ['slug' => $slug]) }}"
+                        class="text-gray-300 text-sm sm:text-base lg:text-lg hover:text-teal-400 transition-all duration-200 transform hover:scale-105 animate-nav">
+                        Register
+                    </a>
+                @endauth
             </div>
         </div>
         <!-- Mobile Menu -->
@@ -69,6 +91,28 @@
                         </span>
                     @endif
                 </a>
+                @auth
+                    <a href="{{ route('user.profile', ['slug' => $slug]) }}"
+                        class="text-gray-300 text-base hover:text-teal-400 transition-all duration-200">
+                        Profil
+                    </a>
+                    <form method="POST" action="{{ route('user.logout', ['slug' => $slug]) }}">
+                        @csrf
+                        <button type="submit"
+                            class="text-gray-300 text-base hover:text-teal-400 transition-all duration-200">
+                            Logout
+                        </button>
+                    </form>
+                @else
+                    <a href="{{ route('user.login', ['slug' => $slug]) }}"
+                        class="text-gray-300 text-base hover:text-teal-400 transition-all duration-200">
+                        Login
+                    </a>
+                    <a href="{{ route('user.register', ['slug' => $slug]) }}"
+                        class="text-gray-300 text-base hover:text-teal-400 transition-all duration-200">
+                        Register
+                    </a>
+                @endauth
             </div>
         </div>
     </nav>

@@ -69,6 +69,10 @@
     <!-- Sidebar + Content -->
     <div class="flex flex-1">
         <!-- Sidebar -->
+        @php
+            $role = Auth::user()->role;
+        @endphp
+
         <aside id="sidebar"
             class="fixed top-0 left-0 z-40 w-64 sm:w-72 min-h-screen bg-gray-800/90 backdrop-blur-md border-r border-gray-700 shadow-lg pt-16 sm:pt-20 px-4 sm:px-6 transform -translate-x-full transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 lg:block lg:pt-4">
             <ul class="space-y-2 sm:space-y-3">
@@ -83,7 +87,7 @@
                     <a href="{{ route('admin.menu.index', ['slug' => $slug]) }}"
                         class="flex items-center gap-2 py-2 sm:py-3 px-3 rounded-lg hover:bg-gray-700 transition-all duration-200 {{ request()->routeIs('admin.menu.index') ? 'bg-gray-700 text-teal-400 font-semibold' : 'text-gray-300' }}">
                         <i class="fas fa-utensils text-lg sm:text-xl"></i>
-                        Menu
+                        Menus
                     </a>
                 </li>
                 <li>
@@ -97,30 +101,39 @@
                     <a href="{{ route('admin.report.index', ['slug' => $slug]) }}"
                         class="flex items-center gap-2 py-2 sm:py-3 px-3 rounded-lg hover:bg-gray-700 transition-all duration-200 {{ request()->routeIs('admin.report.index') ? 'bg-gray-700 text-teal-400 font-semibold' : 'text-gray-300' }}">
                         <i class="fas fa-chart-line text-lg sm:text-xl"></i>
-                        Report
+                        Reports
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('admin.table.index', ['slug' => $slug]) }}"
                         class="flex items-center gap-2 py-2 sm:py-3 px-3 rounded-lg hover:bg-gray-700 transition-all duration-200 {{ request()->routeIs('admin.table.index') ? 'bg-gray-700 text-teal-400 font-semibold' : 'text-gray-300' }}">
                         <i class="fas fa-chair text-lg sm:text-xl"></i>
-                        Table
+                        Tables
                     </a>
                 </li>
-                <li>
-                    <a href="{{ route('admin.users.index', ['slug' => $slug]) }}"
-                        class="flex items-center gap-2 py-2 sm:py-3 px-3 rounded-lg hover:bg-gray-700 transition-all duration-200 {{ request()->routeIs('admin.users.index') ? 'bg-gray-700 text-teal-400 font-semibold' : 'text-gray-300' }}">
-                        <i class="fas fa-users text-lg sm:text-xl"></i>
-                        Cashier
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('admin.coupon.index', ['slug' => $slug]) }}"
-                        class="flex items-center gap-2 py-2 sm:py-3 px-3 rounded-lg hover:bg-gray-700 transition-all duration-200 {{ request()->routeIs('admin.coupon.index') ? 'bg-gray-700 text-teal-400 font-semibold' : 'text-gray-300' }}">
-                        <i class="fas fa-ticket-alt text-lg sm:text-xl"></i>
-                        Coupon
-                    </a>
-                </li>
+                @if ($role !== 'Cashier')
+                    <li>
+                        <a href="{{ route('admin.users.index', ['slug' => $slug]) }}"
+                            class="flex items-center gap-2 py-2 sm:py-3 px-3 rounded-lg hover:bg-gray-700 transition-all duration-200 {{ request()->routeIs('admin.users.index') ? 'bg-gray-700 text-teal-400 font-semibold' : 'text-gray-300' }}">
+                            <i class="fas fa-users text-lg sm:text-xl"></i>
+                            Users
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.coupon.index', ['slug' => $slug]) }}"
+                            class="flex items-center gap-2 py-2 sm:py-3 px-3 rounded-lg hover:bg-gray-700 transition-all duration-200 {{ request()->routeIs('admin.coupon.index') ? 'bg-gray-700 text-teal-400 font-semibold' : 'text-gray-300' }}">
+                            <i class="fas fa-ticket-alt text-lg sm:text-xl"></i>
+                            Coupons
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.cashout.index', ['slug' => $slug]) }}"
+                            class="flex items-center gap-2 py-2 sm:py-3 px-3 rounded-lg hover:bg-gray-700 transition-all duration-200 {{ request()->routeIs('admin.cashout.index') ? 'bg-gray-700 text-teal-400 font-semibold' : 'text-gray-300' }}">
+                            <i class="fas fa-money-bill-wave text-lg sm:text-xl"></i>
+                            Cashout
+                        </a>
+                    </li>
+                @endif
                 <li>
                     <a href="{{ route('admin.setting.index', ['slug' => $slug]) }}"
                         class="flex items-center gap-2 py-2 sm:py-3 px-3 rounded-lg hover:bg-gray-700 transition-all duration-200 {{ request()->routeIs('admin.setting.index') ? 'bg-gray-700 text-teal-400 font-semibold' : 'text-gray-300' }}">
@@ -133,6 +146,13 @@
                         class="flex items-center gap-2 py-2 sm:py-3 px-3 rounded-lg hover:bg-gray-700 transition-all duration-200 {{ request()->routeIs('admin.pos.index') ? 'bg-gray-700 text-teal-400 font-semibold' : 'text-gray-300' }}">
                         <i class="fas fa-cash-register text-lg sm:text-xl"></i>
                         Point of Sales
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('download', ['slug' => $slug]) }}"
+                        class="flex items-center gap-2 py-2 sm:py-3 px-3 rounded-lg hover:bg-gray-700 transition-all duration-200 {{ request()->routeIs('download') ? 'bg-gray-700 text-teal-400 font-semibold' : 'text-gray-300' }}">
+                        <i class="fas fa-download text-lg sm:text-xl"></i>
+                        Download POS
                     </a>
                 </li>
             </ul>

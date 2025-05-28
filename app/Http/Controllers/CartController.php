@@ -12,35 +12,36 @@ use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
-    public function add($slug, $id)
+    public function add(Request $request, $slug, $id)
     {
+        // Validate request
+        $request->validate(['quantity' => 'required|integer|min:1']);
+
+        // Add to cart logic (e.g., session or database)
         $menu = Menu::findOrFail($id);
         $cart = session()->get('cart', []);
-
-        if (isset($cart[$id])) {
-            $cart[$id]['quantity']++;
-        } else {
-            $cart[$id] = [
-                'id' => $menu->id,
-                'name' => $menu->name,
-                'image' => $menu->image,
-                'price' => $menu->price,
-                'quantity' => 1
-            ];
-        }
-        $totalPrice = 0;
-
-        // Menghitung total harga
-        foreach ($cart as $item) {
-            $totalPrice += $item['price'] * $item['quantity']; // harga * jumlah
-        }
-        session()->put('totalPrice', $totalPrice);
+        $cart[$id] = [
+            'id' => $menu->id,
+            'name' => $menu->name,
+            'price' => $menu->price,
+            'image' => $menu->image,
+            'quantity' => ($cart[$id]['quantity'] ?? 0) + $request->quantity,
+        ];
         session()->put('cart', $cart);
-        return redirect()->back()->with('success', 'Menu berhasil ditambahkan ke keranjang.');
+
+        return response()->json(['success' => true, 'message' => 'Menu added to cart']);
+    }
+
+    public function count($slug)
+    {
+        $cart = session()->get('cart', []);
+        $count = array_sum(array_column($cart, 'quantity'));
+        return response()->json(['count' => $count]);
     }
 
     public function index($slug)
     {
+        $mitra = Mitra::where('mitra_slug', $slug)->first();
         $cart = session('cart', []);
         $totalPrice = 0;
 
@@ -49,7 +50,7 @@ class CartController extends Controller
             $totalPrice += $item['price'] * $item['quantity']; // harga * jumlah
         }
 
-        return view('main.cart.index', compact('cart', 'totalPrice', 'slug'));
+        return view('main.cart.index', compact('mitra', 'cart', 'totalPrice', 'slug'));
     }
 
     public function remove($slug, $id)
@@ -218,11 +219,18 @@ class CartController extends Controller
 
     public function checkout($slug)
     {
-        $mitra = Mitra::where('mitra_slug', $slug)->first();
+        $mitra = Mitra::where('mitra_slug', $slug)->firstOrFail();
 
-        $tables = TableList::get(); // ambil semua data meja
         $cart = session('cart', []);
-        // dd($cart);
+
+        // Cek apakah cart kosong
+        if (empty($cart)) {
+            return redirect()->route('menu.index', ['slug' => $slug])
+                ->withErrors(['cart' => 'Keranjang belanja Anda kosong. Silakan pilih menu terlebih dahulu.']);
+        }
+
+        $tables = TableList::where('mitra_id', $mitra->id)->get();
+
         $totalPrice = 0;
         foreach ($cart as $item) {
             $totalPrice += $item['price'] * $item['quantity'];

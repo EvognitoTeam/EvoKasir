@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'Pembayaran QRIS - {{ $order->mitra->mitra_name }} - EvoKasir')
+@section('title')
+    Pembayaran QRIS - {{-- {{ $order->mitra->mitra_name }} - --}} EvoKasir
+@endsection
 
 @section('content')
     <section class="bg-gray-900 py-10 sm:py-12 overflow-hidden">

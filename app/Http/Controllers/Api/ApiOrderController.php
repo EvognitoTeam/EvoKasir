@@ -9,12 +9,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Models\Menu;
 
 class ApiOrderController extends Controller
 {
     public function updateOrderStatus(Request $request)
     {
         $transactionId = $request->input('transaction_id');
+        $issuer = $request->input('issuer');
         $status = $request->input('status');
 
         // Temukan order berdasarkan transaction_id dan update statusnya
@@ -22,6 +24,7 @@ class ApiOrderController extends Controller
 
         if ($order) {
             $order->payment_status = '2'; // Atur status sesuai kebutuhan
+            $order->issuer = $issuer; // Atur status sesuai kebutuhan
             $order->save();
 
             return response()->json(['message' => 'Order status updated successfully.']);
@@ -91,6 +94,11 @@ class ApiOrderController extends Controller
                     'quantity' => $item['quantity'],
                     'price' => $item['price'],
                 ]);
+                // Kurangi stok produk
+                $product = Menu::find($item['product_id']);
+                if ($product) {
+                    $product->decrement('stock', $item['quantity']);
+                }
             }
 
             DB::commit();

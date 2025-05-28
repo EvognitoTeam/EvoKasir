@@ -51,6 +51,17 @@
                             @enderror
                         </div>
                         <div class="relative">
+                            <label for="business_tagline"
+                                class="block text-sm font-semibold text-gray-700 transition-all duration-200">Tagline
+                                Usaha</label>
+                            <input type="text" name="business_tagline" id="business_tagline"
+                                class="w-full mt-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50/50 transition-all duration-200 transform hover:scale-[1.01]"
+                                required>
+                            @error('business_tagline')
+                                <p class="text-red-500 text-xs mt-1 animate-fade-in">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="relative">
                             <label for="business_address"
                                 class="block text-sm font-semibold text-gray-700 transition-all duration-200">Alamat
                                 Usaha</label>
@@ -122,13 +133,13 @@
                     </span>
                 </button>
             </form>
-            <div class="text-center text-sm text-gray-600 mt-4 sm:mt-5">
+            {{-- <div class="text-center text-sm text-gray-600 mt-4 sm:mt-5">
                 <p>
                     Sudah punya akun? <a href="/login"
                         class="text-blue-600 font-semibold hover:underline transition-colors duration-200">Masuk
                         sekarang</a>.
                 </p>
-            </div>
+            </div> --}}
         </div>
     </section>
 

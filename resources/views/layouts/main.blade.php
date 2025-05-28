@@ -41,8 +41,10 @@
             <nav id="nav-menu" class="hidden sm:flex sm:items-center sm:space-x-4 lg:space-x-6">
                 <a href="/"
                     class="text-gray-700 font-semibold text-base lg:text-lg transition-all duration-200 hover:text-indigo-600 transform hover:scale-110 animate-nav">Beranda</a>
-                <a href="/login"
-                    class="text-gray-700 font-semibold text-base lg:text-lg transition-all duration-200 hover:text-indigo-600 transform hover:scale-110 animate-nav">Login</a>
+                {{-- <a href="/download"
+                    class="text-gray-700 font-semibold text-base lg:text-lg transition-all duration-200 hover:text-indigo-600 transform hover:scale-110 animate-nav">Download</a> --}}
+                {{-- <a href="/login"
+                    class="text-gray-700 font-semibold text-base lg:text-lg transition-all duration-200 hover:text-indigo-600 transform hover:scale-110 animate-nav">Login</a> --}}
                 <a href="/register"
                     class="bg-gradient-to-r from-indigo-600 to-teal-400 text-white font-semibold py-2 px-4 lg:px-6 rounded-full hover:from-indigo-700 hover:to-teal-500 transform hover:scale-105 transition-all duration-300 animate-nav">Daftar</a>
             </nav>
@@ -52,8 +54,8 @@
             <nav class="flex flex-col items-center space-y-4 py-4">
                 <a href="/"
                     class="text-gray-700 font-semibold text-base transition-all duration-200 hover:text-indigo-600">Beranda</a>
-                <a href="/login"
-                    class="text-gray-700 font-semibold text-base transition-all duration-200 hover:text-indigo-600">Login</a>
+                {{-- <a href="/login"
+                    class="text-gray-700 font-semibold text-base transition-all duration-200 hover:text-indigo-600">Login</a> --}}
                 <a href="/register"
                     class="bg-gradient-to-r from-indigo-600 to-teal-400 text-white font-semibold py-2 px-4 rounded-full hover:from-indigo-700 hover:to-teal-500 transition-all duration-300">Daftar</a>
             </nav>
@@ -86,9 +88,9 @@
                         <li><a href="/"
                                 class="hover:text-indigo-400 transition-all duration-200 transform hover:translate-x-1">Beranda</a>
                         </li>
-                        <li><a href="/login"
+                        {{-- <li><a href="/login"
                                 class="hover:text-indigo-400 transition-all duration-200 transform hover:translate-x-1">Login</a>
-                        </li>
+                        </li> --}}
                         <li><a href="/register"
                                 class="hover:text-indigo-400 transition-all duration-200 transform hover:translate-x-1">Daftar</a>
                         </li>
@@ -137,13 +139,13 @@
                                 d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z" />
                         </svg>
                     </a> --}}
-                    <a href="#"
+                    {{-- <a href="#"
                         class="text-gray-400 hover:text-indigo-400 transform hover:scale-125 transition-all duration-200">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                             <path
                                 d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z" />
                         </svg>
-                    </a>
+                    </a> --}}
                 </div>
                 <p class="text-xs sm:text-sm">© {{ now()->format('Y') }} EvoKasir. Dibuat oleh Evognito Team.</p>
             </div>

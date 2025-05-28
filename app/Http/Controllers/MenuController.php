@@ -10,6 +10,9 @@ class MenuController extends Controller
 {
     public function index($slug)
     {
+        if (request()->has('table')) {
+            session(['table' => request()->get('table')]);
+        }
         // dd($slug);
         $mitra = Mitra::where('mitra_slug', $slug)->first();
         // dd($mitra);

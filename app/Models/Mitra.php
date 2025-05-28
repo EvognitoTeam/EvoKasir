@@ -13,6 +13,8 @@ class Mitra extends Model
     protected $fillable = [
         'mitra_slug',
         'mitra_name',
+        'mitra_address',
+        'mitra_welcome',
         'status',
     ];
 }

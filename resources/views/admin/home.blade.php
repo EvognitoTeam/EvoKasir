@@ -48,18 +48,18 @@
         <!-- Graph Section -->
         <h2 class="text-xl sm:text-2xl font-bold text-coral-500 mt-6 sm:mt-8 mb-4 sm:mb-6">Grafik Pendapatan</h2>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+            <!-- Weekly Earnings Chart -->
+            <div
+                class="bg-gray-800/90 backdrop-blur-md p-4 sm:p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
+                <h3 class="text-base sm:text-lg font-semibold text-gray-300 mb-4">Pendapatan Mingguan</h3>
+                <canvas id="weeklyChart" class="w-full" height="200"></canvas>
+            </div>
             <!-- Monthly Earnings Chart -->
             <div
                 class="bg-gray-800/90 backdrop-blur-md p-4 sm:p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
                 <h3 class="text-base sm:text-lg font-semibold text-gray-300 mb-4">Pendapatan Bulanan ({{ date('Y') }})
                 </h3>
                 <canvas id="monthlyChart" class="w-full" height="200"></canvas>
-            </div>
-            <!-- Weekly Earnings Chart -->
-            <div
-                class="bg-gray-800/90 backdrop-blur-md p-4 sm:p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
-                <h3 class="text-base sm:text-lg font-semibold text-gray-300 mb-4">Pendapatan Mingguan</h3>
-                <canvas id="weeklyChart" class="w-full" height="200"></canvas>
             </div>
             <!-- Yearly Earnings Chart -->
             <div

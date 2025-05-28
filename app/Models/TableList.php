@@ -11,5 +11,5 @@ class TableList extends Model
     use HasFactory, SoftDeletes;
 
     protected $table = 'table_list';
-    protected $fillable = ['table_name', 'mitra_id'];
+    protected $fillable = ['table_name', 'mitra_id', 'table_code', 'status'];
 }

@@ -27,7 +27,7 @@ class AdminMenuController extends Controller
     {
         $mitra = Mitra::where('mitra_slug', $slug)->first();
 
-        $categories = Categories::all();
+        $categories = Categories::where('mitra_id', $mitra->id)->get();
         $notifSound = PrintSetting::where('mitra_id', $mitra->id)->where('key', 'notif_sound')->value('value') ?? 'ding.mp3';
 
         // Logic to display the menu creation form
