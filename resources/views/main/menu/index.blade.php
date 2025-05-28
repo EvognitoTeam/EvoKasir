@@ -31,15 +31,38 @@
     <!-- Main Content -->
     <section class="bg-gray-900 py-8 sm:py-10">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
+            {{-- Success Message --}}
+            @if (session('success'))
+                <div id="success-message"
+                    class="mb-6 p-4 bg-teal-500/20 text-teal-400 rounded-lg border border-teal-400/50 shadow animate-fade-in">
+                    {{ session('success') }}
+                </div>
+                <script>
+                    setTimeout(() => {
+                        const successMessage = document.getElementById('success-message');
+                        if (successMessage) successMessage.remove();
+                    }, 5000);
+                </script>
+            @endif
+
+            {{-- Validation Errors --}}
             @if ($errors->any())
-                <div class="mb-6 p-4 bg-red-500/20 text-red-400 rounded-lg border border-red-400/50 shadow animate-fade-in">
+                <div id="error-message"
+                    class="mb-6 p-4 bg-red-500/20 text-red-400 rounded-lg border border-red-400/50 shadow animate-fade-in">
                     <ul class="list-none pl-5 space-y-1">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
                     </ul>
                 </div>
+                <script>
+                    setTimeout(() => {
+                        const errorMessage = document.getElementById('error-message');
+                        if (errorMessage) errorMessage.remove();
+                    }, 5000);
+                </script>
             @endif
+
             @if (count($menus) > 0)
                 <!-- Tab Menu Kategori -->
                 <div class="flex flex-wrap gap-2 sm:gap-4 mb-6 border-b-2 border-gray-700 overflow-x-auto">

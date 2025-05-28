@@ -178,6 +178,11 @@
                                         bisa diubah.</p>
                                 @endif
                             </div>
+                            <div>
+                                <p>
+                                    {{ $lockedTableId }}
+                                </p>
+                            </div>
 
                             {{-- NO MEJA --}}
                             <div class="mb-4">
@@ -185,23 +190,22 @@
                                     class="block mb-2 text-sm sm:text-base text-gray-300 font-semibold">Pilih Meja*</label>
                                 <select name="table_number" id="table_number"
                                     class="border border-gray-700 rounded-lg p-2 sm:p-3 w-full text-gray-300 bg-gray-900 focus:outline-none focus:ring-2 focus:ring-coral-500 transition-all duration-200"
-                                    required {{ $lockedTableId ? 'readonly disabled' : '' }}>
+                                    required {{ $lockedTableId ? 'disabled' : '' }}>
                                     <option value="" disabled {{ $lockedTableId ? '' : 'selected' }}>Pilih Meja Anda
                                     </option>
 
                                     @foreach ($tables as $table)
                                         <option value="{{ $table->id }}"
-                                            {{ $lockedTableId == $table->table_code ? 'selected' : 'disabled' }}>
+                                            {{ $lockedTableId == $table->id ? 'selected' : ($lockedTableId ? 'disabled' : '') }}>
                                             {{ $table->table_name }}
                                         </option>
                                     @endforeach
                                 </select>
-                                @if (!empty($lockedTableId))
+                                @if ($lockedTableId)
                                     <p class="text-xs text-teal-400 mt-1 italic">
                                         Meja ini diambil dari session Anda dan tidak bisa diubah.
                                     </p>
                                 @endif
-
                             </div>
 
                             {{-- METODE PEMBAYARAN --}}

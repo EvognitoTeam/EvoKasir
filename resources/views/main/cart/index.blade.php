@@ -26,23 +26,35 @@
 
             {{-- Success Message --}}
             @if (session('success'))
-                <div
+                <div id="success-message"
                     class="mb-6 p-4 bg-teal-500/20 text-teal-400 rounded-lg border border-teal-400/50 shadow animate-fade-in">
                     {{ session('success') }}
                 </div>
+                <script>
+                    setTimeout(() => {
+                        const successMessage = document.getElementById('success-message');
+                        if (successMessage) successMessage.remove();
+                    }, 5000);
+                </script>
             @endif
 
             {{-- Validation Errors --}}
             @if ($errors->any())
-                <div class="mb-6 p-4 bg-red-500/20 text-red-400 rounded-lg border border-red-400/50 shadow animate-fade-in">
+                <div id="error-message"
+                    class="mb-6 p-4 bg-red-500/20 text-red-400 rounded-lg border border-red-400/50 shadow animate-fade-in">
                     <ul class="list-disc pl-5 space-y-1">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
                     </ul>
                 </div>
+                <script>
+                    setTimeout(() => {
+                        const errorMessage = document.getElementById('error-message');
+                        if (errorMessage) errorMessage.remove();
+                    }, 5000);
+                </script>
             @endif
-
 
             @if (session('cart'))
                 <div class="space-y-4 sm:space-y-6">
