@@ -178,7 +178,7 @@
                 title: menuName,
                 html: `
                     <img src="${menuImage}" alt="${menuName}" class="w-full max-w-[200px] h-auto rounded-lg mx-1rem mx-auto mb-4">
-                    <p class="text-left text-white text-sm"><strong>Deskripsi:</strong> ${menuDescription}</p>
+                    <p class="text-left text-white text-sm"><strong>Deskripsi:</strong> <div class="text-left text-white">${menuDescription}</div></p>
                     <p class="text-left text-gray-300 text-sm"><strong>Stock:</strong> ${menuStock}</p>
                     <p class="text-left text-teal-400 text-sm"><strong>Harga:</strong> ${menuPrice}</p>
                     <button

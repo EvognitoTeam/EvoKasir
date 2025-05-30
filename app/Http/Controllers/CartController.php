@@ -49,6 +49,7 @@ class CartController extends Controller
         foreach ($cart as $item) {
             $totalPrice += $item['price'] * $item['quantity']; // harga * jumlah
         }
+        session()->put('totalPrice', $totalPrice);
 
         return view('main.cart.index', compact('mitra', 'cart', 'totalPrice', 'slug'));
     }

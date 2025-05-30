@@ -33,8 +33,8 @@ class AdminCashoutController extends Controller
 
         $midtransFee = $totalRevenue * 0.007;
         // dd($midtransFee);
-        $platformFee = $totalRevenue * 0.15;
-        // $platformFee = ($totalRevenue - $midtransFee) * 0.15;
+        // $platformFee = $totalRevenue * 0.15;
+        $platformFee = ($totalRevenue - $midtransFee) * 0.15;
 
         $totalFees = $midtransFee + $platformFee;
 
@@ -42,7 +42,7 @@ class AdminCashoutController extends Controller
             ->where('status', 'approved')
             ->sum('amount');
 
-        $availableCashout = floor(max(0, $totalRevenue - $totalFees - $approvedCashouts));
+        $availableCashout = floor(max(0, $totalRevenue - $totalFees));
 
         $cashouts = Cashout::where('mitra_id', $mitra->id)
             ->latest()
@@ -67,8 +67,8 @@ class AdminCashoutController extends Controller
             ->sum('total_price');
 
         $midtransFee = $totalRevenue * 0.007;
-        $platformFee = $totalRevenue * 0.15;
-        // $platformFee = ($totalRevenue - $midtransFee) * 0.15;
+        // $platformFee = $totalRevenue * 0.15;
+        $platformFee = ($totalRevenue - $midtransFee) * 0.15;
 
         $totalFees = $midtransFee + $platformFee;
 
@@ -76,7 +76,7 @@ class AdminCashoutController extends Controller
             ->where('status', 'approved')
             ->sum('amount');
 
-        $availableCashout = floor(max(0, $totalRevenue - $totalFees - $approvedCashouts));
+        $availableCashout = floor(max(0, $totalRevenue - $totalFees));
         $notifSound = PrintSetting::where('mitra_id', $mitra->id)->where('key', 'notif_sound')->value('value') ?? 'ding.mp3';
 
         return view('admin.cashout.create', compact('slug', 'mitra', 'availableCashout', 'notifSound'));
@@ -105,7 +105,7 @@ class AdminCashoutController extends Controller
             ->where('status', 'approved')
             ->sum('amount');
 
-        $availableCashout = floor(max(0, $totalRevenue - $totalFees - $approvedCashouts));
+        $availableCashout = floor(max(0, $totalRevenue - $totalFees));
 
         $request->validate([
             'amount' => [

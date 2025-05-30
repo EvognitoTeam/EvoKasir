@@ -94,7 +94,7 @@ Route::prefix('{slug}')->group(function () {
 
                 Route::get('/cashout', [AdminCashoutController::class, 'index'])->name('admin.cashout.index');
                 Route::post('cashout', [AdminCashoutController::class, 'store'])->name('admin.cashout.store');
-                Route::get('/cashout/form', [AdminCashoutController::class, 'create'])->name('admin.cashout.create');
+                // Route::get('/cashout/form', [AdminCashoutController::class, 'create'])->name('admin.cashout.create');
             });
             Route::get('/reports', [AdminReportController::class, 'index'])->name('admin.report.index');
 

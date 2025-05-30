@@ -16,6 +16,37 @@
                 <h1 class="text-3xl sm:text-4xl font-extrabold text-white">Cashout</h1>
             </div>
 
+            <!-- Success Message -->
+            @if (session('success'))
+                <div id="success-alert"
+                    class="flex items-center justify-between p-4 mb-4 text-sm sm:text-base text-teal-400 bg-teal-500/20 border border-teal-400/30 rounded-xl shadow-lg transition-opacity duration-500 animate-fade-in"
+                    role="alert">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-check-circle text-lg sm:text-xl"></i>
+                        <span>{{ session('success') }}</span>
+                    </div>
+                    <button onclick="document.getElementById('success-alert').remove();"
+                        class="text-teal-400 hover:text-teal-300 focus:outline-none">
+                        <i class="fas fa-times text-lg sm:text-xl"></i>
+                    </button>
+                </div>
+            @endif
+
+            <!-- Error Messages -->
+            @if ($errors->any())
+                <div class="p-4 mb-4 text-sm sm:text-base text-red-400 bg-red-500/20 border border-red-400/30 rounded-xl shadow-lg animate-fade-in"
+                    role="alert">
+                    <div class="flex items-center gap-2 mb-2">
+                        <i class="fas fa-exclamation-circle text-lg sm:text-xl"></i>
+                        <strong>Terjadi kesalahan:</strong>
+                    </div>
+                    <ul class="list-disc list-inside">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <!-- Konten Utama -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                 <!-- Card Pendapatan -->
@@ -51,11 +82,23 @@
                             $canCashout = $availableCashout >= 100000;
                         @endphp
 
-                        <a href="{{ $canCashout ? route('admin.cashout.create', ['slug' => $mitra->mitra_slug]) : 'javascript:void(0)' }}"
+                        {{-- <a href="{{ $canCashout ? route('admin.cashout.create', ['slug' => $mitra->mitra_slug]) : 'javascript:void(0)' }}"
                             class="inline-flex items-center px-4 py-2 bg-teal-600 text-white font-semibold rounded-lg transition duration-300
           {{ $canCashout ? 'hover:bg-teal-700' : 'opacity-50 cursor-not-allowed pointer-events-none' }}">
                             Ajukan Cashout
-                        </a>
+                        </a> --}}
+                        <form action="{{ route('admin.cashout.store', ['slug' => $mitra->mitra_slug]) }}" method="POST">
+                            @csrf
+
+                            <input type="hidden" name="amount" id="amount" value="{{ $availableCashout }}">
+                            <div class="mt-6">
+                                <button type="submit" {{ !$canCashout ? 'disabled' : '' }}
+                                    class="inline-flex items-center px-4 py-2 bg-teal-600 text-white font-semibold rounded-lg transition duration-300
+          {{ $canCashout ? 'hover:bg-teal-700' : 'opacity-50 cursor-not-allowed pointer-events-none' }}">
+                                    Ajukan Cashout
+                                </button>
+                            </div>
+                        </form>
 
                     </div>
                 </div>
@@ -83,7 +126,8 @@
                             @forelse ($cashouts as $cashout)
                                 <tr class="border-b border-gray-800">
                                     <td class="py-3 px-4 text-sm">{{ $cashout->created_at->format('d M Y, H:i') }}</td>
-                                    <td class="py-3 px-4 text-sm">Rp {{ number_format($cashout->amount, 0, ',', '.') }}</td>
+                                    <td class="py-3 px-4 text-sm">Rp {{ number_format($cashout->amount, 0, ',', '.') }}
+                                    </td>
                                     <td class="py-3 px-4 text-sm">
                                         <span
                                             class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {{ $cashout->status == 'approved' ? 'bg-green-500 text-white' : ($cashout->status === 'pending' ? 'bg-yellow-500 text-gray-800' : 'bg-red-500 text-white') }}">

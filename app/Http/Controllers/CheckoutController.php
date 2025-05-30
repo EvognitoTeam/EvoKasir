@@ -32,6 +32,7 @@ class CheckoutController extends Controller
         // Ambil dari session
         $cartItems = session('cart', []);
         $totalPrice = session('totalPrice', 0);
+        // dd($totalPrice);
         $discount = session('discount', 0);
         $totalAfterDiscount = $totalPrice;
 
@@ -47,7 +48,7 @@ class CheckoutController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'total_price' => $totalPrice,
-            'table_number' => $request->table_number,
+            'table_number' => $table->id,
             'discount' => $discount,
             'totalAfterDiscount' => $totalAfterDiscount,
             'payment_method' => $request->payment_method,
@@ -141,7 +142,7 @@ class CheckoutController extends Controller
             }
         }
 
-        $table->update(['status' => '0']);
+        // $table->update(['status' => '0']);
 
         session()->forget(['cart', 'totalPrice', 'discount']);
 

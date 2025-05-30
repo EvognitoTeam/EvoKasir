@@ -178,11 +178,11 @@
                                         bisa diubah.</p>
                                 @endif
                             </div>
-                            <div>
+                            {{-- <div>
                                 <p>
                                     {{ $lockedTableId }}
                                 </p>
-                            </div>
+                            </div> --}}
 
                             {{-- NO MEJA --}}
                             <div class="mb-4">
@@ -196,11 +196,13 @@
 
                                     @foreach ($tables as $table)
                                         <option value="{{ $table->id }}"
-                                            {{ $lockedTableId == $table->id ? 'selected' : ($lockedTableId ? 'disabled' : '') }}>
+                                            {{ $lockedTableId == $table->table_code ? 'selected' : ($lockedTableId ? 'disabled' : '') }}>
                                             {{ $table->table_name }}
                                         </option>
                                     @endforeach
                                 </select>
+                                <input type="hidden" name="table_number" id="table_number"
+                                    value="{{ $lockedTableId }}">
                                 @if ($lockedTableId)
                                     <p class="text-xs text-teal-400 mt-1 italic">
                                         Meja ini diambil dari session Anda dan tidak bisa diubah.

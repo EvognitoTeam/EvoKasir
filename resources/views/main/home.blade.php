@@ -97,11 +97,7 @@
                                 {{ $menu->name }}</h3>
                             <p class="text-gray-300 text-sm sm:text-base line-clamp-2">{!! Illuminate\Support\Str::limit(strip_tags($menu->description), 50) !!}</p>
                             <p class="text-teal-400 text-sm sm:text-base mt-2">Harga: {{ $menu->formatted_price }}</p>
-                            <button
-                                class="add-to-cart-btn w-full mt-3 bg-teal-500 text-white text-sm sm:text-base px-4 py-2 rounded-lg hover:bg-teal-600 transition-all duration-200 transform hover:scale-105"
-                                onclick="addToCart('{{ $menu->id }}', event)">
-                                + Tambah
-                            </button>
+
                         </div>
                     @endforeach
                 </div>
@@ -159,14 +155,9 @@
                 title: menuName,
                 html: `
                     <img src="${menuImage}" alt="${menuName}" class="w-full max-w-[200px] h-auto rounded-lg mx-auto mb-4">
-                    <p class="text-left text-gray-300 text-sm"><strong>Deskripsi:</strong> ${menuDescription}</p>
+                    <p class="text-left text-gray-300 text-sm"><strong>Deskripsi:</strong> <div class="text-left text-white">${menuDescription}</div></p>
                     <p class="text-left text-gray-300 text-sm"><strong>Stock:</strong> ${menuStock}</p>
                     <p class="text-left text-teal-400 text-sm"><strong>Harga:</strong> ${menuPrice}</p>
-                    <button
-                        class="add-to-cart-btn w-full mt-4 bg-teal-500 text-white text-sm px-4 py-2 rounded-lg hover:bg-teal-600 transition-all duration-200 transform hover:scale-105"
-                        onclick="addToCart('${menuId}', event)">
-                        + Tambah ke Keranjang
-                    </button>
                 `,
                 showCloseButton: true,
                 showConfirmButton: false,
