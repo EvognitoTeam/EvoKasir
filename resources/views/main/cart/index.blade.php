@@ -7,7 +7,7 @@
 @section('content')
     <section class="bg-gray-900 py-10 sm:py-12 overflow-hidden">
         <!-- Background Geometric Overlay -->
-        <div class="absolute inset-0 opacity-10">
+        <div class="absolute inset-0 opacity-60">
             <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"
                 preserveAspectRatio="xMidYMid slice">
                 <defs>
@@ -38,6 +38,23 @@
                 </script>
             @endif
 
+            @if (session('stock_warnings'))
+                <div id="stock-warning"
+                    class="mb-6 p-4 bg-red-500/20 text-red-400 rounded-lg border border-red-400/50 shadow animate-fade-in">
+                    <ul class="list-none pl-5 space-y-1">
+                        @foreach (session('stock_warnings') as $message)
+                            <li>{{ $message }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                <script>
+                    setTimeout(() => {
+                        const warningMessage = document.getElementById('stock-warning');
+                        if (warningMessage) warningMessage.remove();
+                    }, 5000);
+                </script>
+            @endif
+
             {{-- Validation Errors --}}
             @if ($errors->any())
                 <div id="error-message"
@@ -56,7 +73,7 @@
                 </script>
             @endif
 
-            @if (session('cart'))
+            @if (session("cart.$slug"))
                 <div class="space-y-4 sm:space-y-6">
                     @foreach ($cart as $id => $item)
                         <div class="flex flex-col md:flex-row justify-between items-start bg-gray-800/90 backdrop-blur-md rounded-2xl shadow-lg p-4 sm:p-6 space-y-4 md:space-y-0 md:space-x-6 animate-scale-in"
@@ -74,6 +91,12 @@
                                         Harga: <strong
                                             class="text-teal-400">Rp{{ number_format($item['price'], 0, ',', '.') }}</strong>
                                     </p>
+                                    <!-- Tampilkan Notes jika ada -->
+                                    @if (!empty($item['notes']))
+                                        <p class="text-gray-400 text-sm mt-2 bg-gray-700/50 p-2 rounded-md">
+                                            <span class="font-semibold text-teal-400">Catatan:</span> {{ $item['notes'] }}
+                                        </p>
+                                    @endif
                                 </div>
                             </div>
 
@@ -95,6 +118,15 @@
                                         onclick="updateQuantity({{ $id }}, 1)">
                                         <i class="fa fa-plus"></i>
                                     </button>
+                                </div>
+                                <!-- Notes Input -->
+                                <div class="w-full">
+                                    <label for="notes-{{ $id }}"
+                                        class="text-sm font-semibold text-gray-300 mb-1 block">Catatan:</label>
+                                    <textarea id="notes-{{ $id }}" name="notes" placeholder="Misalnya: tanpa gula, tambah saus"
+                                        class="w-full border border-gray-700 rounded-md px-3 py-2 text-gray-300 bg-gray-900 focus:outline-none focus:ring-2 focus:ring-coral-500 resize-none text-sm transition-all duration-200 hover:border-teal-500"
+                                        rows="3" oninput="debouncedUpdateNotes({{ $id }}, this.value)" maxlength="255">{{ $item['notes'] ?? '' }}</textarea>
+                                    <p class="text-xs text-gray-500 mt-1">Maksimal 255 karakter</p>
                                 </div>
                                 <!-- Hapus -->
                                 <form action="{{ route('cart.remove', ['slug' => $slug, 'id' => $id]) }}" method="POST">
@@ -139,7 +171,84 @@
 @endsection
 
 @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+    <!-- JavaScript untuk update notes -->
     <script>
+        const debouncedUpdateNotes = _.debounce((id, notes) => {
+            if (notes.length > 255) {
+                Swal.fire({
+                    title: 'Peringatan!',
+                    text: 'Catatan tidak boleh melebihi 255 karakter.',
+                    icon: 'warning',
+                    timer: 2000,
+                    showConfirmButton: false,
+                    background: '#1f2937',
+                    customClass: {
+                        title: 'text-coral-500',
+                        content: 'text-gray-300'
+                    }
+                });
+                return;
+            }
+            fetch('{{ route('cart.updateNotes', ['slug' => $slug]) }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                    body: JSON.stringify({
+                        id: id,
+                        notes: notes.trim()
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            title: 'Berhasil!',
+                            text: data.message || 'Catatan berhasil diperbarui.',
+                            icon: 'success',
+                            timer: 1500,
+                            showConfirmButton: false,
+                            background: '#1f2937',
+                            customClass: {
+                                title: 'text-coral-500',
+                                content: 'text-gray-300'
+                            }
+                        });
+                        location.reload(); // Reload untuk memperbarui tampilan notes
+                    } else {
+                        Swal.fire({
+                            title: 'Gagal!',
+                            text: data.message || 'Gagal memperbarui catatan.',
+                            icon: 'error',
+                            timer: 2000,
+                            showConfirmButton: false,
+                            background: '#1f2937',
+                            customClass: {
+                                title: 'text-coral-500',
+                                content: 'text-gray-300'
+                            }
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Terjadi kesalahan saat memperbarui catatan.',
+                        icon: 'error',
+                        timer: 2000,
+                        showConfirmButton: false,
+                        background: '#1f2937',
+                        customClass: {
+                            title: 'text-coral-500',
+                            content: 'text-gray-300'
+                        }
+                    });
+                });
+        }, 500);
+
         function updateQuantity(id, change) {
             const quantityInput = document.getElementById('quantity-' + id);
             let currentQuantity = parseInt(quantityInput.value);
@@ -279,6 +388,21 @@
 
         .animate-subtle-pulse {
             animation: subtlePulse 10s ease-in-out infinite;
+        }
+
+        /* Styling untuk textarea notes */
+        textarea {
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        textarea:focus {
+            border-color: var(--teal-400);
+            box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.2);
+        }
+
+        textarea::placeholder {
+            color: #6b7280;
+            font-style: italic;
         }
     </style>
 @endpush

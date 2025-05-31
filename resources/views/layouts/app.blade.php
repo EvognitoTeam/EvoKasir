@@ -40,7 +40,7 @@
                     class="relative text-gray-300 hover:text-teal-400 transition-all duration-200 transform hover:scale-105 animate-nav">
                     <i class="fas fa-shopping-cart text-base sm:text-lg lg:text-xl"></i>
                     @php
-                        $cart = session('cart', []);
+                        $cart = session('cart.$slug', []);
                         $cartCount = array_sum(array_column($cart, 'quantity'));
                     @endphp
                     @if ($cartCount > 0)

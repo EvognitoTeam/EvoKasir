@@ -15,6 +15,10 @@ class Mitra extends Model
         'mitra_name',
         'mitra_address',
         'mitra_welcome',
+        'no_rek',
+        'nama_rek',
+        'rek_added_at',
+        'banner',
         'status',
     ];
 }

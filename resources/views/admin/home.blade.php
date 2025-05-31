@@ -8,6 +8,25 @@
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8">
         <h1 class="text-2xl sm:text-3xl font-extrabold text-coral-500 animate-text-reveal">Dashboard</h1>
 
+        <!-- Rekening Message -->
+        @if (empty($mitra->no_rek) || empty($mitra->nama_rek))
+            <div id="warning-alert"
+                class="flex items-center justify-between p-4 mb-4 text-yellow-700 bg-yellow-100 border border-yellow-300 rounded-xl shadow transition-opacity duration-500 animate-fade-in"
+                role="alert">
+
+                <div class="flex items-center gap-3">
+                    <i class="fas fa-exclamation-triangle text-xl text-yellow-600"></i>
+                    <span class="text-sm sm:text-base">
+                        Harap isi nomor rekening terlebih dahulu sebelum melakukan <strong>cashout</strong>!
+                        <a href="{{ route('admin.setting.index', ['slug' => $slug]) }}"
+                            class="ml-1 text-yellow-800 underline hover:text-yellow-900 font-medium">
+                            Set sekarang
+                        </a>
+                    </span>
+                </div>
+            </div>
+        @endif
+
         <!-- Summary Cards Section -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             <!-- Card for Total Produk -->

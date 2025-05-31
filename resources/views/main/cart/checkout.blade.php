@@ -56,9 +56,20 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($cart as $item)
+                                    @foreach ($cart as $id => $item)
                                         <tr class="border-b border-gray-700">
-                                            <td class="py-2 sm:py-3">{{ $item['name'] }}</td>
+                                            <td class="py-2 sm:py-3">
+                                                <div>
+                                                    <span>{{ $item['name'] }}</span>
+                                                    @if (!empty($item['notes']))
+                                                        <p
+                                                            class="text-gray-400 text-xs sm:text-sm mt-1 bg-gray-700/50 p-2 rounded-md">
+                                                            <span class="font-semibold text-teal-400">Catatan:</span>
+                                                            {{ $item['notes'] }}
+                                                        </p>
+                                                    @endif
+                                                </div>
+                                            </td>
                                             <td class="py-2 sm:py-3">{{ $item['quantity'] }}</td>
                                             <td class="py-2 sm:py-3">Rp{{ number_format($item['price'], 0, ',', '.') }}</td>
                                             <td class="py-2 sm:py-3 text-right">
@@ -139,8 +150,7 @@
                         @php
                             $isLoggedIn = Auth::check();
                             $user = Auth::user();
-                            // $selectedTable = session('table');
-                            $lockedTableId = session('table'); // diasumsikan berisi ID meja, seperti "3"
+                            $lockedTableId = session('table'); // diasumsikan berisi ID meja
                         @endphp
 
                         <form action="{{ route('cart.store', ['slug' => $slug]) }}" method="POST">
@@ -164,7 +174,6 @@
                                 <input type="hidden" name="email" value="{{ $user->email }}">
                             @endif
 
-
                             {{-- EMAIL --}}
                             <div class="mb-4">
                                 <label for="email"
@@ -178,11 +187,6 @@
                                         bisa diubah.</p>
                                 @endif
                             </div>
-                            {{-- <div>
-                                <p>
-                                    {{ $lockedTableId }}
-                                </p>
-                            </div> --}}
 
                             {{-- NO MEJA --}}
                             <div class="mb-4">
@@ -193,7 +197,6 @@
                                     required {{ $lockedTableId ? 'disabled' : '' }}>
                                     <option value="" disabled {{ $lockedTableId ? '' : 'selected' }}>Pilih Meja Anda
                                     </option>
-
                                     @foreach ($tables as $table)
                                         <option value="{{ $table->id }}"
                                             {{ $lockedTableId == $table->table_code ? 'selected' : ($lockedTableId ? 'disabled' : '') }}>
@@ -201,9 +204,8 @@
                                         </option>
                                     @endforeach
                                 </select>
-                                <input type="hidden" name="table_number" id="table_number"
-                                    value="{{ $lockedTableId }}">
                                 @if ($lockedTableId)
+                                    <input type="hidden" name="table_number" value="{{ $lockedTableId }}">
                                     <p class="text-xs text-teal-400 mt-1 italic">
                                         Meja ini diambil dari session Anda dan tidak bisa diubah.
                                     </p>
@@ -240,7 +242,6 @@
                                 Bayar Sekarang
                             </button>
                         </form>
-
                     </div>
                 </div>
             </div>

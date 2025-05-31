@@ -79,6 +79,7 @@ Route::prefix('{slug}')->group(function () {
             Route::post('/settings', [AdminSettingsController::class, 'saveSettings'])->name('admin.setting.save');
             Route::get('/print/setting', [AdminPrintSettingController::class, 'printSettingForm'])->name('admin.print-setting');
             Route::post('/print/setting', [AdminPrintSettingController::class, 'savePrintSetting'])->name('admin.print-setting.save');
+            Route::post('/settings/rek', [AdminSettingsController::class, 'saveRekening'])->name('admin.setting.rekening');
 
             Route::get('/pos', [AdminPosController::class, 'index'])->name('admin.pos.index');
             Route::post('/pos/order', [AdminPosController::class, 'storeOrder'])->name('admin.pos.order.store');
@@ -139,6 +140,7 @@ Route::prefix('{slug}')->group(function () {
     Route::post('/cart/decrease/{id}', [CartController::class, 'decrease'])->name('cart.decrease');
     Route::post('/cart/apply-coupon', [CartController::class, 'applyCoupon'])->name('cart.applyCoupon');
     Route::post('/cart/remove-coupon', [CartController::class, 'removeCoupon'])->name('cart.removeCoupon');
+    Route::post('/cart/update-notes', [CartController::class, 'updateNotes'])->name('cart.updateNotes');
 
     Route::get('/checkout/qris/{order_code}/{transaction_id}', [CheckoutController::class, 'showQris'])->name('checkout.qris');
     Route::get('/checkout/{order_code}/success', [CheckoutController::class, 'checkoutSuccess'])->name('checkout.success');

@@ -15,6 +15,29 @@
             </div>
         @endif
 
+        @if (session('error'))
+            <div id="errorMessage"
+                class="bg-red-500/20 border border-red-400/30 text-red-400 px-4 sm:px-6 py-2 sm:py-3 rounded-xl shadow-lg mb-4 sm:mb-6 transition-opacity duration-300">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        <!-- Error Messages -->
+        @if ($errors->any())
+            <div
+                class="p-4 mb-6 text-sm sm:text-base text-red-400 bg-red-500/20 border border-red-400/30 rounded-xl shadow-lg animate-fade-in">
+                <div class="flex items-center gap-2 mb-2">
+                    <i class="fas fa-exclamation-circle text-lg sm:text-xl"></i>
+                    <strong>Terjadi kesalahan:</strong>
+                </div>
+                <ul class="list-disc list-inside">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <form action="{{ route('admin.setting.save', ['slug' => $slug]) }}" method="POST" enctype="multipart/form-data"
             class="space-y-6">
             @csrf
@@ -62,6 +85,65 @@
                 Atur Struk Pembelian
             </a>
         </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-coral-500 mb-4 sm:mb-6 flex items-center gap-2">
+            <i class="fas fa-credit-card text-lg sm:text-xl"></i> Pengaturan Rekening
+        </h1>
+        @php
+            use Illuminate\Support\Carbon;
+
+            $rekAt = $mitra->rek_added_at ? Carbon::parse($mitra->rek_added_at) : null;
+            $canEditAt = $rekAt ? $rekAt->copy()->addDays(7) : null;
+            $isDisabled = $canEditAt && now()->lessThan($canEditAt);
+        @endphp
+
+        @if (Auth::user()->role == 'Owner')
+            <form action="{{ route('admin.setting.rekening', ['slug' => $slug]) }}" method="POST"
+                enctype="multipart/form-data" class="space-y-6">
+                @csrf
+                <div>
+                    <label for="nama_rek" class="block text-sm font-medium text-white mb-1">Nama Rekening</label>
+                    <input type="text" id="nama_rek" name="nama_rek"
+                        value="{{ old('nama_rek', $mitra->nama_rek ?? '') }}" {{ $isDisabled ? 'disabled' : '' }}
+                        class="w-full rounded-lg border px-4 py-3 text-sm text-white placeholder-gray-400 
+                focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent
+                bg-gray-800 border-gray-600 disabled:bg-gray-700 disabled:cursor-not-allowed"
+                        placeholder="Evognito Team" autocomplete="off">
+                    @error('nama_rek')
+                        <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div>
+                    <label for="no_rek" class="block text-sm font-medium text-white mb-1">Nomor Rekening</label>
+                    <input type="text" id="no_rek" name="no_rek" value="{{ old('no_rek', $mitra->no_rek ?? '') }}"
+                        {{ $isDisabled ? 'disabled' : '' }}
+                        class="w-full rounded-lg border px-4 py-3 text-sm text-white placeholder-gray-400 
+                focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent
+                bg-gray-800 border-gray-600 disabled:bg-gray-700 disabled:cursor-not-allowed"
+                        placeholder="1234567890" autocomplete="off">
+                    @error('no_rek')
+                        <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <button type="submit" {{ $isDisabled ? 'disabled' : '' }}
+                    class="w-full rounded-lg px-4 py-3 text-sm font-semibold 
+            bg-gradient-to-r from-teal-500 to-green-500 hover:from-teal-600 hover:to-green-600
+            disabled:bg-gray-600 disabled:cursor-not-allowed text-white transition-all duration-200">
+                    Simpan Rekening
+                </button>
+
+                @if ($isDisabled)
+                    <p class="text-yellow-400 text-center text-sm mt-3">
+                        Anda dapat mengubah rekening kembali pada:
+                        <strong>{{ $canEditAt->locale('id')->translatedFormat('d F Y H:i') }}</strong>
+                    </p>
+                @endif
+            </form>
+        @else
+            <p class="text-center text-gray-400">Anda tidak memiliki akses ke pengaturan ini.</p>
+        @endif
+
     </div>
 
     @push('scripts')

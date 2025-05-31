@@ -140,6 +140,13 @@ class AdminAuthController extends Controller
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password], $request->remember)) {
             // Login berhasil, redirect ke halaman admin
+            if (Auth::check()) {
+                $updateUser = User::where('id', Auth::id())
+                    ->update([
+                        'is_login' => 1,
+                        'login_at' => now(),
+                    ]);
+            }
             return redirect()->route('admin.index', ['slug' => $slug]); // Ganti sesuai dengan mitra_id yang sesuai
         }
 

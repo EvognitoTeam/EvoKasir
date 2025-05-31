@@ -60,14 +60,35 @@
                                 Berlaku sampai {{ \Carbon\Carbon::parse($promo->expired_date)->format('d F Y H:i') }} WIB
                             </div>
                             <div class="mt-3 sm:mt-4 flex items-center justify-between">
-                                <button id="copyButton{{ $promo->id }}"
-                                    class="px-3 py-2 sm:px-4 sm:py-2 bg-teal-500 text-white text-sm sm:text-base rounded-lg hover:bg-teal-600 transform hover:scale-105 transition-all duration-300"
-                                    onclick="copyPromoCode('{{ $promo->coupon_code }}', {{ $promo->id }})">
-                                    Salin Kode Promo
-                                </button>
-                                <span id="copyStatus{{ $promo->id }}"
-                                    class="text-xs sm:text-sm text-gray-400 hidden animate-fade-in">Kode berhasil
-                                    disalin!</span>
+                                @if ($promo->is_member_only && !Auth::check())
+                                    <button
+                                        class="px-3 py-2 sm:px-4 sm:py-2 bg-red-500 text-white text-sm sm:text-base rounded-lg hover:bg-red-600 transform hover:scale-105 transition-all duration-300"
+                                        onclick="window.location.href='{{ route('user.register', ['slug' => $slug]) }}'">
+                                        Membership Only
+                                    </button>
+                                    <span id="copyStatus{{ $promo->id }}"
+                                        class="text-xs sm:text-sm text-gray-400 hidden animate-fade-in">Kode berhasil
+                                        disalin!</span>
+                                @elseif ($promo->is_member_only && Auth::check())
+                                    <button id="copyButton{{ $promo->id }}"
+                                        class="px-3 py-2 sm:px-4 sm:py-2 bg-teal-500 text-white text-sm sm:text-base rounded-lg hover:bg-teal-600 transform hover:scale-105 transition-all duration-300"
+                                        onclick="copyPromoCode('{{ $promo->coupon_code }}', {{ $promo->id }})">
+                                        Salin Kode Promo
+                                    </button>
+                                    <span id="copyStatus{{ $promo->id }}"
+                                        class="text-xs sm:text-sm text-gray-400 hidden animate-fade-in">Kode berhasil
+                                        disalin!</span>
+                                @else
+                                    <button id="copyButton{{ $promo->id }}"
+                                        class="px-3 py-2 sm:px-4 sm:py-2 bg-teal-500 text-white text-sm sm:text-base rounded-lg hover:bg-teal-600 transform hover:scale-105 transition-all duration-300"
+                                        onclick="copyPromoCode('{{ $promo->coupon_code }}', {{ $promo->id }})">
+                                        Salin Kode Promo
+                                    </button>
+                                    <span id="copyStatus{{ $promo->id }}"
+                                        class="text-xs sm:text-sm text-gray-400 hidden animate-fade-in">Kode berhasil
+                                        disalin!</span>
+                                @endif
+
                             </div>
                         </div>
                     @endforeach
@@ -152,7 +173,7 @@
             const addToCartUrl = menuElement.getAttribute('data-add-url');
 
             Swal.fire({
-                title: menuName,
+                title: `<p class="text-center text-white">${menuName}</p>`,
                 html: `
                     <img src="${menuImage}" alt="${menuName}" class="w-full max-w-[200px] h-auto rounded-lg mx-auto mb-4">
                     <p class="text-left text-gray-300 text-sm"><strong>Deskripsi:</strong> <div class="text-left text-white">${menuDescription}</div></p>

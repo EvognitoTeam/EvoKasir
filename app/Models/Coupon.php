@@ -18,6 +18,7 @@ class Coupon extends Model
         'image',
         'description',
         'coupon_code',
+        'is_member_only',
         'discount_price',
         'discount_rate',
         'max_use',

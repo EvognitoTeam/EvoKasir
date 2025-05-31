@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Helpers\ActivityHelper;
 use App\Models\User;
 use App\Models\Mitra;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Models\Coupon;
 use App\Models\Activities;
+use Illuminate\Http\Request;
 use App\Models\LoyaltyPoints;
+use App\Helpers\ActivityHelper;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -37,8 +38,11 @@ class UserAuthController extends Controller
             ->latest()
             ->take(10)
             ->get();
+        $orders = Auth::user()->orders()->where('mitra_id', $mitra->id)->with('items.product')->latest()->take(10)->get();
+        // dd($orders);
+        $coupons = Coupon::where('mitra_id', $mitra->id)->where('is_member_only', 1)->where('expired_date', '>=', now())->get();
         // dd($loyaltyId);
-        return view('main.user.profile', compact('mitra', 'slug', 'loyaltyPoints', 'loyaltyId', 'activities'));
+        return view('main.user.profile', compact('mitra', 'slug', 'loyaltyPoints', 'loyaltyId', 'activities', 'orders', 'coupons'));
     }
     public function userLogin(Request $request, $slug)
     {
@@ -51,7 +55,7 @@ class UserAuthController extends Controller
                 description: 'Login pengguna',
                 activityType: 'login',
                 mitraId: $mitra->id,
-                userId: Auth::id(),
+                userId: Auth::check() ? Auth::id() : null,
                 request: $request
             );
             return redirect()->route('user.profile', ['slug' => $slug]);
@@ -96,7 +100,7 @@ class UserAuthController extends Controller
             description: 'Pengguna memperbarui profil',
             activityType: 'profile_update',
             mitraId: $mitra->id,
-            userId: $user->id,
+            userId: Auth::check() ? Auth::id() : null,
             request: $request
         );
 
@@ -110,7 +114,7 @@ class UserAuthController extends Controller
             description: 'Logout pengguna',
             activityType: 'logout',
             mitraId: $mitra->id,
-            userId: Auth::id(),
+            userId: Auth::check() ? Auth::id() : null,
             request: $request
         );
 

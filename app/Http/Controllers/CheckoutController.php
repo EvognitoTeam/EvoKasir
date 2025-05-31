@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Menu;
+use App\Models\User;
 use App\Models\Mitra;
 use App\Models\Order;
 use GuzzleHttp\Client;
 use App\Models\OrderItem;
 use App\Models\TableList;
 use Illuminate\Http\Request;
+use App\Helpers\ActivityHelper;
 use App\Services\MidtransService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -17,11 +19,20 @@ class CheckoutController extends Controller
 {
     public function store(Request $request, $slug)
     {
+        // dd($request);
         $mitra = Mitra::where('mitra_slug', $slug)->firstOrFail();
-        $table = TableList::where('mitra_id', $mitra->id)
-            ->where('table_code', session('table'))
-            ->first();
+        $cashier = User::where('mitra_id', $mitra->id)
+            ->where('is_login', 1)
+            ->firstOrFail();
+        $tableCode = session('table');
+        $tableQuery = TableList::where('mitra_id', $mitra->id);
 
+        $table = $tableCode
+            ? $tableQuery->where('table_code', $tableCode)->firstOrFail()
+            : $tableQuery->where('id', $request->table_number)->firstOrFail();
+
+
+        // dd($table);
         // Generate order code
         $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         $order_code = '';
@@ -30,20 +41,20 @@ class CheckoutController extends Controller
         }
 
         // Ambil dari session
-        $cartItems = session('cart', []);
-        $totalPrice = session('totalPrice', 0);
-        // dd($totalPrice);
-        $discount = session('discount', 0);
+        $cartItems = session("cart.$slug", []);
+        $totalPrice = session("totalPrice.$slug", 0);
+        $discount = session("discount.$slug", 0);
         $totalAfterDiscount = $totalPrice;
 
         if ($totalPrice < 1) {
-            return back()->with('error', 'Total pembayaran harus lebih dari Rp1.' . $discount);
+            return back()->with('error', 'Total pembayaran harus lebih dari Rp1.');
         }
 
         // Simpan order awal
         $order = Order::create([
             'order_code' => $order_code,
             'mitra_id' => $mitra->id,
+            'cashier_id' => $cashier->id,
             'user_id' => Auth::check() ? Auth::user()->id : null,
             'name' => $request->name,
             'email' => $request->email,
@@ -56,13 +67,13 @@ class CheckoutController extends Controller
         ]);
 
         foreach ($cartItems as $item) {
-            // dd($item);
             OrderItem::create([
                 'order_id' => $order->id,
                 'mitra_id' => $mitra->id,
                 'product_id' => $item['id'],
                 'quantity' => $item['quantity'],
                 'price' => $item['price'],
+                'notes' => $item['notes'] ?? null, // Simpan catatan jika ada
             ]);
             // Kurangi stok produk
             $product = Menu::find($item['id']);
@@ -98,7 +109,6 @@ class CheckoutController extends Controller
                 ];
             }
 
-
             $itemTotal = collect($items)->sum(function ($item) {
                 return $item['price'] * $item['quantity'];
             });
@@ -116,8 +126,6 @@ class CheckoutController extends Controller
             try {
                 $transaction = $midtrans->createTransaction($order_code, $totalAfterDiscount, $customer, $items, $mitra->mitra_name);
 
-                // dd($transaction);
-
                 // Update order dengan data Midtrans
                 $order->update([
                     'qr_url' => $transaction->actions[0]->url ?? null,
@@ -127,7 +135,15 @@ class CheckoutController extends Controller
                     'expiry_time' => $transaction->expiry_time,
                 ]);
 
-                session()->forget(['cart', 'totalPrice', 'discount']);
+                ActivityHelper::createActivity(
+                    description: 'Pesanan Dibuat : QRIS',
+                    activityType: 'checkout',
+                    mitraId: $mitra->id,
+                    userId: Auth::id(),
+                    request: $request
+                );
+
+                session()->forget(["cart.$slug", "totalPrice.$slug", "discount.$slug", "applied_coupon.$slug"]);
 
                 return redirect()->route('checkout.qris', [
                     'slug' => $slug,
@@ -142,9 +158,15 @@ class CheckoutController extends Controller
             }
         }
 
-        // $table->update(['status' => '0']);
+        ActivityHelper::createActivity(
+            description: 'Pesanan Dibuat : Cash',
+            activityType: 'checkout',
+            mitraId: $mitra->id,
+            userId: Auth::check() ? Auth::id() : null,
+            request: $request
+        );
 
-        session()->forget(['cart', 'totalPrice', 'discount']);
+        session()->forget(["cart.$slug", "totalPrice.$slug", "discount.$slug", "applied_coupon.$slug"]);
 
         return redirect()->route('checkout.success', [
             'slug' => $slug,
@@ -154,6 +176,7 @@ class CheckoutController extends Controller
 
     public function showQris(Request $request, $slug, $order_code)
     {
+        $mitra = Mitra::where('mitra_slug', $slug)->firstOrFail();
         $qris_url = $request->query('qr_url');
 
         if (!$qris_url) {
@@ -162,6 +185,14 @@ class CheckoutController extends Controller
 
         $order = Order::where('order_code', $order_code)->firstOrFail();
         $expiry_time = $order->expiry_time; // Pastikan kolom ini ada di tabel orders
+
+        ActivityHelper::createActivity(
+            description: 'Show QRIS',
+            activityType: 'checkout',
+            mitraId: $mitra->id,
+            userId: Auth::check() ? Auth::id() : null,
+            request: $request
+        );
 
         return view('main.cart.checkout_qris', [
             'slug' => $slug,
@@ -173,7 +204,6 @@ class CheckoutController extends Controller
 
     public function checkoutSuccess($slug, $order_code)
     {
-
         // Ambil data order berdasarkan order_code
         $order = Order::with('mitra')->where('order_code', $order_code)->first();
 
@@ -184,6 +214,14 @@ class CheckoutController extends Controller
 
         // Ambil total yang dibayar dari session
         $totalPaid = $order->totalAfterDiscount;
+
+        $mitra = Mitra::where('mitra_slug', $slug)->firstOrFail();
+        ActivityHelper::createActivity(
+            description: 'Success Checkout with: ' . $order->payment_method,
+            activityType: 'checkout',
+            mitraId: $mitra->id,
+            userId: Auth::check() ? Auth::id() : null,
+        );
 
         // Tampilkan halaman sukses checkout
         return view('main.cart.success', compact('order', 'order_code', 'totalPaid', 'slug'));
@@ -202,6 +240,14 @@ class CheckoutController extends Controller
 
         // Ambil total yang dibayar dari session
         $totalPaid = $order->totalAfterDiscount;
+
+        $mitra = Mitra::where('mitra_slug', $slug)->firstOrFail();
+        ActivityHelper::createActivity(
+            description: 'Success failed with: ' . $order->payment_method,
+            activityType: 'checkout',
+            mitraId: $mitra->id,
+            userId: Auth::check() ? Auth::id() : null,
+        );
 
         // Tampilkan halaman sukses checkout
         return view('main.cart.failed', compact('order', 'order_code', 'totalPaid', 'slug'));

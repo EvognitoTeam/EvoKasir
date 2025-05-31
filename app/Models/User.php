@@ -3,10 +3,11 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Models\Order;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
@@ -25,6 +26,8 @@ class User extends Authenticatable
         'phone',
         'role',
         'mitra_id',
+        'is_login',
+        'login_at',
     ];
 
     /**
@@ -53,5 +56,9 @@ class User extends Authenticatable
     public function mitra()
     {
         return $this->belongsTo(Mitra::class, 'mitra_id');
+    }
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
     }
 }

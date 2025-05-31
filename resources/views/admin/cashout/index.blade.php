@@ -32,6 +32,25 @@
                 </div>
             @endif
 
+            <!-- Rekening Message -->
+            @if (empty($mitra->no_rek) || empty($mitra->nama_rek))
+                <div id="warning-alert"
+                    class="flex items-center justify-between p-4 mb-4 text-yellow-700 bg-yellow-100 border border-yellow-300 rounded-xl shadow transition-opacity duration-500 animate-fade-in"
+                    role="alert">
+
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-exclamation-triangle text-xl text-yellow-600"></i>
+                        <span class="text-sm sm:text-base">
+                            Harap isi nomor rekening terlebih dahulu sebelum melakukan <strong>cashout</strong>!
+                            <a href="{{ route('admin.setting.index', ['slug' => $slug]) }}"
+                                class="ml-1 text-yellow-800 underline hover:text-yellow-900 font-medium">
+                                Set sekarang
+                            </a>
+                        </span>
+                    </div>
+                </div>
+            @endif
+
             <!-- Error Messages -->
             @if ($errors->any())
                 <div class="p-4 mb-4 text-sm sm:text-base text-red-400 bg-red-500/20 border border-red-400/30 rounded-xl shadow-lg animate-fade-in"
@@ -79,14 +98,10 @@
                     </div>
                     <div class="mt-4">
                         @php
-                            $canCashout = $availableCashout >= 100000;
+                            $canCashout =
+                                $availableCashout >= 100000 && !empty($mitra->no_rek) && !empty($mitra->nama_rek);
                         @endphp
 
-                        {{-- <a href="{{ $canCashout ? route('admin.cashout.create', ['slug' => $mitra->mitra_slug]) : 'javascript:void(0)' }}"
-                            class="inline-flex items-center px-4 py-2 bg-teal-600 text-white font-semibold rounded-lg transition duration-300
-          {{ $canCashout ? 'hover:bg-teal-700' : 'opacity-50 cursor-not-allowed pointer-events-none' }}">
-                            Ajukan Cashout
-                        </a> --}}
                         <form action="{{ route('admin.cashout.store', ['slug' => $mitra->mitra_slug]) }}" method="POST">
                             @csrf
 

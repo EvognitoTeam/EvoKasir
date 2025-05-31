@@ -9,78 +9,108 @@ use App\Models\OrderItem;
 use App\Models\TableList;
 use Illuminate\Http\Request;
 
-
 class CartController extends Controller
 {
     public function add(Request $request, $slug, $id)
     {
         // Validate request
-        $request->validate(['quantity' => 'required|integer|min:1']);
+        $request->validate([
+            'quantity' => 'required|integer|min:1',
+            'notes' => 'nullable|string|max:255',
+        ]);
 
-        // Add to cart logic (e.g., session or database)
+        // Add to cart logic
         $menu = Menu::findOrFail($id);
-        $cart = session()->get('cart', []);
+        $cart = session()->get("cart.$slug", []);
+        $existingNotes = isset($cart[$id]['notes']) ? $cart[$id]['notes'] : '';
+        $newNotes = $request->input('notes', $existingNotes); // Gunakan catatan baru atau pertahankan yang lama
+
         $cart[$id] = [
             'id' => $menu->id,
             'name' => $menu->name,
             'price' => $menu->price,
             'image' => $menu->image,
             'quantity' => ($cart[$id]['quantity'] ?? 0) + $request->quantity,
+            'notes' => $newNotes,
         ];
-        session()->put('cart', $cart);
+        session()->put("cart.$slug", $cart);
 
-        return response()->json(['success' => true, 'message' => 'Menu added to cart']);
+        return response()->json(['success' => true, 'message' => 'Menu ditambahkan ke keranjang']);
     }
 
     public function count($slug)
     {
-        $cart = session()->get('cart', []);
+        $cart = session()->get("cart.$slug", []);
         $count = array_sum(array_column($cart, 'quantity'));
         return response()->json(['count' => $count]);
     }
 
     public function index($slug)
     {
-        $mitra = Mitra::where('mitra_slug', $slug)->first();
-        $cart = session('cart', []);
+        $mitra = Mitra::where('mitra_slug', $slug)->firstOrFail();
+        $cart = session()->get("cart.$slug", []);
         $totalPrice = 0;
+        $stockMessages = [];
 
-        // Menghitung total harga
-        foreach ($cart as $item) {
-            $totalPrice += $item['price'] * $item['quantity']; // harga * jumlah
+        // Check stock and adjust cart
+        foreach ($cart as $menuId => &$item) {
+            $menu = Menu::find($menuId);
+            if ($menu && $menu->stock < $item['quantity']) {
+                $oldQuantity = $item['quantity'];
+                $item['quantity'] = max(0, min($menu->stock, $item['quantity']));
+                if ($item['quantity'] < $oldQuantity) {
+                    $stockMessages[] = "Jumlah pesanan untuk {$item['name']} telah disesuaikan karena stok berkurang. Stok tersedia: {$menu->stock}.";
+                }
+                if ($item['quantity'] == 0) {
+                    unset($cart[$menuId]);
+                }
+            }
+            $totalPrice += $item['price'] * $item['quantity'];
         }
-        session()->put('totalPrice', $totalPrice);
+        unset($item); // Break reference
+
+        // Update session
+        session()->put("cart.$slug", $cart);
+        session()->put("totalPrice.$slug", $totalPrice);
+
+        // Flash stock messages
+        if (!empty($stockMessages)) {
+            session()->flash('stock_warnings', $stockMessages);
+        }
 
         return view('main.cart.index', compact('mitra', 'cart', 'totalPrice', 'slug'));
     }
 
     public function remove($slug, $id)
     {
-        $cart = session()->get('cart');
+        $cart = session()->get("cart.$slug", []);
         if (isset($cart[$id])) {
             unset($cart[$id]);
-            session()->put('cart', $cart);
+            session()->put("cart.$slug", $cart);
         }
         if (empty($cart)) {
-            session()->forget('cart');
-            session()->forget('discount');
-            session()->forget('discount_code');
-            session()->forget('totalPrice');
-            session()->forget('applied_coupon');
+            session()->forget("cart.$slug");
+            session()->forget("discount.$slug");
+            session()->forget("discount_code.$slug");
+            session()->forget("totalPrice.$slug");
+            session()->forget("applied_coupon.$slug");
         }
         return redirect()->route('cart.index', ['slug' => $slug])->with('success', 'Item berhasil dihapus dari keranjang.');
     }
+
     public function updateCart(Request $request, $slug, $id)
     {
-        $cart = session()->get('cart');
-        $item = $cart[$id];
+        $cart = session()->get("cart.$slug", []);
+        if (!isset($cart[$id])) {
+            return response()->json(['success' => false, 'message' => 'Item tidak ditemukan'], 404);
+        }
 
-        // Update quantity or add new item to cart
+        // Update quantity
         if ($request->has('quantity')) {
             $cart[$id]['quantity'] = $request->quantity;
         }
 
-        session()->put('cart', $cart);
+        session()->put("cart.$slug", $cart);
 
         // Recalculate total price and apply coupon if exists
         $totalPrice = 0;
@@ -89,30 +119,29 @@ class CartController extends Controller
         }
 
         // Apply coupon if exists
-        if (session('discount')) {
-            $totalPrice -= session('discount');
+        if (session("discount.$slug")) {
+            $totalPrice -= session("discount.$slug");
         }
 
-        session()->put('totalPrice', $totalPrice);
+        session()->put("totalPrice.$slug", $totalPrice);
         return response()->json(['new_total' => $totalPrice, 'success' => true]);
     }
 
-
     public function decrease(Request $request, $slug, $id)
     {
-        $cart = session()->get('cart');
+        $cart = session()->get("cart.$slug", []);
         if (isset($cart[$id])) {
             if ($cart[$id]['quantity'] > 1) {
                 $cart[$id]['quantity'] -= 1;
             } else {
                 unset($cart[$id]);
             }
-            session()->put('cart', $cart);
+            session()->put("cart.$slug", $cart);
         }
         return redirect()->route('cart.index', $slug)->with('success', 'Item dikurangi.');
     }
 
-    public function applyCoupon(Request $request)
+    public function applyCoupon(Request $request, $slug)
     {
         // Ambil data kupon dari input
         $coupon_code = $request->coupon_code;
@@ -135,7 +164,7 @@ class CartController extends Controller
             }
 
             // Ambil total harga dari session
-            $totalPrice = session('totalPrice', 0);
+            $totalPrice = session("totalPrice.$slug", 0);
 
             if ($totalPrice <= 0) {
                 return response()->json([
@@ -145,9 +174,7 @@ class CartController extends Controller
             }
 
             // Jika ada discount_price, tentukan diskon maksimal
-            if ($coupon->discount_price) {
-                $discount = $coupon->discount_price;
-            }
+            $discount = $coupon->discount_price ?? 0;
 
             // Jika ada discount_rate, hitung diskon persentase
             if ($coupon->discount_rate) {
@@ -167,9 +194,9 @@ class CartController extends Controller
 
             // Simpan total harga dan diskon ke session
             session([
-                'totalPrice' => $newTotalPrice,
-                'discount' => $discount,
-                'applied_coupon' => $coupon_code
+                "totalPrice.$slug" => $newTotalPrice,
+                "discount.$slug" => $discount,
+                "applied_coupon.$slug" => $coupon_code
             ]);
 
             return response()->json([
@@ -190,39 +217,31 @@ class CartController extends Controller
 
     public function removeCoupon($slug)
     {
-        $coupon_code = session('applied_coupon');
+        $coupon_code = session("applied_coupon.$slug");
         $coupon = Coupon::validateCoupon($coupon_code);
-        if (!$coupon) {
-            return back()->with('error', 'Kupon tidak valid atau sudah kadaluarsa.');
+        if ($coupon && $coupon->already_used > 0) {
+            $coupon->decrement('already_used');
         }
-        $coupon->already_used > 0 ? $coupon->decrement('already_used') : null;
 
         // Menghapus kupon dari session
-        session()->forget('discount');
-        session()->forget('discount_code');
-        session()->forget('applied_coupon');
+        session()->forget(["discount.$slug", "applied_coupon.$slug"]);
 
-        // Menghitung ulang total harga setelah kupon dihapus
-        $cart = session()->get('cart', []);
+        // Menghitung ulang total harga
+        $cart = session()->get("cart.$slug", []);
         $totalPrice = 0;
         foreach ($cart as $item) {
             $totalPrice += $item['price'] * $item['quantity'];
         }
 
+        session()->put("totalPrice.$slug", $totalPrice);
 
-        // Menyimpan kembali total price setelah kupon dihapus
-        session()->put('totalPrice', $totalPrice);
-
-        // Mengembalikan respon JSON
-        return back()->with('success', 'Kupon berhasil dihapus.');
-        // return response()->json(['success' => true, 'message' => 'Kupon berhasil dihapus.']);
+        return redirect()->route('cart.index', ['slug' => $slug])->with('success', 'Kupon berhasil dihapus.');
     }
 
     public function checkout($slug)
     {
         $mitra = Mitra::where('mitra_slug', $slug)->firstOrFail();
-
-        $cart = session('cart', []);
+        $cart = session()->get("cart.$slug", []);
 
         // Cek apakah cart kosong
         if (empty($cart)) {
@@ -231,12 +250,37 @@ class CartController extends Controller
         }
 
         $tables = TableList::where('mitra_id', $mitra->id)->get();
-
-        $totalPrice = 0;
-        foreach ($cart as $item) {
-            $totalPrice += $item['price'] * $item['quantity'];
-        }
+        $totalPrice = session("totalPrice.$slug", 0);
 
         return view('main.cart.checkout', compact('cart', 'totalPrice', 'slug', 'tables', 'mitra'));
+    }
+
+    public function updateNotes(Request $request, $slug)
+    {
+        $request->validate([
+            'id' => 'required|integer',
+            'notes' => 'nullable|string|max:255',
+        ]);
+
+        $id = $request->input('id');
+        $notes = $request->input('notes', '');
+
+        // Ambil keranjang dari session
+        $cart = session()->get("cart.$slug", []);
+
+        // Perbarui catatan untuk item tertentu
+        if (isset($cart[$id])) {
+            $cart[$id]['notes'] = $notes;
+            session()->put("cart.$slug", $cart);
+            return response()->json([
+                'success' => true,
+                'message' => 'Catatan berhasil diperbarui.'
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Item tidak ditemukan.'
+        ], 404);
     }
 }

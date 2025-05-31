@@ -7,7 +7,7 @@
 @section('content')
     <!-- Header -->
     <header class="relative bg-gray-800 py-8 sm:py-12 overflow-hidden">
-        <div class="absolute inset-0 opacity-10">
+        <div class="absolute inset-0 opacity-60">
             <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"
                 preserveAspectRatio="xMidYMid slice">
                 <defs>
@@ -63,6 +63,21 @@
                 </script>
             @endif
 
+            {{-- Table Display --}}
+            @isset($table)
+                <div
+                    class="mb-6 bg-gray-800/90 backdrop-blur-md rounded-lg px-3 py-2 inline-flex items-center space-x-2 animate-scale-in max-w-full">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 text-teal-400 flex-shrink-0" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6h18M3 12h18m-7 6h7" />
+                    </svg>
+                    <span
+                        class="inline-flex items-center px-2 py-1 rounded-full text-xs sm:text-sm font-semibold bg-teal-500 text-white">
+                        Table: {{ $table->table_name }}
+                    </span>
+                </div>
+            @endisset
+
             @if (count($menus) > 0)
                 <!-- Tab Menu Kategori -->
                 <div class="flex flex-wrap gap-2 sm:gap-4 mb-6 border-b-2 border-gray-700 overflow-x-auto">
@@ -80,26 +95,40 @@
                     <div class="category-content hidden" id="tab-{{ $categoryName }}">
                         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
                             @foreach ($categoryMenus as $menu)
-                                <div class="bg-gray-800/90 backdrop-blur-md p-3 sm:p-4 rounded-2xl shadow-lg cursor-pointer hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 animate-scale-in"
+                                <div class="bg-gray-800/90 backdrop-blur-md p-3 sm:p-4 rounded-2xl shadow-lg {{ $menu->stock > 0 ? 'cursor-pointer hover:shadow-xl transform hover:-translate-y-1' : 'cursor-not-allowed' }} transition-all duration-300 animate-scale-in"
                                     data-menu-id="{{ $menu->id }}" data-menu-name="{{ $menu->name }}"
                                     data-menu-description="{{ $menu->description }}" data-menu-stock="{{ $menu->stock }}"
                                     data-menu-price="{{ $menu->formatted_price }}"
                                     data-menu-image="{{ $menu->image ? asset('storage/' . $menu->image) : 'https://dummyimage.com/300x200/cccccc/000000.png&text=No+Image' }}"
                                     data-add-url="{{ route('cart.add', ['slug' => $slug, 'id' => $menu->id]) }}"
                                     onclick="openMenuDetails('{{ $menu->id }}')">
-                                    <img src="{{ $menu->image ? asset('storage/' . $menu->image) : 'https://dummyimage.com/300x200/cccccc/000000.png&text=No+Image' }}"
-                                        alt="{{ $menu->name }}"
-                                        class="w-full h-20 sm:h-28 object-cover rounded-lg mb-2 sm:mb-3 transform hover:scale-105 transition-all duration-300">
+                                    <div class="relative">
+                                        <img src="{{ $menu->image ? asset('storage/' . $menu->image) : 'https://dummyimage.com/300x200/cccccc/000000.png&text=No+Image' }}"
+                                            alt="{{ $menu->name }}"
+                                            class="w-full h-20 sm:h-28 object-cover rounded-lg mb-2 sm:mb-3 {{ $menu->stock == 0 ? 'filter grayscale' : '' }} transform {{ $menu->stock > 0 ? 'hover:scale-105' : '' }} transition-all duration-300">
+                                        @if ($menu->stock == 0)
+                                            <span
+                                                class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-coral-500 text-xs sm:text-sm font-semibold bg-coral-500/20 px-2 py-1 rounded-full">
+                                                Stok Habis
+                                            </span>
+                                        @endif
+                                    </div>
                                     <h3 class="text-sm sm:text-lg font-semibold text-coral-500 line-clamp-1">
                                         {{ $menu->name }}</h3>
                                     <p class="text-gray-300 text-xs sm:text-sm line-clamp-2 menu-description">
                                         {!! Illuminate\Support\Str::limit(strip_tags($menu->description), 20) !!}</p>
                                     <p class="text-teal-400 text-xs sm:text-sm mt-1 menu-price">Harga:
                                         {{ $menu->formatted_price }}</p>
+                                    @if ($menu->stock > 0 && $menu->stock < 10)
+                                        <p
+                                            class="text-teal-400 text-xs sm:text-sm mt-1 bg-teal-500/20 px-2 py-1 rounded-full inline-block animate-fade-in">
+                                            Sisa: {{ $menu->stock }}
+                                        </p>
+                                    @endif
                                     <button
-                                        class="add-to-cart-btn w-full mt-2 bg-teal-500 text-white text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2 rounded-lg hover:bg-teal-600 transition-all duration-200 transform hover:scale-105"
-                                        onclick="addToCart('{{ $menu->id }}', event)">
-                                        + Tambah
+                                        class="add-to-cart-btn w-full mt-2 text-white text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2 rounded-lg transition-all duration-200 transform {{ $menu->stock > 0 ? 'bg-teal-500 hover:bg-teal-600 hover:scale-105' : 'bg-gray-600 cursor-not-allowed' }}"
+                                        @if ($menu->stock > 0) onclick="openMenuDetails('{{ $menu->id }}', event)" @else disabled @endif>
+                                        {{ $menu->stock > 0 ? '+ Tambah' : 'Stok Habis' }}
                                     </button>
                                 </div>
                             @endforeach
@@ -136,6 +165,7 @@
 @endsection
 
 @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
     <script>
         // Tab Switching
         document.addEventListener('DOMContentLoaded', function() {
@@ -164,28 +194,49 @@
             updateCartCount();
         });
 
-        // Open Menu Details Modal
-        function openMenuDetails(menuId) {
+        // Open Menu Details Modal with Notes Input
+        function openMenuDetails(menuId, event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
             const menuElement = document.querySelector(`[data-menu-id='${menuId}']`);
             const menuName = menuElement.getAttribute('data-menu-name');
             const menuDescription = menuElement.getAttribute('data-menu-description');
-            const menuStock = menuElement.getAttribute('data-menu-stock');
+            const menuStock = parseInt(menuElement.getAttribute('data-menu-stock'));
             const menuPrice = menuElement.getAttribute('data-menu-price');
             const menuImage = menuElement.getAttribute('data-menu-image');
             const addToCartUrl = menuElement.getAttribute('data-add-url');
 
+            const isOutOfStock = menuStock === 0;
+            const imageClass = isOutOfStock ? 'filter grayscale' : '';
+            const stockText = isOutOfStock ? 'Stok Habis' : `Stock: ${menuStock}`;
+            const actionHtml = isOutOfStock ?
+                '' :
+                `
+                    <div class="mt-4">
+                        <label for="menu-notes-${menuId}" class="text-sm font-semibold text-gray-300 block">Catatan (opsional):</label>
+                        <textarea id="menu-notes-${menuId}" placeholder="Misalnya: tanpa gula, tambah saus" class="w-full border border-gray-700 rounded-md px-3 py-2 text-gray-300 bg-gray-900 focus:outline-none focus:ring-2 focus:ring-coral-500 resize-none text-sm transition-all duration-200 hover:border-teal-500" rows="3" maxlength="255"></textarea>
+                        <p class="text-xs text-gray-500 mt-1">Maksimal 255 karakter</p>
+                    </div>
+                    <div class="mt-4 flex space-x-2">
+                        <input type="number" id="menu-quantity-${menuId}" value="1" min="1" max="${menuStock}" class="w-16 border border-gray-700 rounded-md px-2 py-1 text-center text-gray-300 bg-gray-900 focus:outline-none focus:ring-2 focus:ring-coral-500">
+                        <button
+                            class="add-to-cart-btn w-full bg-teal-500 text-white text-sm px-4 py-2 rounded-lg hover:bg-teal-600 transition-all duration-200 transform hover:scale-105"
+                            onclick="addToCart('${menuId}')">
+                            + Tambah ke Keranjang
+                        </button>
+                    </div>
+                `;
+
             Swal.fire({
-                title: menuName,
+                title: `<p class="text-center text-white">${menuName}</p>`,
                 html: `
-                    <img src="${menuImage}" alt="${menuName}" class="w-full max-w-[200px] h-auto rounded-lg mx-1rem mx-auto mb-4">
+                    <img src="${menuImage}" alt="${menuName}" class="w-full max-w-[200px] h-auto rounded-lg mx-auto mb-4 ${imageClass}">
                     <p class="text-left text-white text-sm"><strong>Deskripsi:</strong> <div class="text-left text-white">${menuDescription}</div></p>
-                    <p class="text-left text-gray-300 text-sm"><strong>Stock:</strong> ${menuStock}</p>
+                    <p class="text-left ${isOutOfStock ? 'text-coral-500' : 'text-gray-300'} text-sm"><strong>Stock:</strong> ${stockText}</p>
                     <p class="text-left text-teal-400 text-sm"><strong>Harga:</strong> ${menuPrice}</p>
-                    <button
-                        class="add-to-cart-btn w-full mt-4 bg-teal-500 text-white text-sm px-4 py-2 rounded-lg hover:bg-teal-600 transition-all duration-200 transform hover:scale-105"
-                        onclick="addToCart('${menuId}', event)">
-                        + Tambah ke Keranjang
-                    </button>
+                    ${actionHtml}
                 `,
                 showCloseButton: true,
                 showConfirmButton: false,
@@ -201,17 +252,84 @@
         }
 
         // Add to Cart with AJAX
-        function addToCart(menuId, event) {
-            event.preventDefault();
-            event.stopPropagation(); // Prevent modal click from bubbling
+        function addToCart(menuId) {
             const menuElement = document.querySelector(`[data-menu-id='${menuId}']`);
             const addToCartUrl = menuElement.getAttribute('data-add-url');
-            const button = event.target;
-            const originalText = button.innerText;
+            const menuStock = parseInt(menuElement.getAttribute('data-menu-stock'));
+            const notes = document.getElementById(`menu-notes-${menuId}`)?.value.trim() || '';
+            const quantity = parseInt(document.getElementById(`menu-quantity-${menuId}`)?.value) || 1;
+            const button = document.querySelector(`.add-to-cart-btn[onclick="addToCart('${menuId}')"]`);
+            const originalText = button?.innerText || '+ Tambah ke Keranjang';
+
+            if (menuStock === 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Stok Habis!',
+                    text: 'Menu ini tidak tersedia untuk ditambahkan ke keranjang.',
+                    timer: 2000,
+                    showConfirmButton: false,
+                    background: '#1f2937',
+                    customClass: {
+                        title: 'text-coral-500',
+                        content: 'text-gray-300'
+                    }
+                });
+                return;
+            }
+
+            if (isNaN(quantity) || quantity < 1) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Peringatan!',
+                    text: 'Jumlah harus minimal 1.',
+                    timer: 2000,
+                    showConfirmButton: false,
+                    background: '#1f2937',
+                    customClass: {
+                        title: 'text-coral-500',
+                        content: 'text-gray-300'
+                    }
+                });
+                return;
+            }
+
+            if (quantity > menuStock) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Peringatan!',
+                    text: `Jumlah melebihi stok tersedia (${menuStock}).`,
+                    timer: 2000,
+                    showConfirmButton: false,
+                    background: '#1f2937',
+                    customClass: {
+                        title: 'text-coral-500',
+                        content: 'text-gray-300'
+                    }
+                });
+                return;
+            }
+
+            if (notes.length > 255) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Peringatan!',
+                    text: 'Catatan tidak boleh melebihi 255 karakter.',
+                    timer: 2000,
+                    showConfirmButton: false,
+                    background: '#1f2937',
+                    customClass: {
+                        title: 'text-coral-500',
+                        content: 'text-gray-300'
+                    }
+                });
+                return;
+            }
 
             // Disable button and show loading state
-            button.disabled = true;
-            button.innerText = 'Menambahkan...';
+            if (button) {
+                button.disabled = true;
+                button.innerText = 'Menambahkan...';
+            }
 
             fetch(addToCartUrl, {
                     method: 'POST',
@@ -220,7 +338,8 @@
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
                     body: JSON.stringify({
-                        quantity: 1
+                        quantity: quantity,
+                        notes: notes
                     })
                 })
                 .then(response => response.json())
@@ -239,6 +358,7 @@
                             }
                         });
                         updateCartCount();
+                        Swal.close(); // Tutup modal setelah berhasil
                     } else {
                         Swal.fire({
                             icon: 'error',
@@ -255,6 +375,7 @@
                     }
                 })
                 .catch(error => {
+                    console.error('Error:', error);
                     Swal.fire({
                         icon: 'error',
                         title: 'Error!',
@@ -269,8 +390,10 @@
                     });
                 })
                 .finally(() => {
-                    button.disabled = false;
-                    button.innerText = originalText;
+                    if (button) {
+                        button.disabled = false;
+                        button.innerText = originalText;
+                    }
                 });
         }
 
@@ -336,6 +459,16 @@
             }
         }
 
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
         .animate-scale-in {
             animation: scaleIn 0.8s ease-out forwards;
         }
@@ -346,6 +479,10 @@
 
         .animate-subtle-pulse {
             animation: subtlePulse 10s ease-in-out infinite;
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
         }
 
         .line-clamp-1 {
@@ -360,6 +497,21 @@
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
+        }
+
+        /* Styling untuk textarea notes */
+        textarea {
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        textarea:focus {
+            border-color: var(--teal-400);
+            box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.2);
+        }
+
+        textarea::placeholder {
+            color: #6b7280;
+            font-style: italic;
         }
 
         /* Mobile-Specific Styles */

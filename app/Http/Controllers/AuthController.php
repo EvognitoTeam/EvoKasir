@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Mitra;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Helpers\ActivityHelper;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -27,6 +28,13 @@ class AuthController extends Controller
             $mitra = Mitra::where('id', Auth::user()->mitra_id)->first();
             // Login berhasil, redirect ke halaman admin
             // dd($mitra);
+            ActivityHelper::createActivity(
+                description: 'Login Mitra',
+                activityType: 'login',
+                mitraId: $mitra->id,
+                userId: Auth::check() ? Auth::id() : null,
+                request: $request,
+            );
             return redirect()->route('admin.index', ['slug' => $mitra->mitra_slug]); // Ganti sesuai dengan mitra_id yang sesuai
         }
 
@@ -66,6 +74,14 @@ class AuthController extends Controller
             'mitra_id' => $mitra->id,
             'role' => 'Owner',
         ]);
+
+        ActivityHelper::createActivity(
+            description: 'Register Mitra',
+            activityType: 'register',
+            mitraId: $mitra->id,
+            userId: Auth::check() ? Auth::id() : null,
+            request: $request,
+        );
 
         // Login otomatis
         Auth::login($user);
