@@ -13,6 +13,11 @@ class OrderItem extends Model
     protected $table = 'order_items';
     protected $fillable = ['order_id', 'product_id', 'mitra_id', 'quantity', 'price', 'priceBeforeDiscount', 'discount', 'total_price', 'notes'];
 
+    public function order()
+    {
+        return $this->belongsTo(Order::class, 'order_code');
+    }
+
     public function product()
     {
         return $this->belongsTo(Menu::class, 'product_id');

@@ -22,6 +22,7 @@ class CheckoutController extends Controller
         // dd($request);
         $mitra = Mitra::where('mitra_slug', $slug)->firstOrFail();
         $cashier = User::where('mitra_id', $mitra->id)
+            ->where('role', 'Cashier')
             ->where('is_login', 1)
             ->firstOrFail();
         $tableCode = session('table');

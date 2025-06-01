@@ -14,3 +14,4 @@ Route::post('/getUser', [ApiAuthController::class, 'getUserData']);
 Route::post('/getMitraData', [ApiAuthController::class, 'getMitraData']);
 Route::post('/getMenu', [ApiMenuController::class, 'getMenu']);
 Route::post('/sendOrder', [ApiOrderController::class, 'sendOrder']);
+Route::post('/getOrders', [ApiMenuController::class, 'getOrders']);

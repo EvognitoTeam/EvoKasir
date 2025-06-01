@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Mitra;
 use App\Models\PrintSetting;
 use Illuminate\Http\Request;
+use App\Helpers\ActivityHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
@@ -155,8 +156,23 @@ class AdminAuthController extends Controller
         ]);
     }
 
-    public function logout($slug)
+    public function logout(Request $request, $slug)
     {
+        $mitra = Mitra::where('mitra_slug', $slug)->first();
+
+        ActivityHelper::createActivity(
+            description: 'Logout Admin',
+            activityType: 'logout',
+            mitraId: $mitra->id,
+            userId: Auth::check() ? Auth::id() : null,
+            request: $request
+        );
+
+        $updateUser = User::where('id', Auth::id())
+            ->update([
+                'is_login' => 0,
+                'login_at' => now(),
+            ]);
         Auth::logout();
         return redirect()->route('admin.login', compact('slug'));
     }

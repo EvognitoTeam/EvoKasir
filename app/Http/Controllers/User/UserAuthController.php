@@ -110,6 +110,7 @@ class UserAuthController extends Controller
     public function userLogout(Request $request, $slug)
     {
         $mitra = Mitra::where('mitra_slug', $slug)->first();
+
         ActivityHelper::createActivity(
             description: 'Logout pengguna',
             activityType: 'logout',
