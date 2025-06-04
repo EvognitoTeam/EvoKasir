@@ -111,6 +111,13 @@
                         Tables
                     </a>
                 </li>
+                <li>
+                    <a href="{{ route('admin.categories.index', ['slug' => $slug]) }}"
+                        class="flex items-center gap-2 py-2 sm:py-3 px-3 rounded-lg hover:bg-gray-700 transition-all duration-200 {{ request()->routeIs('admin.categories.index') ? 'bg-gray-700 text-teal-400 font-semibold' : 'text-gray-300' }}">
+                        <i class="fas fa-list text-lg sm:text-xl"></i>
+                        Categories
+                    </a>
+                </li>
                 @if ($role !== 'Cashier')
                     <li>
                         <a href="{{ route('admin.users.index', ['slug' => $slug]) }}"
