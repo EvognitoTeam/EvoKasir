@@ -11,7 +11,7 @@ class Categories extends Model
     use HasFactory, SoftDeletes;
 
     protected $table = 'categories';
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'mitra_id'];
 
     public function menus()
     {

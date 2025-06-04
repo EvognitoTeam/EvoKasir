@@ -100,13 +100,13 @@
                 <div>
                     <h3 class="text-base sm:text-lg font-bold text-white mb-3 sm:mb-4">Dukungan</h3>
                     <ul class="space-y-2 text-sm sm:text-base">
-                        <li><a href="#"
+                        {{-- <li><a href="#"
                                 class="hover:text-indigo-400 transition-all duration-200 transform hover:translate-x-1">FAQ</a>
-                        </li>
-                        <li><a href="#"
+                        </li> --}}
+                        <li><a href="mailto:chat.evognitoteam@gmail.com"
                                 class="hover:text-indigo-400 transition-all duration-200 transform hover:translate-x-1">Kontak
                                 Kami</a></li>
-                        <li><a href="#"
+                        <li><a href="{{ route('privacy') }}"
                                 class="hover:text-indigo-400 transition-all duration-200 transform hover:translate-x-1">Kebijakan
                                 Privasi</a></li>
                     </ul>

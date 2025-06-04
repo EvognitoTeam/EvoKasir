@@ -24,7 +24,7 @@ class CheckoutController extends Controller
         $cashier = User::where('mitra_id', $mitra->id)
             ->where('role', 'Cashier')
             ->where('is_login', 1)
-            ->firstOrFail();
+            ->first();
         $tableCode = session('table');
         $tableQuery = TableList::where('mitra_id', $mitra->id);
 
@@ -46,6 +46,7 @@ class CheckoutController extends Controller
         $totalPrice = session("totalPrice.$slug", 0);
         $discount = session("discount.$slug", 0);
         $totalAfterDiscount = $totalPrice;
+        // dd($totalPrice);
 
         if ($totalPrice < 1) {
             return back()->with('error', 'Total pembayaran harus lebih dari Rp1.');
@@ -55,7 +56,7 @@ class CheckoutController extends Controller
         $order = Order::create([
             'order_code' => $order_code,
             'mitra_id' => $mitra->id,
-            'cashier_id' => $cashier->id,
+            'cashier_id' => isset($cashier) ? $cashier->id : null,
             'user_id' => Auth::check() ? Auth::user()->id : null,
             'name' => $request->name,
             'email' => $request->email,
@@ -215,6 +216,19 @@ class CheckoutController extends Controller
 
         // Ambil total yang dibayar dari session
         $totalPaid = $order->totalAfterDiscount;
+
+        // Cari meja berdasarkan ID dari input (table_number)
+        $table = TableList::where('id', $order->table_number)->first();
+
+        // Pastikan meja ditemukan
+        if (!$table) {
+            return redirect()->back()->with('error', 'Meja tidak ditemukan.');
+        }
+
+        // Update status meja
+        $table->update([
+            'status' => 2,
+        ]);
 
         $mitra = Mitra::where('mitra_slug', $slug)->firstOrFail();
         ActivityHelper::createActivity(

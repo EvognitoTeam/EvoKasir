@@ -165,6 +165,7 @@ class CartController extends Controller
 
             // Ambil total harga dari session
             $totalPrice = session("totalPrice.$slug", 0);
+            // dd($totalPrice);
 
             if ($totalPrice <= 0) {
                 return response()->json([
@@ -249,7 +250,7 @@ class CartController extends Controller
                 ->withErrors(['cart' => 'Keranjang belanja Anda kosong. Silakan pilih menu terlebih dahulu.']);
         }
 
-        $tables = TableList::where('mitra_id', $mitra->id)->get();
+        $tables = TableList::where('mitra_id', $mitra->id)->where('status', '!=', 0)->get();
         $totalPrice = session("totalPrice.$slug", 0);
 
         return view('main.cart.checkout', compact('cart', 'totalPrice', 'slug', 'tables', 'mitra'));

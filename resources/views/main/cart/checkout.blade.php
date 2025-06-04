@@ -87,7 +87,7 @@
                         class="bg-gray-800/90 backdrop-blur-md p-4 sm:p-6 rounded-2xl shadow-lg bg-gradient-to-b from-gray-800 to-gray-900/80 animate-scale-in">
                         <h3 class="text-lg sm:text-xl font-semibold text-coral-500 mb-4">Gunakan Kupon</h3>
                         <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
-                            @if (!session('discount'))
+                            @if (!session("discount.$slug"))
                                 <div class="w-full sm:w-2/3">
                                     <label for="coupon_code"
                                         class="block text-sm sm:text-base text-gray-300 font-semibold mb-2">Masukkan Kode
@@ -104,8 +104,8 @@
                                 </div>
                             @else
                                 <div class="text-teal-400 font-semibold text-sm sm:text-base">
-                                    Kupon diterapkan: {{ session('applied_coupon') }} (Diskon:
-                                    Rp{{ number_format(session('discount'), 0, ',', '.') }})
+                                    Kupon diterapkan: {{ session("applied_coupon.$slug") }} (Diskon:
+                                    Rp{{ number_format(session("discount.$slug", 0), 0, ',', '.') }})
                                 </div>
                                 <form action="{{ route('cart.removeCoupon', ['slug' => $slug]) }}" method="POST">
                                     @csrf
@@ -126,17 +126,17 @@
                             <div class="flex justify-between">
                                 <span class="text-gray-300">Total:</span>
                                 <span id="totalPrice"
-                                    class="text-gray-300">Rp{{ number_format($totalPrice, 0, ',', '.') }}</span>
+                                    class="text-gray-300">Rp{{ number_format(session("totalPrice.$slug", $totalPrice), 0, ',', '.') }}</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-300">Potongan:</span>
                                 <span id="discountPrice" class="text-teal-400">-
-                                    Rp{{ number_format(session('discount', 0), 0, ',', '.') }}</span>
+                                    Rp{{ number_format(session("discount.$slug", 0), 0, ',', '.') }}</span>
                             </div>
                             <div class="flex justify-between font-bold text-base sm:text-lg border-t border-gray-700 pt-3">
                                 <span class="text-coral-500">Total Bayar:</span>
                                 <span
-                                    class="text-teal-400">Rp{{ number_format($totalPrice - session('discount', 0), 0, ',', '.') }}</span>
+                                    class="text-teal-400">Rp{{ number_format(session("totalPrice.$slug", $totalPrice) - session("discount.$slug", 0), 0, ',', '.') }}</span>
                             </div>
                         </div>
                     </div>
@@ -194,21 +194,41 @@
                                     class="block mb-2 text-sm sm:text-base text-gray-300 font-semibold">Pilih Meja*</label>
                                 <select name="table_number" id="table_number"
                                     class="border border-gray-700 rounded-lg p-2 sm:p-3 w-full text-gray-300 bg-gray-900 focus:outline-none focus:ring-2 focus:ring-coral-500 transition-all duration-200"
-                                    required {{ $lockedTableId ? 'disabled' : '' }}>
-                                    <option value="" disabled {{ $lockedTableId ? '' : 'selected' }}>Pilih Meja Anda
-                                    </option>
+                                    required>
+                                    <option value="" disabled selected>Pilih Meja Anda</option>
+                                    @php
+                                        // Cari status meja yang terkunci dari session
+                                        $lockedTableStatus = null;
+                                        if ($lockedTableId) {
+                                            $lockedTable = $tables->firstWhere('table_code', $lockedTableId);
+                                            $lockedTableStatus = $lockedTable ? $lockedTable->status : null;
+                                        }
+                                    @endphp
                                     @foreach ($tables as $table)
                                         <option value="{{ $table->id }}"
-                                            {{ $lockedTableId == $table->table_code ? 'selected' : ($lockedTableId ? 'disabled' : '') }}>
+                                            {{ $lockedTableId == $table->table_code && $lockedTableStatus == 1 ? 'selected' : '' }}
+                                            {{ $table->status != 1 ? 'disabled' : '' }}
+                                            class="{{ $table->status == 2 ? 'text-red-400' : ($table->status == 3 ? 'text-orange-400' : '') }}">
                                             {{ $table->table_name }}
+                                            {{ $table->status == 2 ? '(In Use)' : ($table->status == 3 ? '(Reserved)' : '') }}
                                         </option>
                                     @endforeach
                                 </select>
                                 @if ($lockedTableId)
-                                    <input type="hidden" name="table_number" value="{{ $lockedTableId }}">
-                                    <p class="text-xs text-teal-400 mt-1 italic">
-                                        Meja ini diambil dari session Anda dan tidak bisa diubah.
-                                    </p>
+                                    @if ($lockedTableStatus != 1)
+                                        <p class="text-xs text-red-400 mt-1 italic">
+                                            Meja dari session
+                                            ({{ $tables->firstWhere('table_code', $lockedTableId)->table_name ?? 'Tidak Ditemukan' }})
+                                            sedang
+                                            {{ $lockedTableStatus == 2 ? 'digunakan' : 'direservasi' }}. Silakan pilih meja
+                                            lain.
+                                        </p>
+                                    @else
+                                        <input type="hidden" name="table_number" value="{{ $lockedTableId }}">
+                                        <p class="text-xs text-teal-400 mt-1 italic">
+                                            Meja ini diambil dari session Anda dan tersedia.
+                                        </p>
+                                    @endif
                                 @endif
                             </div>
 

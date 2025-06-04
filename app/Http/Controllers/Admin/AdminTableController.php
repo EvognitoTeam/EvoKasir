@@ -69,4 +69,38 @@ class AdminTableController extends Controller
         return redirect()->route('admin.table.index', ['slug' => $slug])
             ->with('success', 'Tabel berhasil dihapus.');
     }
+
+    public function updateTableStatus(Request $request)
+    {
+        try {
+            $request->validate([
+                'table_id' => 'required|exists:table_list,id',
+                'status' => 'required|in:0,1,2,3', // Sesuaikan dengan opsi status
+            ]);
+
+            $table = TableList::find($request->table_id);
+            if (!$table) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Meja tidak ditemukan.'
+                ], 404);
+            }
+
+            $originalStatus = $table->status;
+            $table->update(['status' => $request->status]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Status meja diperbarui.',
+                'original_status' => $originalStatus,
+                'updated_status' => $request->status
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal memperbarui status: ' . $e->getMessage(),
+                'original_status' => $table->status ?? null
+            ], 500);
+        }
+    }
 }

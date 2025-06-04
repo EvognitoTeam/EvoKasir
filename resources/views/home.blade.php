@@ -6,7 +6,6 @@
     <!-- Hero Section with Animated Background -->
     <section
         class="relative min-h-[70vh] sm:min-h-[80vh] flex items-center justify-center bg-gradient-to-br from-indigo-600 via-blue-500 to-teal-400 text-white overflow-hidden">
-        <!-- Background Pattern -->
         <div class="absolute inset-0 opacity-20">
             <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"
                 preserveAspectRatio="xMidYMid slice">
@@ -20,7 +19,6 @@
                 <rect width="100%" height="100%" fill="url(#hero-pattern)" class="animate-subtle-move" />
             </svg>
         </div>
-        <!-- Decorative Floating Elements -->
         <div
             class="absolute top-10 left-10 w-20 h-20 sm:w-32 sm:h-32 bg-teal-300 rounded-full opacity-20 animate-float hidden sm:block">
         </div>
@@ -61,7 +59,6 @@
                 Fitur Unggulan Kami
             </h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
-                <!-- Fitur 1 -->
                 <div
                     class="group relative p-4 sm:p-6 bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 feature-card">
                     <div
@@ -80,7 +77,6 @@
                     <p class="text-gray-600 text-sm sm:text-base text-center">Atur produk, kategori, dan stok dengan
                         antarmuka intuitif.</p>
                 </div>
-                <!-- Fitur 2 -->
                 <div
                     class="group relative p-4 sm:p-6 bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 feature-card">
                     <div
@@ -98,7 +94,6 @@
                     <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-2 text-center">Laporan Penjualan</h3>
                     <p class="text-gray-600 text-sm sm:text-base text-center">Wawasan bisnis melalui laporan real-time.</p>
                 </div>
-                <!-- Fitur 3 -->
                 <div
                     class="group relative p-4 sm:p-6 bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 feature-card">
                     <div
@@ -109,7 +104,7 @@
                         <svg class="w-10 h-10 sm:w-12 sm:h-12 mx-auto" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0aI5 5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
                             </path>
                         </svg>
                     </div>
@@ -120,44 +115,6 @@
             </div>
         </div>
     </section>
-
-    <!-- Testimonial Section -->
-    {{-- <section class="py-12 sm:py-16 bg-gray-100">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <h2
-                class="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-gray-800 mb-8 sm:mb-12 animate-text-reveal">
-                Apa Kata Pengguna Kami
-            </h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-                <div class="p-4 sm:p-6 bg-white rounded-xl shadow-lg testimonial-card">
-                    <p class="text-gray-600 italic mb-4 text-sm sm:text-base">"EvoKasir mengubah cara saya mengelola toko.
-                        Laporan penjualannya luar biasa!"</p>
-                    <div class="flex items-center">
-                        <div
-                            class="w-8 h-8 sm:w-10 sm:h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white font-bold">
-                            A</div>
-                        <div class="ml-2 sm:ml-3">
-                            <p class="font-semibold text-gray-800 text-sm sm:text-base">Andi Pratama</p>
-                            <p class="text-xs text-gray-500">Pemilik Toko Retail</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-4 sm:p-6 bg-white rounded-xl shadow-lg testimonial-card">
-                    <p class="text-gray-600 italic mb-4 text-sm sm:text-base">"Sistem keanggotaan EvoKasir meningkatkan
-                        loyalitas pelanggan saya."</p>
-                    <div class="flex items-center">
-                        <div
-                            class="w-8 h-8 sm:w-10 sm:h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white font-bold">
-                            S</div>
-                        <div class="ml-2 sm:ml-3">
-                            <p class="font-semibold text-gray-800 text-sm sm:text-base">Siti Nurhaliza</p>
-                            <p class="text-xs text-gray-500">Pengusaha Kafe</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section> --}}
 
     <!-- Call to Action Section -->
     <section class="py-12 sm:py-16 bg-gradient-to-r from-indigo-600 to-teal-400 text-white text-center">
@@ -176,148 +133,158 @@
         </div>
     </section>
 
+    <!-- Footer Section -->
+    <footer class="bg-gray-800 py-6 text-white">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-sm sm:text-base mb-4">
+                © {{ date('Y') }} EvoKasir. Semua hak dilindungi.
+            </p>
+            <a href="{{ route('privacy.policy') }}" class="text-teal-400 hover:text-teal-300 text-sm sm:text-base">
+                Kebijakan Privasi
+            </a>
+        </div>
+    </footer>
 @endsection
 
-<style>
-    /* Animations */
-    @keyframes textReveal {
-        from {
-            opacity: 0;
-            transform: translateY(20px);
+@push('styles')
+    <style>
+        @keyframes textReveal {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
+        @keyframes buttonReveal {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
 
-    @keyframes buttonReveal {
-        from {
-            opacity: 0;
-            transform: scale(0.8);
-        }
-
-        to {
-            opacity: 1;
-            transform: scale(1);
-        }
-    }
-
-    @keyframes float {
-
-        0%,
-        100% {
-            transform: translateY(0);
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
-        50% {
-            transform: translateY(-20px);
-        }
-    }
+        @keyframes float {
 
-    @keyframes floatSlow {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
 
-        0%,
-        100% {
-            transform: translateY(0);
-        }
-
-        50% {
-            transform: translateY(-30px);
-        }
-    }
-
-    @keyframes subtleMove {
-
-        0%,
-        100% {
-            transform: translate(0, 0);
+            50% {
+                transform: translateY(-20px);
+            }
         }
 
-        50% {
-            transform: translate(10px, 10px);
-        }
-    }
+        @keyframes floatSlow {
 
-    @keyframes fadeInUp {
-        from {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-30px);
+            }
+        }
+
+        @keyframes subtleMove {
+
+            0%,
+            100% {
+                transform: translate(0, 0);
+            }
+
+            50% {
+                transform: translate(10px, 10px);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-text-reveal {
+            animation: textReveal 0.8s ease-out forwards;
+        }
+
+        .animate-button-reveal {
+            animation: buttonReveal 0.6s ease-out forwards;
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .animate-float-slow {
+            animation: floatSlow 8s ease-in-out infinite;
+        }
+
+        .animate-subtle-move {
+            animation: subtleMove 20s ease-in-out infinite;
+        }
+
+        .feature-card {
             opacity: 0;
             transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
         }
 
-        to {
+        .feature-card.visible {
             opacity: 1;
             transform: translateY(0);
+            animation: fadeInUp 0.6s ease-out forwards;
         }
-    }
+    </style>
+@endpush
 
-    .animate-text-reveal {
-        animation: textReveal 0.8s ease-out forwards;
-    }
-
-    .animate-button-reveal {
-        animation: buttonReveal 0.6s ease-out forwards;
-    }
-
-    .animate-float {
-        animation: float 6s ease-in-out infinite;
-    }
-
-    .animate-float-slow {
-        animation: floatSlow 8s ease-in-out infinite;
-    }
-
-    .animate-subtle-move {
-        animation: subtleMove 20s ease-in-out infinite;
-    }
-
-    .feature-card,
-    .testimonial-card {
-        opacity: 0;
-        transform: translateY(30px);
-        transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-    }
-
-    .feature-card.visible,
-    .testimonial-card.visible {
-        opacity: 1;
-        transform: translateY(0);
-        animation: fadeInUp 0.6s ease-out forwards;
-    }
-</style>
-
-<script>
-    // Smooth scroll to features section
-    document.querySelectorAll('.scroll-to-features').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                window.scrollTo({
-                    top: target.offsetTop - 80,
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
-
-    // Intersection Observer for animations
-    document.addEventListener('DOMContentLoaded', () => {
-        const elements = document.querySelectorAll('.feature-card, .testimonial-card');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry, index) => {
-                if (entry.isIntersecting) {
-                    setTimeout(() => {
-                        entry.target.classList.add('visible');
-                    }, index * 150);
-                    observer.unobserve(entry.target);
+@push('scripts')
+    <script>
+        document.querySelectorAll('.scroll-to-features').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    window.scrollTo({
+                        top: target.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
                 }
             });
-        }, {
-            threshold: 0.2
         });
 
-        elements.forEach(element => observer.observe(element));
-    });
-</script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const elements = document.querySelectorAll('.feature-card');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.classList.add('visible');
+                        }, index * 150);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.2
+            });
+
+            elements.forEach(element => observer.observe(element));
+        });
+    </script>
+@endpush

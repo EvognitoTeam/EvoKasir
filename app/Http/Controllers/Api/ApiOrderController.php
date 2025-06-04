@@ -2,14 +2,16 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Menu;
+use App\Models\Mitra;
 use App\Models\Order;
+use App\Models\Coupon;
 use App\Models\OrderItem;
 use Midtrans\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Models\Menu;
 
 class ApiOrderController extends Controller
 {
@@ -52,6 +54,9 @@ class ApiOrderController extends Controller
             'name' => 'nullable|string|max:255',
             'table_number' => 'nullable|integer',
             'discount' => 'nullable|integer',
+            'discount_id' => 'nullable|integer',
+            'getPayment' => 'required|integer',
+            'cashChange' => 'required|integer',
             'orders' => 'required|array|min:1',
             'orders.*.product_id' => 'required|integer|exists:products,id',
             'orders.*.quantity' => 'required|integer|min:1',
@@ -83,6 +88,9 @@ class ApiOrderController extends Controller
                 'total_price' => $totalPrice,
                 'totalAfterDiscount' => $totalAfterDiscount,
                 'discount' => $validated['discount'],
+                'discountId' => $validated['discount_id'],
+                'getPayment' => $validated['getPayment'],
+                'cashChange' => $validated['cashChange'],
                 'status' => 'pending',
                 'payment_status' => 2,
             ]);
@@ -122,5 +130,25 @@ class ApiOrderController extends Controller
                 'error' => $e->getMessage(),
             ], 500);
         }
+    }
+
+    public function getDiscount(Request $request)
+    {
+        $mitra = Mitra::findOrFail($request->mitra_id);
+
+        if (empty($mitra)) {
+            return response()->json(['response_code' => '403', 'message' => 'Mitra not found']);
+        }
+
+        $discounts = Coupon::where('mitra_id', $mitra->id)
+            ->where('is_member_only', 0)
+            ->where('expired_date', '>=', now())
+            ->get();
+
+        if (empty($discounts)) {
+            return response()->json(['response_code' => '403', 'message' => 'Discount not found']);
+        }
+
+        return response()->json(['response_code' => 200, 'message' => 'Discount retrieved successfully', 'data' => $discounts]);
     }
 }

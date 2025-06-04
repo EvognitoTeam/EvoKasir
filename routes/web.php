@@ -17,12 +17,17 @@ use App\Http\Controllers\Admin\AdminCouponController;
 use App\Http\Controllers\Admin\AdminOrdersController;
 use App\Http\Controllers\Admin\AdminReportController;
 use App\Http\Controllers\Admin\AdminCashoutController;
+use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Admin\AdminSettingsController;
 use App\Http\Controllers\Admin\AdminPrintSettingController;
 
 Route::get('/', function () {
     return view('home');
 })->name('home');
+
+Route::get('/privacy', function () {
+    return view('privacy');
+})->name('privacy');
 
 // Route::get('/login', function () {
 //     return view('auth.login');
@@ -102,9 +107,17 @@ Route::prefix('{slug}')->group(function () {
             Route::get('/tables', [AdminTableController::class, 'index'])->name('admin.table.index');
             Route::get('/tables/create', [AdminTableController::class, 'create'])->name('admin.table.create');
             Route::post('/tables/store', [AdminTableController::class, 'store'])->name('admin.table.store');
+            Route::post('/table/update-status', [AdminTableController::class, 'updateTableStatus'])->name('admin.table.updateStatus');
             Route::get('/table/{id}/edit', [AdminTableController::class, 'edit'])->name('admin.table.edit');
-            Route::get('/table/{id}/updatea', [AdminTableController::class, 'update'])->name('admin.table.update');
+            Route::put('/table/{id}/update', [AdminTableController::class, 'update'])->name('admin.table.update');
             Route::delete('/table/{id}/destroy', [AdminTableController::class, 'destroy'])->name('admin.table.destroy');
+
+            Route::get('/categories', [AdminCategoryController::class, 'index'])->name('admin.categories.index');
+            Route::get('/categories/create', [AdminCategoryController::class, 'create'])->name('admin.categories.create');
+            Route::post('/categories/store', [AdminCategoryController::class, 'store'])->name('admin.categories.store');
+            Route::get('/categories/{id}/edit', [AdminCategoryController::class, 'edit'])->name('admin.categories.edit');
+            Route::put('/categories/{id}/update', [AdminCategoryController::class, 'update'])->name('admin.categories.update');
+            Route::delete('/categories/{id}/destroy', [AdminCategoryController::class, 'destroy'])->name('admin.categories.destroy');
 
 
             Route::get('/check-new-orders', [AdminOrdersController::class, 'checkNewOrders'])

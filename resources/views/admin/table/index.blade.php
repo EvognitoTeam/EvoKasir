@@ -33,6 +33,8 @@
                 <thead class="bg-gray-700/50 border-b border-gray-600 text-gray-300">
                     <tr>
                         <th class="py-3 sm:py-4 px-4 sm:px-6 font-semibold">Nama Meja</th>
+                        <th class="py-3 sm:py-4 px-4 sm:px-6 font-semibold">Kode Meja</th>
+                        <th class="py-3 sm:py-4 px-4 sm:px-6 font-semibold">Status</th>
                         <th class="py-3 sm:py-4 px-4 sm:px-6 font-semibold text-center">Aksi</th>
                     </tr>
                 </thead>
@@ -40,13 +42,25 @@
                     @forelse ($tableList as $table)
                         <tr class="border-b border-gray-700 hover:bg-gray-700/50 transition-all duration-200">
                             <td class="py-3 sm:py-4 px-4 sm:px-6 text-gray-300">{{ $table->table_name }}</td>
+                            <td class="py-3 sm:py-4 px-4 sm:px-6 text-gray-300">{{ $table->table_code }}</td>
+                            <td class="py-3 sm:py-4 px-4 sm:px-6 text-gray-300">
+                                <select name="status"
+                                    class="status-select border border-gray-700 rounded-lg p-1 sm:p-2 text-gray-300 bg-gray-900 focus:outline-none focus:ring-2 focus:ring-coral-500 transition-all duration-200"
+                                    data-table-id="{{ $table->id }}">
+                                    <option value="0" {{ $table->status == 0 ? 'selected' : '' }}>Unavailable</option>
+                                    <option value="1" {{ $table->status == 1 ? 'selected' : '' }}>Available</option>
+                                    <option value="2" {{ $table->status == 2 ? 'selected' : '' }}>Occupied</option>
+                                    <option value="3" {{ $table->status == 3 ? 'selected' : '' }}>Reserved</option>
+                                </select>
+                            </td>
                             <td class="py-3 sm:py-4 px-4 sm:px-6 text-center">
                                 <div class="flex justify-center gap-2 sm:gap-3">
                                     <a href="{{ route('admin.table.edit', ['slug' => $slug, 'id' => $table->id]) }}"
                                         class="px-3 sm:px-4 py-1 sm:py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg shadow-md text-xs sm:text-sm font-semibold transition-all duration-200">
                                         Edit
                                     </a>
-                                    <form action="{{ route('admin.table.destroy', ['slug' => $slug, 'id' => $table->id]) }}"
+                                    <form
+                                        action="{{ route('admin.table.destroy', ['slug' => $slug, 'id' => $table->id]) }}"
                                         method="POST" class="inline-block">
                                         @csrf
                                         @method('DELETE')
@@ -71,6 +85,75 @@
 @endsection
 
 @push('scripts')
+    <script>
+        document.querySelectorAll('.status-select').forEach(select => {
+            select.addEventListener('change', function() {
+                const tableId = this.getAttribute('data-table-id');
+                const newStatus = this.value;
+
+                // Kirim permintaan AJAX untuk update status
+                fetch("{{ route('admin.table.updateStatus', ['slug' => $slug]) }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            table_id: tableId,
+                            status: newStatus
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            console.log(data);
+                            Swal.fire({
+                                title: 'Berhasil!',
+                                text: 'Status meja berhasil diperbarui.',
+                                icon: 'success',
+                                timer: 1500,
+                                showConfirmButton: false,
+                                background: '#1f2937',
+                                customClass: {
+                                    title: 'text-coral-500',
+                                    content: 'text-gray-300'
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                title: 'Gagal!',
+                                text: data.message || 'Gagal memperbarui status meja.',
+                                icon: 'error',
+                                timer: 2000,
+                                showConfirmButton: false,
+                                background: '#1f2937',
+                                customClass: {
+                                    title: 'text-coral-500',
+                                    content: 'text-gray-300'
+                                }
+                            });
+                            // Kembalikan ke nilai sebelumnya jika gagal
+                            this.value = data.original_status || this.value;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Terjadi kesalahan saat memperbarui status.',
+                            icon: 'error',
+                            timer: 2000,
+                            showConfirmButton: false,
+                            background: '#1f2937',
+                            customClass: {
+                                title: 'text-coral-500',
+                                content: 'text-gray-300'
+                            }
+                        });
+                    });
+            });
+        });
+    </script>
     <script>
         function confirmDelete(event) {
             event.preventDefault();
