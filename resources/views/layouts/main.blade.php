@@ -14,6 +14,7 @@
     <link rel="icon" type="image/png" href="/favicon.png">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    @yield('styles')
 </head>
 
 <body class="bg-gray-50 text-gray-800 font-inter antialiased">

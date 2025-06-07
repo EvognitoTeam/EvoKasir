@@ -35,4 +35,17 @@ class Menu extends Model
     {
         return $this->belongsTo(Categories::class, 'categories_id');
     }
+    public function reviews()
+    {
+        return $this->hasMany(Rating::class, 'product_id');
+    }
+    public function getAverageRatingAttribute()
+    {
+        return $this->reviews()->avg('rating') ?? 0;
+    }
+
+    public function getReviewCountAttribute()
+    {
+        return $this->reviews()->count();
+    }
 }

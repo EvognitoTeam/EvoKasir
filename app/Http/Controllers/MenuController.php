@@ -16,7 +16,7 @@ class MenuController extends Controller
         // dd($slug);
         $mitra = Mitra::where('mitra_slug', $slug)->first();
         // dd($mitra);
-        $menus = Menu::with('getCategory')->where('mitra_id', $mitra->id)->get()->groupBy('getCategory.name');
+        $menus = Menu::with('getCategory', 'reviews.user')->where('mitra_id', $mitra->id)->get()->groupBy('getCategory.name');
 
         ActivityHelper::createActivity(
             description: 'Open Menu',

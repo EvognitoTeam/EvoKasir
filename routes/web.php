@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\AdminCashoutController;
 use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Admin\AdminSettingsController;
 use App\Http\Controllers\Admin\AdminPrintSettingController;
+use App\Http\Controllers\User\UserRatingController;
 
 Route::get('/', function () {
     return view('home');
@@ -139,6 +140,8 @@ Route::prefix('{slug}')->group(function () {
         // Route::get('/logout', [UserAuthController::class, 'userLogout'])->name('user.logout');
         Route::get('/profile', [UserAuthController::class, 'userProfile'])->name('user.profile');
         Route::get('/profile/edit', [UserAuthController::class, 'userProfile'])->name('user.edit.profile');
+
+        Route::post('order/{order}/item/{item}/review', [UserRatingController::class, 'store'])->name('user.review.store');
     });
 
     Route::get('/menu', [MenuController::class, 'index'])->name('menu.index');

@@ -5,6 +5,9 @@
 @endsection
 
 @section('content')
+    <!-- Dependensi SweetAlert2 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert2/11.7.28/sweetalert2.min.js"></script>
+
     <!-- Header -->
     <header class="relative bg-gray-800 py-8 sm:py-12 overflow-hidden">
         <div class="absolute inset-0 opacity-60">
@@ -64,7 +67,7 @@
             @endif
 
             {{-- Table Display --}}
-            @isset($table)
+            @if (isset($table) && $table)
                 <div
                     class="mb-6 bg-gray-800/90 backdrop-blur-md rounded-lg px-3 py-2 inline-flex items-center space-x-2 animate-scale-in max-w-full">
                     <svg class="w-4 h-4 sm:w-5 sm:h-5 text-teal-400 flex-shrink-0" fill="none" stroke="currentColor"
@@ -73,12 +76,12 @@
                     </svg>
                     <span
                         class="inline-flex items-center px-2 py-1 rounded-full text-xs sm:text-sm font-semibold bg-teal-500 text-white">
-                        Table: {{ $table->table_name }}
+                        Meja: {{ $table->table_name }}
                     </span>
                 </div>
-            @endisset
+            @endif
 
-            @if (count($menus) > 0)
+            @if ($menus->isNotEmpty())
                 <!-- Tab Menu Kategori -->
                 <div class="flex flex-wrap gap-2 sm:gap-4 mb-6 border-b-2 border-gray-700 overflow-x-auto">
                     @foreach ($menus as $categoryName => $categoryMenus)
@@ -101,7 +104,21 @@
                                     data-menu-price="{{ $menu->formatted_price }}"
                                     data-menu-image="{{ $menu->image ? asset('storage/' . $menu->image) : 'https://dummyimage.com/300x200/cccccc/000000.png&text=No+Image' }}"
                                     data-add-url="{{ route('cart.add', ['slug' => $slug, 'id' => $menu->id]) }}"
-                                    onclick="openMenuDetails('{{ $menu->id }}')">
+                                    data-reviews="{{ base64_encode(
+                                        json_encode(
+                                            $menu->reviews->map(function ($review) {
+                                                    return [
+                                                        'user_name' => $review->user->name ?? 'Anonim',
+                                                        'rating' => (float) ($review->rating ?? 0),
+                                                        'comment' => $review->comment ?? 'Tidak ada komentar',
+                                                        'created_at' => $review->created_at
+                                                            ? \Carbon\Carbon::parse($review->created_at)->translatedFormat('d M Y, H:i')
+                                                            : 'Tanggal tidak tersedia',
+                                                    ];
+                                                })->toArray(),
+                                            JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
+                                        ),
+                                    ) }}">
                                     <div class="relative">
                                         <img src="{{ $menu->image ? asset('storage/' . $menu->image) : 'https://dummyimage.com/300x200/cccccc/000000.png&text=No+Image' }}"
                                             alt="{{ $menu->name }}"
@@ -119,6 +136,27 @@
                                         {!! Illuminate\Support\Str::limit(strip_tags($menu->description), 20) !!}</p>
                                     <p class="text-teal-400 text-xs sm:text-sm mt-1 menu-price">Harga:
                                         {{ $menu->formatted_price }}</p>
+                                    <!-- Tampilan Rating -->
+                                    <div class="mt-1 flex items-center space-x-1">
+                                        <span class="star-rating">
+                                            @php
+                                                $averageRating = $menu->average_rating ?? 0;
+                                                for ($i = 1; $i <= 5; $i++) {
+                                                    if ($averageRating >= $i) {
+                                                        echo '<span class="star rated">★</span>';
+                                                    } elseif ($averageRating >= $i - 0.5 && $averageRating < $i) {
+                                                        echo '<span class="star half-rated">★</span>';
+                                                    } else {
+                                                        echo '<span class="star">★</span>';
+                                                    }
+                                                }
+                                            @endphp
+                                        </span>
+                                        <span class="text-gray-300 text-xs sm:text-sm">
+                                            ({{ number_format($averageRating, 1) }} - {{ $menu->review_count ?? 0 }}
+                                            ulasan)
+                                        </span>
+                                    </div>
                                     @if ($menu->stock > 0 && $menu->stock < 10)
                                         <p
                                             class="text-teal-400 text-xs sm:text-sm mt-1 bg-teal-500/20 px-2 py-1 rounded-full inline-block animate-fade-in">
@@ -135,6 +173,70 @@
                         </div>
                     </div>
                 @endforeach
+
+                <!-- Kontainer Ulasan di Bawah Daftar Menu -->
+                @if ($menus->isNotEmpty())
+                    <div
+                        class="reviews-container mt-8 p-4 sm:p-6 bg-gray-900/80 rounded-lg max-h-96 overflow-y-auto animate-fade-in">
+                        <h3 class="text-lg sm:text-xl font-semibold text-coral-500 mb-4">Semua Ulasan</h3>
+                        @foreach ($menus as $categoryName => $categoryMenus)
+                            @foreach ($categoryMenus as $menu)
+                                <div
+                                    class="menu-reviews mb-6 bg-gray-800/90 rounded-lg p-4 sm:p-5 shadow-md border border-gray-700/50">
+                                    <h4 class="text-md sm:text-lg font-semibold text-teal-400 mb-3">{{ $menu->name }}
+                                    </h4>
+                                    @if ($menu->reviews->isEmpty())
+                                        <div class="review-empty bg-gray-900/50 p-3 rounded-md text-gray-400 text-sm">
+                                            Belum ada ulasan untuk menu ini.
+                                        </div>
+                                    @else
+                                        <div class="space-y-3">
+                                            @foreach ($menu->reviews as $review)
+                                                <div
+                                                    class="review-item bg-gray-900/70 p-3 rounded-md border border-gray-600/50 animate-fade-in">
+                                                    <div
+                                                        class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                                                        <div class="flex items-center gap-2">
+                                                            <svg class="w-4 h-4 text-coral-500" fill="none"
+                                                                stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2"
+                                                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                                            </svg>
+                                                            <span class="text-white text-sm font-semibold">
+                                                                {{ $review->user->name ?? 'Anonim' }}
+                                                            </span>
+                                                            <span class="star-rating static flex items-center">
+                                                                @php
+                                                                    $rating = $review->rating ?? 0;
+                                                                    for ($i = 1; $i <= 5; $i++) {
+                                                                        if ($rating >= $i) {
+                                                                            echo '<span class="star rated">★</span>';
+                                                                        } elseif ($rating >= $i - 0.5 && $rating < $i) {
+                                                                            echo '<span class="star half-rated">★</span>';
+                                                                        } else {
+                                                                            echo '<span class="star">★</span>';
+                                                                        }
+                                                                    }
+                                                                @endphp
+                                                            </span>
+                                                        </div>
+                                                        <span class="text-gray-500 text-xs sm:text-right">
+                                                            {{ $review->created_at ? \Carbon\Carbon::parse($review->created_at)->translatedFormat('d M Y, H:i') : 'Tanggal tidak tersedia' }}
+                                                        </span>
+                                                    </div>
+                                                    <p class="text-gray-300 text-sm mt-2 pl-6">
+                                                        {{ $review->comment ?? 'Tidak ada komentar' }}
+                                                    </p>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </div>
+                            @endforeach
+                        @endforeach
+                    </div>
+                @endif
             @else
                 <!-- Pesan Ketika Tidak Ada Menu -->
                 <div class="bg-gray-800/90 backdrop-blur-md p-6 sm:p-8 rounded-2xl shadow-lg text-center">
@@ -156,7 +258,8 @@
         class="fixed bottom-4 right-4 bg-coral-500 text-white p-3 rounded-full shadow-lg hover:bg-coral-600 transition-all duration-200 z-50 flex items-center justify-center">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
+            </path>
         </svg>
         <span
             class="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
@@ -192,9 +295,18 @@
 
             // Initialize cart count
             updateCartCount();
+
+            // Card click handler
+            document.querySelectorAll('[data-menu-id]').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    if (e.target.closest('.add-to-cart-btn')) return; // Ignore button clicks
+                    const menuId = card.getAttribute('data-menu-id');
+                    openMenuDetails(menuId);
+                });
+            });
         });
 
-        // Open Menu Details Modal with Notes Input
+        // Open Menu Details Modal with Notes Input and Reviews
         function openMenuDetails(menuId, event) {
             if (event) {
                 event.preventDefault();
@@ -207,6 +319,25 @@
             const menuPrice = menuElement.getAttribute('data-menu-price');
             const menuImage = menuElement.getAttribute('data-menu-image');
             const addToCartUrl = menuElement.getAttribute('data-add-url');
+            const reviewsRaw = menuElement.getAttribute('data-reviews') || '';
+
+            // Debugging: Log raw data and inspect characters
+            // console.log('Raw data-reviews:', reviewsRaw);
+            // console.log('Length:', reviewsRaw.length);
+            // console.log('First 10 chars:', reviewsRaw.substring(0, 10));
+            // console.log('Char codes:', reviewsRaw.split('').map(c => c.charCodeAt(0)));
+
+            let reviewsData;
+            try {
+                // Decode base64 and parse JSON
+                const decoded = atob(reviewsRaw);
+                console.log('Decoded base64:', decoded);
+                reviewsData = JSON.parse(decoded);
+            } catch (e) {
+                console.error('JSON parse error:', e.message);
+                console.error('Invalid data:', reviewsRaw);
+                reviewsData = [];
+            }
 
             const isOutOfStock = menuStock === 0;
             const imageClass = isOutOfStock ? 'filter grayscale' : '';
@@ -222,12 +353,48 @@
                     <div class="mt-4 flex space-x-2">
                         <input type="number" id="menu-quantity-${menuId}" value="1" min="1" max="${menuStock}" class="w-16 border border-gray-700 rounded-md px-2 py-1 text-center text-gray-300 bg-gray-900 focus:outline-none focus:ring-2 focus:ring-coral-500">
                         <button
-                            class="add-to-cart-btn w-full bg-teal-500 text-white text-sm px-4 py-2 rounded-lg hover:bg-teal-600 transition-all duration-200 transform hover:scale-105"
+                            class="add-to-cart-btn w-full bg-teal-500 text-white text-sm px-4 py-2 rounded-lg hover:bg-teal-600 transition-all duration-200 transform"
                             onclick="addToCart('${menuId}')">
                             + Tambah ke Keranjang
                         </button>
                     </div>
                 `;
+
+            // Generate reviews HTML for modal
+            let reviewsHtml = '<h3 class="text-md font-semibold text-[#f87171] mt-4 mb-2">Ulasan</h3>';
+            if (reviewsData.length === 0) {
+                reviewsHtml += '<p class="text-gray-400 text-sm">Belum ada ulasan untuk menu ini.</p>';
+            } else {
+                reviewsData.forEach(review => {
+                    const starsHtml = Array(5).fill(0).map((_, i) => {
+                        const rating = parseFloat(review.rating);
+                        if (rating >= i + 1) {
+                            return '<span class="star rated">★</span>';
+                        } else if (rating >= i + 0.5 && rating < i + 1) {
+                            return '<span class="star half-rated">★</span>';
+                        } else {
+                            return '<span class="star">★</span>';
+                        }
+                    }).join('');
+                    // Escape HTML in comment to prevent XSS
+                    const escapedComment = review.comment
+                        .replace(/&/g, '&amp;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;')
+                        .replace(/"/g, '&quot;')
+                        .replace(/'/g, '&#039;');
+                    reviewsHtml += `
+                        <div class="review-item py-2 border-b border-gray-700 bg-gray-900 px-3 rounded-md last:border-b-0">
+                            <div class="flex items-center space-x-1">
+                                <span class="text-white text-sm font-semibold">${review.user_name}</span>
+                                <span class="star-rating static">${starsHtml}</span>
+                            </div>
+                            <p class="text-gray-300 text-sm mt-1">${escapedComment}</p>
+                            <p class="text-gray-500 text-xs mt-1">${review.created_at}</p>
+                        </div>
+                    `;
+                });
+            }
 
             Swal.fire({
                 title: `<p class="text-center text-white">${menuName}</p>`,
@@ -237,6 +404,7 @@
                     <p class="text-left ${isOutOfStock ? 'text-coral-500' : 'text-gray-300'} text-sm"><strong>Stock:</strong> ${stockText}</p>
                     <p class="text-left text-teal-400 text-sm"><strong>Harga:</strong> ${menuPrice}</p>
                     ${actionHtml}
+                    ${reviewsHtml}
                 `,
                 showCloseButton: true,
                 showConfirmButton: false,
@@ -358,7 +526,7 @@
                             }
                         });
                         updateCartCount();
-                        Swal.close(); // Tutup modal setelah berhasil
+                        Swal.close();
                     } else {
                         Swal.fire({
                             icon: 'error',
@@ -413,7 +581,9 @@
                 .catch(error => console.error('Error fetching cart count:', error));
         }
     </script>
+@endpush
 
+@push('styles')
     <style>
         :root {
             --coral-500: #f87171;
@@ -451,21 +621,23 @@
 
             0%,
             100% {
-                opacity: 0.1;
+                opacity: 0.4;
             }
 
             50% {
-                opacity: 0.15;
+                opacity: 0.6;
             }
         }
 
         @keyframes fadeIn {
             from {
                 opacity: 0;
+                transform: translateY(10px);
             }
 
             to {
                 opacity: 1;
+                transform: translateY(0);
             }
         }
 
@@ -482,7 +654,7 @@
         }
 
         .animate-fade-in {
-            animation: fadeIn 0.5s ease-out forwards;
+            animation: fadeIn 0.3s ease-out forwards;
         }
 
         .line-clamp-1 {
@@ -512,6 +684,61 @@
         textarea::placeholder {
             color: #6b7280;
             font-style: italic;
+        }
+
+        /* Gaya untuk star rating */
+        .star-rating {
+            display: inline-flex;
+            gap: 2px;
+            cursor: default;
+        }
+
+        .star-rating.static {
+            cursor: default;
+        }
+
+        .star {
+            font-size: 14px;
+            color: #4b5563;
+            position: relative;
+            width: 14px;
+            text-align: center;
+            user-select: none;
+        }
+
+        .star.rated {
+            color: #facc15;
+        }
+
+        .star.half-rated::before {
+            content: '★';
+            position: absolute;
+            left: 0;
+            width: 50%;
+            overflow: hidden;
+            color: #facc15;
+        }
+
+        /* Gaya untuk reviews container */
+        .reviews-container {
+            transition: all 0.3s ease;
+        }
+
+        .review-item {
+            transition: opacity 0.3s ease;
+        }
+
+        .review-empty {
+            transition: opacity 0.3s ease;
+        }
+
+        /* Smaller text size */
+        .text-smaller {
+            font-size: 0.75rem;
+        }
+
+        .text-tiny {
+            font-size: 0.65rem;
         }
 
         /* Mobile-Specific Styles */
@@ -545,10 +772,6 @@
                 padding: 0.5rem 0.75rem;
             }
 
-            .menu-card {
-                padding: 0.75rem;
-            }
-
             .menu-image {
                 height: 4.5rem;
             }
@@ -564,6 +787,31 @@
 
             .menu-price {
                 font-size: 0.65rem;
+            }
+
+            .star {
+                font-size: 12px;
+                width: 12px;
+            }
+
+            .text-smaller {
+                font-size: 0.65rem;
+            }
+
+            .text-tiny {
+                font-size: 0.55rem;
+            }
+
+            .reviews-container {
+                padding: 0.75rem;
+            }
+
+            .menu-reviews {
+                padding: 0.75rem;
+            }
+
+            .review-item {
+                padding: 0.5rem;
             }
         }
     </style>

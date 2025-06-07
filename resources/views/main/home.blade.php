@@ -118,6 +118,52 @@
                                 {{ $menu->name }}</h3>
                             <p class="text-gray-300 text-sm sm:text-base line-clamp-2">{!! Illuminate\Support\Str::limit(strip_tags($menu->description), 50) !!}</p>
                             <p class="text-teal-400 text-sm sm:text-base mt-2">Harga: {{ $menu->formatted_price }}</p>
+                            @if ($menu->reviews->isEmpty())
+                                <div class="review-empty bg-gray-900/50 p-3 rounded-md text-gray-400 text-sm">
+                                    Belum ada ulasan untuk menu ini.
+                                </div>
+                            @else
+                                <div class="space-y-3">
+                                    @foreach ($menu->reviews as $review)
+                                        <div
+                                            class="review-item bg-gray-900/70 p-3 rounded-md border border-gray-600/50 animate-fade-in">
+                                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                                                <div class="flex items-center gap-2">
+                                                    <svg class="w-4 h-4 text-coral-500" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                                    </svg>
+                                                    <span class="text-white text-sm font-semibold">
+                                                        {{ $review->user->name ?? 'Anonim' }}
+                                                    </span>
+                                                    <span class="star-rating static flex items-center">
+                                                        @php
+                                                            $rating = $review->rating ?? 0;
+                                                            for ($i = 1; $i <= 5; $i++) {
+                                                                if ($rating >= $i) {
+                                                                    echo '<span class="star rated">★</span>';
+                                                                } elseif ($rating >= $i - 0.5 && $rating < $i) {
+                                                                    echo '<span class="star half-rated">★</span>';
+                                                                } else {
+                                                                    echo '<span class="star">★</span>';
+                                                                }
+                                                            }
+                                                        @endphp
+                                                    </span>
+                                                </div>
+                                                <span class="text-gray-500 text-xs sm:text-right">
+                                                    {{ $review->created_at ? \Carbon\Carbon::parse($review->created_at)->translatedFormat('d M Y, H:i') : 'Tanggal tidak tersedia' }}
+                                                </span>
+                                            </div>
+                                            <p class="text-gray-300 text-sm mt-2 pl-6">
+                                                {{ $review->comment ?? 'Tidak ada komentar' }}
+                                            </p>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
 
                         </div>
                     @endforeach

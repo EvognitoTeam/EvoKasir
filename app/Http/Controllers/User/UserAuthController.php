@@ -38,7 +38,13 @@ class UserAuthController extends Controller
             ->latest()
             ->take(10)
             ->get();
-        $orders = Auth::user()->orders()->where('mitra_id', $mitra->id)->with('items.product')->latest()->take(10)->get();
+        $orders = Auth::user()->orders()->where('mitra_id', $mitra->id)->with(['items.product', 'rating'])->latest()->get();
+        // $orders = Auth::user()->orders()
+        //     ->where('mitra_id', $mitra->id)
+        //     ->with(['items.product', 'rating'])
+        //     ->latest()
+        //     ->take(10)
+        //     ->get();
         // dd($orders);
         $coupons = Coupon::where('mitra_id', $mitra->id)->where('is_member_only', 1)->where('expired_date', '>=', now())->get();
         // dd($loyaltyId);

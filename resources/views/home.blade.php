@@ -132,18 +132,6 @@
             </a>
         </div>
     </section>
-
-    <!-- Footer Section -->
-    <footer class="bg-gray-800 py-6 text-white">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <p class="text-sm sm:text-base mb-4">
-                © {{ date('Y') }} EvoKasir. Semua hak dilindungi.
-            </p>
-            <a href="{{ route('privacy.policy') }}" class="text-teal-400 hover:text-teal-300 text-sm sm:text-base">
-                Kebijakan Privasi
-            </a>
-        </div>
-    </footer>
 @endsection
 
 @push('styles')
