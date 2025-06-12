@@ -48,6 +48,15 @@ class AdminOrdersController extends Controller
             ->with('success', 'Status pesanan berhasil diperbarui.');
     }
 
+    public function updatePayment(Request $request, $slug, $order_code)
+    {
+        $order = Order::where('order_code', $order_code)->firstOrFail();
+        $request->validate(['status' => 'required|in:1,2,3,4']);
+        $order->update(['payment_status' => $request->status]);
+        return redirect()->route('admin.orders.detail', ['slug' => $slug, 'order_code' => $order_code])
+            ->with('success', 'Status pesanan berhasil diperbarui.');
+    }
+
     public function print($slug, $order_code)
     {
         $mitra = Mitra::where('mitra_slug', $slug)->first();

@@ -126,7 +126,7 @@
                             <div class="flex justify-between">
                                 <span class="text-gray-300">Total:</span>
                                 <span id="totalPrice"
-                                    class="text-gray-300">Rp{{ number_format(session("totalPrice.$slug", $totalPrice), 0, ',', '.') }}</span>
+                                    class="text-gray-300">Rp{{ number_format(session("totalPrice.$slug", $totalPrice) + session("discount.$slug", 0), 0, ',', '.') }}</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-gray-300">Potongan:</span>

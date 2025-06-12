@@ -81,7 +81,9 @@
             <div>
                 <h2
                     class="text-lg sm:text-xl font-semibold text-gray-300 mb-2 sm:mb-3 border-b border-gray-700 pb-1 sm:pb-2">
-                    Informasi Pembayaran</h2>
+                    Informasi Pembayaran
+                </h2>
+
                 @php
                     $paymentStatusLabels = [
                         1 => 'Menunggu Pembayaran',
@@ -89,13 +91,35 @@
                         3 => 'Pembayaran Gagal',
                         4 => 'Pembayaran Expired',
                     ];
-                    $paymentStatus = $paymentStatusLabels[$order->payment_status] ?? 'Tidak Diketahui';
                 @endphp
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 text-sm sm:text-base">
-                    <p><strong>Status Pembayaran:</strong> {{ $paymentStatus }}</p>
-                    <p><strong>Total Pembayaran:</strong> Rp {{ number_format($order->total_price, 0, ',', '.') }}</p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 text-sm sm:text-base text-gray-300">
+                    <div class="sm:col-span-2">
+                        <strong>Status Pembayaran:</strong>
+                        <form
+                            action="{{ route('admin.orders.updatePayment', ['slug' => $slug, 'order_code' => $order->order_code]) }}"
+                            method="POST" class="inline-block ml-2">
+                            @csrf
+                            @method('PATCH')
+                            <select name="status" onchange="this.form.submit()"
+                                class="border border-gray-700 rounded-lg px-2 sm:px-3 py-1 sm:py-2 bg-gray-900 focus:outline-none focus:ring-2 focus:ring-coral-500 transition-all duration-200 text-xs sm:text-sm text-gray-300">
+                                @foreach ($paymentStatusLabels as $key => $label)
+                                    <option value="{{ $key }}"
+                                        {{ $order->payment_status == (int) $key ? 'selected' : '' }}>
+                                        {{ $label }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </form>
+                    </div>
+
+                    <div>
+                        <strong>Total Pembayaran:</strong>
+                        <span class="ml-1">Rp {{ number_format($order->total_price, 0, ',', '.') }}</span>
+                    </div>
                 </div>
             </div>
+
 
             <!-- Item Pesanan -->
             <div>
@@ -110,7 +134,8 @@
                                 </th>
                                 <th class="py-2 sm:py-3 px-3 sm:px-4 border-b border-gray-600 font-semibold">Jumlah</th>
                                 <th class="py-2 sm:py-3 px-3 sm:px-4 border-b border-gray-600 font-semibold">Harga</th>
-                                <th class="py-2 sm:py-3 px-3 sm:px-4 border-b border-gray-600 font-semibold">Subtotal</th>
+                                <th class="py-2 sm:py-3 px-3 sm:px-4 border-b border-gray-600 font-semibold">Subtotal
+                                </th>
                             </tr>
                         </thead>
                         <tbody>

@@ -221,18 +221,18 @@
                                 }
 
                                 // SweetAlert2 notification
-                                // Swal.fire({
-                                //     title: 'Pesanan Baru!',
-                                //     text: `${data.message} (Kode: ${data.order_code})`,
-                                //     icon: 'info',
-                                //     timer: 3000,
-                                //     showConfirmButton: false,
-                                //     background: '#1f2937',
-                                //     customClass: {
-                                //         title: 'text-coral-500',
-                                //         content: 'text-gray-300'
-                                //     }
-                                // });
+                                Swal.fire({
+                                    title: 'Pesanan Baru!',
+                                    text: `${data.message} (Kode: ${data.order_code})`,
+                                    icon: 'info',
+                                    timer: 3000,
+                                    showConfirmButton: false,
+                                    background: '#1f2937',
+                                    customClass: {
+                                        title: 'text-coral-500',
+                                        content: 'text-gray-300'
+                                    }
+                                });
                             }
                         }
                     })

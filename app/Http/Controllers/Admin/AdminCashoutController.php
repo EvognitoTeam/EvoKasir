@@ -28,6 +28,7 @@ class AdminCashoutController extends Controller
 
         $totalRevenue = Order::where('mitra_id', $mitra->id)
             ->where('payment_status', 2)
+            ->where('payment_method', 'qris')
             ->where('is_cashouted', false)
             ->sum('total_price');
 
@@ -63,6 +64,7 @@ class AdminCashoutController extends Controller
 
         $totalRevenue = Order::where('mitra_id', $mitra->id)
             ->where('payment_status', '2')
+            ->where('payment_method', 'qris')
             ->where('is_cashouted', false)
             ->sum('total_price');
 
@@ -92,6 +94,7 @@ class AdminCashoutController extends Controller
 
         $totalRevenue = Order::where('mitra_id', $mitra->id)
             ->where('payment_status', '2')
+            ->where('payment_method', 'qris')
             ->where('is_cashouted', false)
             ->sum('total_price');
 

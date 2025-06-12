@@ -67,6 +67,7 @@ class AdminHomeController extends Controller
 
         for ($year = $startYear; $year <= $currentYear; $year++) {
             $total = Order::where('mitra_id', $mitra->id)
+                ->where('payment_status', 2)
                 ->whereYear('created_at', $year)
                 ->sum('total_price');
             $yearlyEarnings[$year] = $total;

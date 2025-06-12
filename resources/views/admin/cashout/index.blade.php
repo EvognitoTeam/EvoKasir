@@ -78,7 +78,8 @@
                         <h2 class="text-xl font-semibold text-white">Total Pendapatan</h2>
                     </div>
                     <p class="text-3xl font-bold text-white">Rp {{ number_format($totalRevenue, 0, ',', '.') }}</p>
-                    <p class="text-sm text-gray-400 mt-2">Pendapatan dari semua pesanan yang diselesaikan.</p>
+                    <p class="text-sm text-gray-400 mt-2">Pendapatan dari semua pesanan menggunakan QRIS yang diselesaikan.
+                    </p>
                 </div>
 
                 <!-- Card Jumlah Cashout -->

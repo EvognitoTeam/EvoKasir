@@ -2,7 +2,7 @@
 
 @section('title')
     Kebijakan Privasi
-    </section>
+@endsection
 
 @section('content')
     <!-- Header -->

@@ -80,6 +80,7 @@ Route::prefix('{slug}')->group(function () {
             Route::delete('/orders/destroy/{id}', [AdminOrdersController::class, 'destroy'])->name('admin.orders.destroy');
             Route::get('/orders/print/{order_code}', [AdminOrdersController::class, 'print'])->name('admin.orders.print');
             Route::patch('/orders/{order_code}/status', [AdminOrdersController::class, 'updateStatus'])->name('admin.orders.updateStatus');
+            Route::patch('/orders/{order_code}/status/payment', [AdminOrdersController::class, 'updatePayment'])->name('admin.orders.updatePayment');
 
             Route::get('/settings', [AdminSettingsController::class, 'index'])->name('admin.setting.index');
             Route::post('/settings', [AdminSettingsController::class, 'saveSettings'])->name('admin.setting.save');
