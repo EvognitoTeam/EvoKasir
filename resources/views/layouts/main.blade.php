@@ -2,6 +2,20 @@
 <html lang="id">
 
 <head>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GE812YVVQS"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'G-GE812YVVQS');
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="EvoKasir - Solusi kasir modern untuk bisnis Anda. Cepat, mudah, dan handal.">
@@ -11,7 +25,7 @@
     <title>@yield('title') - EvoKasir</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="icon" type="image/png" href="/storage/logo/6814f4b762b42.png">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     @yield('styles')
