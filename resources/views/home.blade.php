@@ -26,16 +26,18 @@
             class="absolute bottom-10 right-10 w-24 h-24 sm:w-48 sm:h-48 bg-indigo-300 rounded-full opacity-20 animate-float-slow hidden sm:block">
         </div>
         <div class="absolute top-1/3 right-1/4 w-16 h-16 sm:w-24 sm:h-24 bg-blue-300 rounded-full opacity-15 animate-float hidden sm:block"
-            style="animation-delay: 1s;"></div>
+            style="animation-delay: 1s;">
+        </div>
         <div class="absolute bottom-1/3 left-1/4 w-20 h-20 sm:w-36 sm:h-36 bg-teal-200 rounded-full opacity-15 animate-float-slow hidden sm:block"
-            style="animation-delay: 0.5s;"></div>
+            style="animation-delay: 0.5s;">
+        </div>
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
             <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 leading-tight animate-text-reveal">
                 EvoKasir: Solusi Bisnis Modern
             </h1>
             <p class="text-base sm:text-lg md:text-xl text-gray-100 mb-6 sm:mb-8 max-w-xl mx-auto animate-text-reveal"
                 style="animation-delay: 0.2s;">
-                Kelola bisnis Anda dengan cepat, mudah, dan handal.
+                Kelola restoran Anda dengan cepat, mudah, dan efisien.
             </p>
             <div class="flex flex-col sm:flex-row justify-center gap-4">
                 <a href="/register"
@@ -59,6 +61,67 @@
                 Fitur Unggulan Kami
             </h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+                <!-- Fitur 1: Manajemen Pesanan -->
+                <div
+                    class="group relative p-4 sm:p-6 bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 feature-card">
+                    <div
+                        class="absolute inset-0 bg-indigo-500 opacity-0 group-hover:opacity-10 rounded-xl transition-opacity duration-500">
+                    </div>
+                    <div
+                        class="text-indigo-600 mb-3 sm:mb-4 transform group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-10 h-10 sm:w-12 sm:h-12 mx-auto" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                            </path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-2 text-center">Manajemen Pesanan</h3>
+                    <p class="text-gray-600 text-sm sm:text-base text-center">
+                        Proses pesanan pelanggan dengan cepat dan akurat langsung dari aplikasi.
+                    </p>
+                </div>
+                <!-- Fitur 2: Laporan Real-Time -->
+                <div
+                    class="group relative p-4 sm:p-6 bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 feature-card">
+                    <div
+                        class="absolute inset-0 bg-indigo-500 opacity-0 group-hover:opacity-10 rounded-xl transition-opacity duration-500">
+                    </div>
+                    <div
+                        class="text-indigo-600 mb-3 sm:mb-4 transform group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-10 h-10 sm:w-12 sm:h-12 mx-auto" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 22" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                            </path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-2 text-center">Laporan Real-Time</h3>
+                    <p class="text-gray-600 text-sm sm:text-base text-center">
+                        Pantau penjualan dan stok secara real-time untuk pengambilan keputusan yang lebih baik.
+                    </p>
+                </div>
+                <!-- Fitur 3: Integrasi Pembayaran -->
+                <div
+                    class="group relative p-4 sm:p-6 bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 feature-card">
+                    <div
+                        class="absolute inset-0 bg-indigo-500 opacity-0 group-hover:opacity-10 rounded-xl transition-opacity duration-500">
+                    </div>
+                    <div
+                        class="text-indigo-600 mb-3 sm:mb-4 transform group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-10 h-10 sm:w-12 sm:h-12 mx-auto" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z">
+                            </path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-2 text-center">Integrasi Pembayaran</h3>
+                    <p class="text-gray-600 text-sm sm:text-base text-center">
+                        Dukungan berbagai metode pembayaran untuk kemudahan transaksi.
+                    </p>
+                </div>
+                <!-- Fitur 4: Manajemen Meja -->
                 <div
                     class="group relative p-4 sm:p-6 bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 feature-card">
                     <div
@@ -73,10 +136,12 @@
                             </path>
                         </svg>
                     </div>
-                    <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-2 text-center">Manajemen Produk</h3>
-                    <p class="text-gray-600 text-sm sm:text-base text-center">Atur produk, kategori, dan stok dengan
-                        antarmuka intuitif.</p>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-2 text-center">Manajemen Meja</h3>
+                    <p class="text-gray-600 text-sm sm:text-base text-center">
+                        Atur tata letak meja dan status pemesanan dengan mudah.
+                    </p>
                 </div>
+                <!-- Fitur 5: Manajemen Menu -->
                 <div
                     class="group relative p-4 sm:p-6 bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 feature-card">
                     <div
@@ -87,13 +152,15 @@
                         <svg class="w-10 h-10 sm:w-12 sm:h-12 mx-auto" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
-                            </path>
+                                d="M4 6h16M4 12h16M4 18h7"></path>
                         </svg>
                     </div>
-                    <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-2 text-center">Laporan Penjualan</h3>
-                    <p class="text-gray-600 text-sm sm:text-base text-center">Wawasan bisnis melalui laporan real-time.</p>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-2 text-center">Manajemen Menu</h3>
+                    <p class="text-gray-600 text-sm sm:text-base text-center">
+                        Sesuaikan dan kelola menu restoran dengan fleksibilitas tinggi.
+                    </p>
                 </div>
+                <!-- Fitur 6: Notifikasi Pesanan -->
                 <div
                     class="group relative p-4 sm:p-6 bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 feature-card">
                     <div
@@ -104,13 +171,14 @@
                         <svg class="w-10 h-10 sm:w-12 sm:h-12 mx-auto" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
                             </path>
                         </svg>
                     </div>
-                    <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-2 text-center">Integrasi Membership</h3>
-                    <p class="text-gray-600 text-sm sm:text-base text-center">Tingkatkan loyalitas pelanggan dengan sistem
-                        keanggotaan.</p>
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-2 text-center">Notifikasi Pesanan</h3>
+                    <p class="text-gray-600 text-sm sm:text-base text-center">
+                        Dapatkan pemberitahuan instan untuk setiap pesanan baru.
+                    </p>
                 </div>
             </div>
         </div>
@@ -124,7 +192,7 @@
             </h2>
             <p class="text-base sm:text-lg text-gray-200 mb-6 max-w-xl mx-auto animate-text-reveal"
                 style="animation-delay: 0.2s;">
-                Bergabunglah dengan ribuan bisnis yang mempercayai EvoKasir.
+                Bergabunglah dengan ribuan restoran yang mempercayai EvoKasir.
             </p>
             <a href="/register"
                 class="inline-block bg-white text-indigo-600 font-semibold py-2 px-6 sm:py-3 sm:px-8 rounded-full shadow-lg hover:bg-gray-100 transform hover:scale-105 transition-all duration-300 animate-button-reveal">
@@ -209,23 +277,25 @@
         }
 
         .animate-text-reveal {
-            animation: textReveal 0.8s ease-out forwards;
+            animation: textReveal 0.8s ease-out forwards !important;
         }
 
         .animate-button-reveal {
-            animation: buttonReveal 0.6s ease-out forwards;
+            animation: buttonReveal 0.6s ease-out forwards !important;
         }
 
         .animate-float {
-            animation: float 6s ease-in-out infinite;
+            animation: float 6s ease-in-out infinite !important;
         }
 
         .animate-float-slow {
-            animation: floatSlow 8s ease-in-out infinite;
+            animation: floatSlow 8s ease-in-out infinite !important;
         }
 
         .animate-subtle-move {
-            animation: subtleMove 20s ease-in-out infinite;
+            animation: subtleMove 20s ease-in-out infinite !important;
+            transform-box: fill-box;
+            /* Ensure transform applies to SVG */
         }
 
         .feature-card {
@@ -237,7 +307,26 @@
         .feature-card.visible {
             opacity: 1;
             transform: translateY(0);
-            animation: fadeInUp 0.6s ease-out forwards;
+            animation: fadeInUp 0.6s ease-out forwards !important;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+            }
+
+            h1 {
+                font-size: 1.875rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            p {
+                font-size: 0.875rem;
+            }
         }
     </style>
 @endpush
