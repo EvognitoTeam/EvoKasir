@@ -16,13 +16,18 @@ class RoleMiddleware
      */
     public function handle(Request $request, Closure $next, ...$roles)
     {
+        // Ambil slug dari route parameter
+        $slug = $request->route('slug');
+
         // Jika belum login
         if (!Auth::check()) {
-            return redirect()->route('login');
+            return redirect()
+                ->route('user.login', ['slug' => $slug])
+                ->with('error', 'Silakan login terlebih dahulu untuk mengakses halaman ini.');
         }
 
         // Ambil role user
-        $userRole = Auth::user()->role; // Pastikan kolom `role` ada di tabel users
+        $userRole = Auth::user()->role;
 
         // Cek apakah role user termasuk role yang diizinkan
         if (!in_array($userRole, $roles)) {

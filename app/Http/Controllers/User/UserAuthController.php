@@ -27,7 +27,12 @@ class UserAuthController extends Controller
     }
     public function userProfile($slug)
     {
+        $user = Auth::user();
         $mitra = Mitra::where('mitra_slug', $slug)->firstOrFail();
+        if ($user->mitra_id != $mitra->id) {
+            Auth::logout();
+            return redirect()->route('user.index', ['slug' => $slug]);
+        }
         $loyalty = LoyaltyPoints::where('user_id', Auth::id())
             ->where('mitra_id', $mitra->id)
             ->first();

@@ -31,6 +31,35 @@
                 </p>
             </div>
 
+            @if (session('success') || session('error'))
+                <div id="flash-message"
+                    class="mb-6 p-4 transition-opacity duration-500 ease-in-out {{ session('success') ? 'bg-teal-500/20 text-teal-400 border border-teal-400/30' : 'bg-red-500/20 text-red-400 border-red-400/30' }} rounded-xl shadow-lg animate-fade-in">
+                    {{ session('success') ?? session('error') }}
+                </div>
+            @endif
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const flashMessage = document.getElementById('flash-message');
+                    const inputs = document.querySelectorAll('input');
+                    let hideTimeout = null;
+
+                    inputs.forEach(input => {
+                        input.addEventListener('focus', () => {
+                            if (flashMessage && !hideTimeout) {
+                                // Mulai timer 2 detik saat user fokus ke input
+                                hideTimeout = setTimeout(() => {
+                                    flashMessage.classList.add('opacity-0');
+                                    setTimeout(() => {
+                                        flashMessage.remove();
+                                    }, 500); // tunggu transisi fade-out selesai
+                                }, 3000);
+                            }
+                        });
+                    });
+                });
+            </script>
+
             <form method="POST" action="{{ route('user.login', ['slug' => $slug]) }}" class="space-y-4" id="login-form">
                 @csrf
                 <div>
