@@ -76,7 +76,7 @@ class AdminMenuController extends Controller
                 $path = $image->storeAs('menu', $imageName, 'public');  // Pastikan menggunakan 'public' sebagai disk
 
                 // Simpan path-nya (contoh: "menu/abc123.jpg")
-                $menu->image = $imageName;  // Menyimpan path relatif (public/menu/abc123.jpg)
+                $menu->image = 'menu/' . $imageName;  // Menyimpan path relatif (public/menu/abc123.jpg)
             } else {
                 return back()->withErrors(['image' => 'Gambar gagal di-upload.'])->withInput();
             }
