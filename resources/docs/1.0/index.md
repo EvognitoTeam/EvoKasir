@@ -1,0 +1,12 @@
+-   ## Get Started
+    -   [Overview](/{{route}}/{{version}}/overview)
+-   ## App
+    -   [Installaion](/{{route}}/{{version}}/app/installation)
+    -   [Login](/{{route}}/{{version}}/app/login)
+    -   [Printer Setup](/{{route}}/{{version}}/app/printer-setup)
+    -   [Troubleshooting](/{{route}}/{{version}}/app/troubleshooting)
+-   ## Website
+    -   [Dashboard](/{{route}}/{{version}}/website/dashboard)
+    -   [Login](/{{route}}/{{version}}/website/login)
+    -   [Printer Setup](/{{route}}/{{version}}/website/menu-managemenet)
+    -   [Troubleshooting](/{{route}}/{{version}}/website/order-management)
