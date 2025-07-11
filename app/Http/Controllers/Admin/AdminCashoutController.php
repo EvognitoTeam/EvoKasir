@@ -35,7 +35,7 @@ class AdminCashoutController extends Controller
         $midtransFee = $totalRevenue * 0.007;
         // dd($midtransFee);
         // $platformFee = $totalRevenue * 0.15;
-        $platformFee = ($totalRevenue - $midtransFee) * 0.15;
+        $platformFee = ($totalRevenue - $midtransFee) * 0.12;
 
         $totalFees = $midtransFee + $platformFee;
 
@@ -70,7 +70,7 @@ class AdminCashoutController extends Controller
 
         $midtransFee = $totalRevenue * 0.007;
         // $platformFee = $totalRevenue * 0.15;
-        $platformFee = ($totalRevenue - $midtransFee) * 0.15;
+        $platformFee = ($totalRevenue - $midtransFee) * 0.12 * -1;
 
         $totalFees = $midtransFee + $platformFee;
 
@@ -100,15 +100,16 @@ class AdminCashoutController extends Controller
 
         $midtransFee = $totalRevenue * 0.007;
         // $platformFee = $totalRevenue * 0.15;
-        $platformFee = ($midtransFee - $totalRevenue) * 0.15;
+        $platformFee = ($midtransFee - $totalRevenue) * 0.12;
 
-        $totalFees = $midtransFee + $platformFee;
+        $totalFees = (float)$midtransFee + ($platformFee * -1);
 
         $approvedCashouts = Cashout::where('mitra_id', $mitra->id)
             ->where('status', 'approved')
             ->sum('amount');
 
         $availableCashout = floor(max(0, $totalRevenue - $totalFees));
+        // dd($availableCashout);
 
         $request->validate([
             'amount' => [
@@ -134,6 +135,7 @@ class AdminCashoutController extends Controller
             $remainingAmount = $request->amount;
             $orders = Order::where('mitra_id', $mitra->id)
                 ->where('payment_status', '2')
+                ->where('payment_method', 'qris')
                 ->where('is_cashouted', false)
                 ->orderBy('created_at')
                 ->get();

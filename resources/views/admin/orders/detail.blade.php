@@ -39,6 +39,7 @@
                     <p><strong>Email:</strong> {{ $order->email ?? '-' }}</p>
                     <p><strong>Tanggal:</strong> {{ \Carbon\Carbon::parse($order->created_at)->format('d M Y H:i') }}</p>
                     <p><strong>Metode Pembayaran:</strong> {{ Str::upper($order->payment_method) ?? '-' }}</p>
+                    <p><strong>Nama Kasir:</strong> {{ $order->user_cashier->name ?? '-' }}</p>
                     <div class="col-span-1 sm:col-span-2">
                         <strong>Status:</strong>
                         @php
@@ -132,6 +133,8 @@
                             <tr>
                                 <th class="py-2 sm:py-3 px-3 sm:px-4 border-b border-gray-600 font-semibold">Nama Produk
                                 </th>
+                                <th class="py-2 sm:py-3 px-3 sm:px-4 border-b border-gray-600 font-semibold">Catatan
+                                </th>
                                 <th class="py-2 sm:py-3 px-3 sm:px-4 border-b border-gray-600 font-semibold">Jumlah</th>
                                 <th class="py-2 sm:py-3 px-3 sm:px-4 border-b border-gray-600 font-semibold">Harga</th>
                                 <th class="py-2 sm:py-3 px-3 sm:px-4 border-b border-gray-600 font-semibold">Subtotal
@@ -142,6 +145,9 @@
                             @foreach ($order->items as $item)
                                 <tr class="border-b border-gray-700 hover:bg-gray-700/50 transition-all duration-200">
                                     <td class="py-2 sm:py-3 px-3 sm:px-4 text-gray-300">{{ $item->product->name }}</td>
+                                    <td class="py-2 sm:py-3 px-3 sm:px-4 text-gray-300">
+                                        {!! empty($item->notes) ? '<i class="text-gray-500">Tidak ada catatan</i>' : $item->notes !!}
+                                    </td>
                                     <td class="py-2 sm:py-3 px-3 sm:px-4 text-gray-300">{{ $item->quantity }}</td>
                                     <td class="py-2 sm:py-3 px-3 sm:px-4 text-gray-300">Rp
                                         {{ number_format($item->product->price, 0, ',', '.') }}</td>
@@ -178,31 +184,3 @@
         </div>
     </div>
 @endsection
-
-@push('scripts')
-    <script>
-        document.querySelector('select[name="status"]').addEventListener('change', function(e) {
-            Swal.fire({
-                title: 'Ubah Status Pesanan?',
-                text: `Apakah Anda yakin ingin mengubah status menjadi "${e.target.options[e.target.selectedIndex].text}"?`,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Ubah',
-                cancelButtonText: 'Batal',
-                background: '#1f2937',
-                customClass: {
-                    title: 'text-coral-500',
-                    content: 'text-gray-300',
-                    confirmButton: 'bg-teal-500 hover:bg-teal-600 text-white',
-                    cancelButton: 'bg-gray-600 hover:bg-gray-700 text-gray-200'
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    e.target.closest('form').submit();
-                } else {
-                    e.target.value = '{{ $order->status }}'; // Revert selection
-                }
-            });
-        });
-    </script>
-@endpush

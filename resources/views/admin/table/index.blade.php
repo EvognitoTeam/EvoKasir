@@ -11,7 +11,6 @@
             <i class="fas fa-chair text-lg sm:text-xl"></i> Daftar Tabel - {{ $mitra->mitra_name }}
         </h1>
 
-        <!-- Success Message -->
         @if (session('success'))
             <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" x-transition
                 class="mb-6 bg-teal-500/20 border border-teal-400/30 text-teal-400 px-4 sm:px-6 py-2 sm:py-3 rounded-xl shadow-lg animate-fade-in">
@@ -19,15 +18,21 @@
             </div>
         @endif
 
-        <!-- Add New Table Button -->
-        <div class="flex justify-between items-center mb-6 sm:mb-8">
-            <a href="{{ route('admin.table.create', ['slug' => $slug]) }}"
-                class="bg-teal-500 hover:bg-teal-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-md text-sm sm:text-base font-semibold transition-all duration-200 transform hover:scale-105">
-                <i class="fas fa-plus mr-2"></i> Tambah Tabel Baru
-            </a>
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
+            <div class="flex gap-3">
+                <a href="{{ route('admin.table.create', ['slug' => $slug]) }}"
+                    class="bg-teal-500 hover:bg-teal-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-md text-sm sm:text-base font-semibold transition-all duration-200 transform hover:scale-105 flex items-center gap-2">
+                    <i class="fas fa-plus"></i> Tambah Tabel
+                </a>
+                {{-- Tombol Download Semua QR hanya muncul jika ada tabel --}}
+                @if ($tableList->isNotEmpty())
+                    <a href="{{ route('admin.table.qr.downloadAll', ['slug' => $slug]) }}"
+                        class=" bg-cyan-500 hover:bg-cyan-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-md text-sm sm:text-base font-semibold transition-all duration-200 transform hover:scale-105 flex items-center gap-2">
+                        <i class="fas fa-download"></i> Download Semua QR
+                    </a>
+                @endif
+            </div>
         </div>
-
-        <!-- Table List -->
         <div class="bg-gray-800/90 backdrop-blur-md rounded-xl shadow-lg overflow-x-auto animate-scale-in">
             <table class="w-full table-auto text-left text-sm sm:text-base">
                 <thead class="bg-gray-700/50 border-b border-gray-600 text-gray-300">
@@ -54,7 +59,12 @@
                                 </select>
                             </td>
                             <td class="py-3 sm:py-4 px-4 sm:px-6 text-center">
-                                <div class="flex justify-center gap-2 sm:gap-3">
+                                <div class="flex justify-center items-center gap-2 sm:gap-3">
+                                    <a href="{{ route('admin.table.qr.download', ['slug' => $slug, 'table' => $table->id]) }}"
+                                        title="Download QR Code"
+                                        class="px-3 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg shadow-md transition-all duration-200">
+                                        <i class="fas fa-qrcode"></i>
+                                    </a>
                                     <a href="{{ route('admin.table.edit', ['slug' => $slug, 'id' => $table->id]) }}"
                                         class="px-3 sm:px-4 py-1 sm:py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg shadow-md text-xs sm:text-sm font-semibold transition-all duration-200">
                                         Edit
@@ -75,7 +85,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="2" class="py-6 sm:py-8 text-center text-gray-400">Belum ada tabel.</td>
+                            <td colspan="4" class="py-6 sm:py-8 text-center text-gray-400">Belum ada tabel.</td>
                         </tr>
                     @endforelse
                 </tbody>

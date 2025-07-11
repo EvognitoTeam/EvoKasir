@@ -50,6 +50,7 @@ class ApiOrderController extends Controller
     {
         $validated = $request->validate([
             'user_id' => 'required|integer|exists:users,id',
+            'cashier_id' => 'required|integer|exists:users,id',
             'mitra_id' => 'required|integer|exists:mitra,id',
             'name' => 'nullable|string|max:255',
             'table_number' => 'nullable|integer',
@@ -59,6 +60,7 @@ class ApiOrderController extends Controller
             'cashChange' => 'required|integer',
             'orders' => 'required|array|min:1',
             'orders.*.product_id' => 'required|integer|exists:products,id',
+            'orders.*.note' => 'nullable|string|max:500', // Catatan bisa kosong, tipe string, max 500 karakter
             'orders.*.quantity' => 'required|integer|min:1',
             'orders.*.price' => 'required|integer|min:0',
         ]);
@@ -82,6 +84,7 @@ class ApiOrderController extends Controller
             $order = Order::create([
                 'mitra_id' => $validated['mitra_id'],
                 'user_id' => $validated['user_id'],
+                'cashier_id' => $validated['cashier_id'],
                 'order_code' => $orderCode,
                 'name' => $validated['name'],
                 'table_number' => $validated['table_number'],
@@ -101,6 +104,7 @@ class ApiOrderController extends Controller
                     'product_id' => $item['product_id'],
                     'quantity' => $item['quantity'],
                     'price' => $item['price'],
+                    'notes' => $item['note'],
                 ]);
                 // Kurangi stok produk
                 $product = Menu::find($item['product_id']);

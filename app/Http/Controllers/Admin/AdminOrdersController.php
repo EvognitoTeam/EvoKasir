@@ -16,7 +16,7 @@ class AdminOrdersController extends Controller
         // Logic to display the orders list
         $mitra = Mitra::where('mitra_slug', $slug)->first();
 
-        $orders = Order::with('table')->where('mitra_id', $mitra->id)->latest()->paginate(15);
+        $orders = Order::with('table', 'user_cashier')->where('mitra_id', $mitra->id)->latest()->paginate(15);
         $notifSound = PrintSetting::where('mitra_id', $mitra->id)->where('key', 'notif_sound')->value('value') ?? 'ding.mp3';
 
 
@@ -27,7 +27,7 @@ class AdminOrdersController extends Controller
     {
         $mitra = Mitra::where('mitra_slug', $slug)->first();
 
-        $order = Order::with(['items.product', 'mitra', 'table'])->where('order_code', $order_code)->first();
+        $order = Order::with(['items.product', 'mitra', 'table', 'user_cashier'])->where('order_code', $order_code)->first();
         // dd($order);
         if (!$order) {
             return redirect()->back()->with('error', 'Order not found.');
@@ -42,6 +42,14 @@ class AdminOrdersController extends Controller
     public function updateStatus(Request $request, $slug, $order_code)
     {
         $order = Order::where('order_code', $order_code)->firstOrFail();
+
+        // Cek jika status pembayaran bukan '2' (Lunas/Paid)
+        if ($order->payment_status != 2) {
+            // Jika belum lunas, kembalikan ke halaman detail dengan pesan error
+            return redirect()->route('admin.orders.detail', ['slug' => $slug, 'order_code' => $order_code])
+                ->with('error', 'Update status gagal, pembayaran belum dilakukan atau belum lunas.');
+        }
+
         $request->validate(['status' => 'required|in:pending,completed,cancelled']);
         $order->update(['status' => $request->status]);
         return redirect()->route('admin.orders.detail', ['slug' => $slug, 'order_code' => $order_code])

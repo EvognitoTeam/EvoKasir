@@ -75,7 +75,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <h2 class="text-xl font-semibold text-white">Total Pendapatan</h2>
+                        <h2 class="text-xl font-semibold text-white">Total Pendapatan QRIS</h2>
                     </div>
                     <p class="text-3xl font-bold text-white">Rp {{ number_format($totalRevenue, 0, ',', '.') }}</p>
                     <p class="text-sm text-gray-400 mt-2">Pendapatan dari semua pesanan menggunakan QRIS yang diselesaikan.
@@ -94,8 +94,9 @@
                     <p class="text-3xl font-bold text-white">Rp {{ number_format($availableCashout, 0, ',', '.') }}</p>
                     <div class="text-sm text-gray-400 mt-2">
                         <p>Biaya Midtrans (0.7%): Rp {{ number_format($midtransFee, 0, ',', '.') }}</p>
-                        <p>Biaya Platform (15%): Rp {{ number_format($platformFee, 0, ',', '.') }}</p>
-                        <p class="mt-1">Dana yang dapat ditarik setelah biaya Midtrans (0.7%) dan platform (15%).</p>
+                        <p>Biaya Platform (12%): Rp {{ number_format($platformFee, 0, ',', '.') }}</p>
+                        <p class="mt-1">Dana yang dapat ditarik setelah biaya Midtrans (0.7%) dan platform (12%).</p>
+                        <p class="mt-1">Dana akan masuk maksimal 2x24 jam sejak pengajuan.</p>
                     </div>
                     <div class="mt-4">
                         @php
@@ -103,14 +104,19 @@
                                 $availableCashout >= 100000 && !empty($mitra->no_rek) && !empty($mitra->nama_rek);
                         @endphp
 
+                        @if (!$canCashout)
+                            <p class="text-sm text-gray-400 mt-2">Minimal Cashout Rp 100.000</p>
+                        @endif
+
                         <form action="{{ route('admin.cashout.store', ['slug' => $mitra->mitra_slug]) }}" method="POST">
                             @csrf
 
                             <input type="hidden" name="amount" id="amount" value="{{ $availableCashout }}">
                             <div class="mt-6">
-                                <button type="submit" {{ !$canCashout ? 'disabled' : '' }}
+                                <button type="submit" title="{{ !$canCashout ? 'Cashout Minimal Rp 100.000' : '' }}"
+                                    {{ !$canCashout ? 'disabled' : '' }}
                                     class="inline-flex items-center px-4 py-2 bg-teal-600 text-white font-semibold rounded-lg transition duration-300
-          {{ $canCashout ? 'hover:bg-teal-700' : 'opacity-50 cursor-not-allowed pointer-events-none' }}">
+        {{ $canCashout ? 'hover:bg-teal-700' : 'opacity-50 cursor-not-allowed' }}">
                                     Ajukan Cashout
                                 </button>
                             </div>

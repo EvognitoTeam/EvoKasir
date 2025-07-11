@@ -105,7 +105,7 @@
                 <ul class="list-none text-gray-600 text-sm sm:text-base space-y-2">
                     <li><strong>Email:</strong> <a href="mailto:chat.evognitoteam@gmail.com"
                             class="text-indigo-600 hover:text-indigo-500">chat.evognitoteam@gmail.com</a></li>
-                    <li><strong>Telepon:</strong> +62 851 7677 3826</li>
+                    <li><strong>WhatsApp:</strong> +62 851 7677 3826</li>
                 </ul>
             </div>
         </div>

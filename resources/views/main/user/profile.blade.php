@@ -136,7 +136,8 @@
                                     </svg>
                                     <div>
                                         <label class="block text-xs font-medium text-gray-300">Loyalty Points</label>
-                                        <p class="text-xl font-bold text-yellow-400">{{ $loyaltyPoints }} Poin</p>
+                                        {{-- <p class="text-xl font-bold text-yellow-400">{{ $loyaltyPoints }} Poin</p> --}}
+                                        <p class="text-xl font-bold italic text-red-400">Coming Soon</p>
                                     </div>
                                 </div>
                                 <span
@@ -269,6 +270,22 @@
 
                     <!-- Tab: Riwayat Pemesanan -->
                     <div id="orders" class="tab-content hidden">
+                        @php
+                            // Ambil semua review dari user yang sedang login, sekali saja.
+                            $allUserReviews = \App\Models\Rating::where('user_id', auth()->id())
+                                ->get()
+                                ->mapToGroups(function ($review) {
+                                    // Kelompokkan berdasarkan order_id dan product_id untuk pencarian mudah
+                                    return [$review->order_id . '_' . $review->product_id => $review];
+                                })
+                                ->map(function ($group) {
+                                    // Ambil hanya review pertama dari grup (seharusnya hanya ada satu)
+                                    return $group->first();
+                                });
+
+                            // Contoh data slug, sesuaikan dengan data dari controller Anda
+                            $slug = $slug;
+                        @endphp
                         <div class="flex items-center space-x-3 mb-3">
                             <svg class="w-5 h-5 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -409,20 +426,22 @@
             });
         }
 
+        // Siapkan data semua review dalam variabel JavaScript
+        const allReviews = @json($allUserReviews);
+
+        // Fungsi untuk menampilkan detail pesanan dan form review
         function showOrderDetails(order) {
             let itemsHtml = '';
             order.items.forEach(item => {
-                // Cek apakah sudah ada review untuk item ini
-                @php
-                    $existingReviews = \App\Models\Rating::where('user_id', auth()->id())
-                        ->get()
-                        ->keyBy(function ($review) {
-                            return $review->product_id;
-                        });
-                @endphp
-                const existingReview = @json($existingReviews)[item.product_id] || null;
+                // Buat kunci unik untuk mencari review berdasarkan order_id dan product_id
+                const reviewKey = `${order.id}_${item.product_id}`;
+
+                // Cek apakah sudah ada review untuk item ini di pesanan ini
+                const existingReview = allReviews[reviewKey] || null;
+
                 const isPaid = order.status === 'Lunas';
                 let reviewForm = '';
+
                 if (isPaid && !existingReview) {
                     reviewForm = `
                         <form action="{{ route('user.review.store', ['slug' => $slug, 'order' => ':order_id', 'item' => ':item_id']) }}"
@@ -439,28 +458,20 @@
                                 </div>
                                 <input type="hidden" name="rating" class="rating-value" data-item-id="${item.id}" value="0">
                                 <label class="text-xs text-gray-300">Komentar</label>
-                                <textarea name="comment" rows="2"
-                                          class="bg-gray-800 text-white p-2 rounded-lg border border-gray-700 focus:outline-none focus:border-teal-500"></textarea>
-                                <button type="submit"
-                                        class="bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg">
+                                <textarea name="comment" rows="2" class="bg-gray-800 text-white p-2 rounded-lg border border-gray-700 focus:outline-none focus:border-teal-500"></textarea>
+                                <button type="submit" class="bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg">
                                     Kirim Review
                                 </button>
                             </div>
                         </form>
-                    `.replace(':order_id', order.id)
+                    `
+                        .replace(':order_id', order.id)
                         .replace(':item_id', item.id);
                 } else if (existingReview) {
-                    // Tampilkan rating yang sudah ada sebagai bintang
                     let starsHtml = '';
                     const rating = parseFloat(existingReview.rating);
                     for (let i = 1; i <= 5; i++) {
-                        if (rating >= i) {
-                            starsHtml += `<span class="star rated">★</span>`;
-                        } else if (rating >= i - 0.5 && rating < i) {
-                            starsHtml += `<span class="star half-rated">★</span>`;
-                        } else {
-                            starsHtml += `<span class="star">★</span>`;
-                        }
+                        starsHtml += `<span class="star ${rating >= i ? 'rated' : ''}">★</span>`;
                     }
                     reviewForm = `
                         <div class="mt-2 text-sm text-gray-300">
@@ -481,9 +492,7 @@
                         <td class="px-3 py-2 text-sm">Rp ${item.subtotal}</td>
                     </tr>
                     <tr class="bg-gray-900 border-b border-gray-700">
-                        <td colspan="4" class="px-3 py-2">
-                            ${reviewForm}
-                        </td>
+                        <td colspan="4" class="px-3 py-2">${reviewForm}</td>
                     </tr>
                 `;
             });
@@ -492,29 +501,12 @@
                 title: `<p class="text-center text-white">Detail Pesanan</p>`,
                 html: `
                     <div class="text-left text-gray-300 text-sm space-y-3">
-                        <div class="flex justify-between">
-                            <span class="font-medium">Kode Pesanan:</span>
-                            <span>${order.code}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="font-medium">Total Harga:</span>
-                            <span>Rp ${order.total}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="font-medium">Metode Pembayaran:</span>
-                            <span>${order.payment_method}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="font-medium">Status:</span>
-                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium text-white ${order.status_class}">
-                                ${order.status}
-                            </span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="font-medium">Tanggal:</span>
-                            <span>${order.date}</span>
-                        </div>
-                        <h4 class="text-sm font-semibold text-white mt-4">Item Pesanan</h4>
+                        <div class="flex justify-between"><span>Kode Pesanan:</span> <span>${order.code}</span></div>
+                        <div class="flex justify-between"><span>Total Harga:</span> <span>Rp ${new Intl.NumberFormat('id-ID').format(order.total)}</span></div>
+                        <div class="flex justify-between"><span>Metode Pembayaran:</span> <span>${order.payment_method}</span></div>
+                        <div class="flex justify-between"><span>Status:</span> <span class="px-2 py-1 rounded-full text-xs font-medium text-white ${order.status === 'Lunas' ? 'bg-green-500' : 'bg-yellow-500'}">${order.status}</span></div>
+                        <div class="flex justify-between"><span>Tanggal:</span> <span>${new Date(order.date).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })}</span></div>
+                        <h4 class="text-sm font-semibold text-white mt-4 pt-2 border-t border-gray-700">Item Pesanan</h4>
                         <div class="overflow-x-auto max-h-48">
                             <table class="w-full text-sm text-left text-gray-300">
                                 <thead class="text-xs text-gray-400 uppercase bg-gray-800">
@@ -525,58 +517,36 @@
                                         <th class="px-3 py-2">Subtotal</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    ${itemsHtml}
-                                </tbody>
+                                <tbody>${itemsHtml}</tbody>
                             </table>
                         </div>
                     </div>
                 `,
                 background: '#1F2937',
                 customClass: {
-                    title: 'text-coral-500 text-lg font-semibold',
+                    title: 'text-lg font-semibold',
                     popup: 'rounded-lg max-w-2xl',
                     confirmButton: 'bg-teal-500 hover:bg-teal-600 text-white font-semibold py-2 px-4 rounded-lg'
                 },
                 confirmButtonText: 'Tutup',
-                confirmButtonColor: '#14b8a6',
                 width: '90%',
                 padding: '1rem',
                 didOpen: () => {
-                    const stars = document.querySelectorAll('.star-rating:not(.static) .star');
-                    stars.forEach(star => {
+                    document.querySelectorAll('.star-rating:not(.static) .star').forEach(star => {
                         star.addEventListener('click', (e) => {
                             const ratingContainer = star.parentElement;
-                            const itemId = ratingContainer.getAttribute('data-item-id');
-                            const index = parseInt(star.getAttribute('data-index'));
-                            const rect = star.getBoundingClientRect();
-                            const clickX = e.clientX - rect.left;
-                            const isHalf = clickX < rect.width / 2;
-                            const rating = isHalf ? index - 0.5 : index;
+                            const itemId = ratingContainer.dataset.itemId;
+                            const ratingValue = parseInt(star.dataset.index);
+                            ratingContainer.dataset.rating = ratingValue;
 
-                            ratingContainer.setAttribute('data-rating', rating);
-
-                            // Seleksi bintang berdasarkan container star-rating
-                            const containerStars = ratingContainer.querySelectorAll('.star');
-                            containerStars.forEach(s => {
-                                const sIndex = parseInt(s.getAttribute('data-index'));
-                                if (sIndex < index || (sIndex === index && !isHalf)) {
-                                    s.classList.add('rated');
-                                    s.classList.remove('half-rated');
-                                } else if (sIndex === index && isHalf) {
-                                    s.classList.add('half-rated');
-                                    s.classList.remove('rated');
-                                } else {
-                                    s.classList.remove('rated', 'half-rated');
-                                }
-                            });
-
-                            // Update input rating
-                            const ratingInput = document.querySelector(
+                            const ratingInput = ratingContainer.parentElement.querySelector(
                                 `.rating-value[data-item-id="${itemId}"]`);
-                            if (ratingInput) {
-                                ratingInput.value = rating;
-                            }
+                            if (ratingInput) ratingInput.value = ratingValue;
+
+                            ratingContainer.querySelectorAll('.star').forEach(s => {
+                                s.classList.toggle('rated', parseInt(s.dataset.index) <=
+                                    ratingValue);
+                            });
                         });
                     });
                 }

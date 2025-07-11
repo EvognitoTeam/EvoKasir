@@ -22,8 +22,12 @@ class CheckoutController extends Controller
         // dd($request);
         $mitra = Mitra::where('mitra_slug', $slug)->firstOrFail();
         $cashier = User::where('mitra_id', $mitra->id)
-            ->where('role', 'Cashier')
+            ->whereIn('role', ['Cashier', 'Owner'])
             ->where('is_login', 1)
+            // Urutkan berdasarkan prioritas: 'Cashier' lebih dulu, baru 'Owner'
+            ->orderByRaw("CASE WHEN role = 'Cashier' THEN 1 ELSE 2 END")
+            // Jika ada peran yang sama, urutkan berdasarkan login terbaru
+            ->orderBy('login_at', 'desc')
             ->first();
         $tableCode = session('table');
         $tableQuery = TableList::where('mitra_id', $mitra->id);

@@ -1,367 +1,121 @@
 @extends('layouts.main')
 
-@section('title', 'Beranda')
+@section('title', 'Aplikasi Kasir Gratis untuk Bisnis Anda')
 
 @section('content')
-    <!-- Hero Section with Animated Background -->
-    <section
-        class="relative min-h-[70vh] sm:min-h-[80vh] flex items-center justify-center bg-gradient-to-br from-indigo-600 via-blue-500 to-teal-400 text-white overflow-hidden">
-        <div class="absolute inset-0 opacity-20">
-            <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"
-                preserveAspectRatio="xMidYMid slice">
-                <defs>
-                    <pattern id="hero-pattern" patternUnits="userSpaceOnUse" width="20" height="20">
-                        <circle cx="10" cy="10" r="2" fill="white" />
-                        <line x1="0" y1="20" x2="20" y2="0" stroke="white"
-                            stroke-width="0.5" />
-                    </pattern>
-                </defs>
-                <rect width="100%" height="100%" fill="url(#hero-pattern)" class="animate-subtle-move" />
-            </svg>
-        </div>
+
+    <section class="relative min-h-[90vh] flex items-center justify-center text-white overflow-hidden">
         <div
-            class="absolute top-10 left-10 w-20 h-20 sm:w-32 sm:h-32 bg-teal-300 rounded-full opacity-20 animate-float hidden sm:block">
+            class="absolute inset-0 bg-gradient-to-br from-gray-900 via-indigo-900 to-teal-800 bg-[length:200%_200%] animate-background-pan z-0">
         </div>
-        <div
-            class="absolute bottom-10 right-10 w-24 h-24 sm:w-48 sm:h-48 bg-indigo-300 rounded-full opacity-20 animate-float-slow hidden sm:block">
-        </div>
-        <div class="absolute top-1/3 right-1/4 w-16 h-16 sm:w-24 sm:h-24 bg-blue-300 rounded-full opacity-15 animate-float hidden sm:block"
-            style="animation-delay: 1s;">
-        </div>
-        <div class="absolute bottom-1/3 left-1/4 w-20 h-20 sm:w-36 sm:h-36 bg-teal-200 rounded-full opacity-15 animate-float-slow hidden sm:block"
-            style="animation-delay: 0.5s;">
-        </div>
+
+        <div class="absolute inset-0 bg-[radial-gradient(#ffffff22_1px,transparent_1px)] [background-size:32px_32px]"></div>
+
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 leading-tight animate-text-reveal">
-                EvoKasir: Solusi Bisnis Modern
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-4 leading-tight animate-fade-in-up">
+                Aplikasi Kasir Gratis untuk Kembangkan Bisnis Anda
             </h1>
-            <p class="text-base sm:text-lg md:text-xl text-gray-100 mb-6 sm:mb-8 max-w-xl mx-auto animate-text-reveal"
+            <p class="text-lg sm:text-xl text-gray-300 mb-8 max-w-3xl mx-auto animate-fade-in-up"
                 style="animation-delay: 0.2s;">
-                Kelola restoran Anda dengan cepat, mudah, dan efisien.
+                Fokus pada rasa, biar kami yang urus transaksinya. Tanpa biaya bulanan, hanya potongan standar QRIS & fee
+                cashout.
             </p>
-            <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <div class="animate-fade-in-up" style="animation-delay: 0.4s;">
                 <a href="/register"
-                    class="bg-white text-indigo-600 font-semibold py-2 px-6 sm:py-3 sm:px-8 rounded-full shadow-lg hover:bg-gray-100 transform hover:scale-105 transition-all duration-300 animate-button-reveal">
-                    Mulai Sekarang
-                </a>
-                <a href="#features"
-                    class="scroll-to-features border-2 border-white text-white font-semibold py-2 px-6 sm:py-3 sm:px-8 rounded-full hover:bg-white hover:text-indigo-600 transform hover:scale-105 transition-all duration-300 animate-button-reveal"
-                    style="animation-delay: 0.1s;">
-                    Lihat Fitur
+                    class="inline-block bg-white text-indigo-700 font-bold py-3 px-10 rounded-full shadow-2xl hover:bg-gray-200 transform hover:scale-105 transition-all duration-300">
+                    Daftar Gratis Sekarang
                 </a>
             </div>
         </div>
     </section>
 
-    <!-- Features Section -->
-    <section id="features" class="py-12 sm:py-16 bg-white">
+    <section id="features" class="py-16 sm:py-24 bg-gray-50">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <h2
-                class="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-gray-800 mb-8 sm:mb-12 animate-text-reveal">
-                Fitur Unggulan Kami
-            </h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
-                <!-- Fitur 1: Manajemen Pesanan -->
-                <div
-                    class="group relative p-4 sm:p-6 bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 feature-card">
+            <div class="text-center mb-12 sm:mb-16">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900">Semua yang Anda Butuhkan, Tanpa Biaya Tersembunyi
+                </h2>
+                <p class="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">Dari kasir canggih hingga laporan lengkap, semuanya
+                    tersedia gratis.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <div class="group relative">
                     <div
-                        class="absolute inset-0 bg-indigo-500 opacity-0 group-hover:opacity-10 rounded-xl transition-opacity duration-500">
+                        class="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-teal-500 rounded-2xl blur opacity-25 group-hover:opacity-75 transition duration-500">
                     </div>
-                    <div
-                        class="text-indigo-600 mb-3 sm:mb-4 transform group-hover:scale-110 transition-transform duration-300">
-                        <svg class="w-10 h-10 sm:w-12 sm:h-12 mx-auto" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                            </path>
-                        </svg>
+                    <div class="relative p-6 bg-white rounded-2xl shadow-lg h-full ring-1 ring-gray-900/5">
+                        <div
+                            class="bg-indigo-100 text-indigo-600 rounded-lg w-12 h-12 flex items-center justify-center mb-5">
+                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                                </path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Manajemen Pesanan & Meja</h3>
+                        <p class="text-gray-600">Catat pesanan dengan cepat, atur status meja, dan kirim pesanan langsung ke
+                            dapur secara digital.</p>
                     </div>
-                    <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-2 text-center">Manajemen Pesanan</h3>
-                    <p class="text-gray-600 text-sm sm:text-base text-center">
-                        Proses pesanan pelanggan dengan cepat dan akurat langsung dari aplikasi.
-                    </p>
                 </div>
-                <!-- Fitur 2: Laporan Real-Time -->
-                <div
-                    class="group relative p-4 sm:p-6 bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 feature-card">
+
+                <div class="group relative">
                     <div
-                        class="absolute inset-0 bg-indigo-500 opacity-0 group-hover:opacity-10 rounded-xl transition-opacity duration-500">
+                        class="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-teal-500 rounded-2xl blur opacity-25 group-hover:opacity-75 transition duration-500">
                     </div>
-                    <div
-                        class="text-indigo-600 mb-3 sm:mb-4 transform group-hover:scale-110 transition-transform duration-300">
-                        <svg class="w-10 h-10 sm:w-12 sm:h-12 mx-auto" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 22" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
-                            </path>
-                        </svg>
+                    <div class="relative p-6 bg-white rounded-2xl shadow-lg h-full ring-1 ring-gray-900/5">
+                        <div class="bg-teal-100 text-teal-600 rounded-lg w-12 h-12 flex items-center justify-center mb-5">
+                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z">
+                                </path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Penerimaan Pembayaran QRIS</h3>
+                        <p class="text-gray-600">Terima pembayaran non-tunai dari semua e-wallet dan mobile banking dengan
+                            mudah, cepat, dan aman.</p>
                     </div>
-                    <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-2 text-center">Laporan Real-Time</h3>
-                    <p class="text-gray-600 text-sm sm:text-base text-center">
-                        Pantau penjualan dan stok secara real-time untuk pengambilan keputusan yang lebih baik.
-                    </p>
                 </div>
-                <!-- Fitur 3: Integrasi Pembayaran -->
-                <div
-                    class="group relative p-4 sm:p-6 bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 feature-card">
+
+                <div class="group relative">
                     <div
-                        class="absolute inset-0 bg-indigo-500 opacity-0 group-hover:opacity-10 rounded-xl transition-opacity duration-500">
+                        class="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-teal-500 rounded-2xl blur opacity-25 group-hover:opacity-75 transition duration-500">
                     </div>
-                    <div
-                        class="text-indigo-600 mb-3 sm:mb-4 transform group-hover:scale-110 transition-transform duration-300">
-                        <svg class="w-10 h-10 sm:w-12 sm:h-12 mx-auto" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z">
-                            </path>
-                        </svg>
+                    <div class="relative p-6 bg-white rounded-2xl shadow-lg h-full ring-1 ring-gray-900/5">
+                        <div class="bg-sky-100 text-sky-600 rounded-lg w-12 h-12 flex items-center justify-center mb-5">
+                            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Laporan Penjualan Real-time</h3>
+                        <p class="text-gray-600">Pantau performa bisnis Anda kapan saja dan di mana saja melalui dasbor
+                            laporan yang lengkap dan mudah dibaca.</p>
                     </div>
-                    <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-2 text-center">Integrasi Pembayaran</h3>
-                    <p class="text-gray-600 text-sm sm:text-base text-center">
-                        Dukungan berbagai metode pembayaran untuk kemudahan transaksi.
-                    </p>
-                </div>
-                <!-- Fitur 4: Manajemen Meja -->
-                <div
-                    class="group relative p-4 sm:p-6 bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 feature-card">
-                    <div
-                        class="absolute inset-0 bg-indigo-500 opacity-0 group-hover:opacity-10 rounded-xl transition-opacity duration-500">
-                    </div>
-                    <div
-                        class="text-indigo-600 mb-3 sm:mb-4 transform group-hover:scale-110 transition-transform duration-300">
-                        <svg class="w-10 h-10 sm:w-12 sm:h-12 mx-auto" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
-                            </path>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-2 text-center">Manajemen Meja</h3>
-                    <p class="text-gray-600 text-sm sm:text-base text-center">
-                        Atur tata letak meja dan status pemesanan dengan mudah.
-                    </p>
-                </div>
-                <!-- Fitur 5: Manajemen Menu -->
-                <div
-                    class="group relative p-4 sm:p-6 bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 feature-card">
-                    <div
-                        class="absolute inset-0 bg-indigo-500 opacity-0 group-hover:opacity-10 rounded-xl transition-opacity duration-500">
-                    </div>
-                    <div
-                        class="text-indigo-600 mb-3 sm:mb-4 transform group-hover:scale-110 transition-transform duration-300">
-                        <svg class="w-10 h-10 sm:w-12 sm:h-12 mx-auto" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 6h16M4 12h16M4 18h7"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-2 text-center">Manajemen Menu</h3>
-                    <p class="text-gray-600 text-sm sm:text-base text-center">
-                        Sesuaikan dan kelola menu restoran dengan fleksibilitas tinggi.
-                    </p>
-                </div>
-                <!-- Fitur 6: Notifikasi Pesanan -->
-                <div
-                    class="group relative p-4 sm:p-6 bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 feature-card">
-                    <div
-                        class="absolute inset-0 bg-indigo-500 opacity-0 group-hover:opacity-10 rounded-xl transition-opacity duration-500">
-                    </div>
-                    <div
-                        class="text-indigo-600 mb-3 sm:mb-4 transform group-hover:scale-110 transition-transform duration-300">
-                        <svg class="w-10 h-10 sm:w-12 sm:h-12 mx-auto" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
-                            </path>
-                        </svg>
-                    </div>
-                    <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-2 text-center">Notifikasi Pesanan</h3>
-                    <p class="text-gray-600 text-sm sm:text-base text-center">
-                        Dapatkan pemberitahuan instan untuk setiap pesanan baru.
-                    </p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Call to Action Section -->
-    <section class="py-12 sm:py-16 bg-gradient-to-r from-indigo-600 to-teal-400 text-white text-center">
+    <section class="py-16 sm:py-24 bg-white">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 animate-text-reveal">
-                Optimalkan Bisnis Anda Sekarang
-            </h2>
-            <p class="text-base sm:text-lg text-gray-200 mb-6 max-w-xl mx-auto animate-text-reveal"
-                style="animation-delay: 0.2s;">
-                Bergabunglah dengan ribuan restoran yang mempercayai EvoKasir.
-            </p>
-            <a href="/register"
-                class="inline-block bg-white text-indigo-600 font-semibold py-2 px-6 sm:py-3 sm:px-8 rounded-full shadow-lg hover:bg-gray-100 transform hover:scale-105 transition-all duration-300 animate-button-reveal">
-                Daftar Sekarang
-            </a>
+            <div
+                class="relative bg-gradient-to-r from-indigo-600 to-teal-500 rounded-2xl p-8 sm:p-12 shadow-xl overflow-hidden text-center">
+                <div
+                    class="absolute top-0 left-0 w-full h-full bg-[radial-gradient(#ffffff22_1px,transparent_1px)] [background-size:24px_24px] opacity-50">
+                </div>
+                <div class="relative">
+                    <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">Mulai Gunakan EvoKasir Hari Ini</h2>
+                    <p class="text-lg text-indigo-100 mb-8 max-w-xl mx-auto">Daftar dalam 5 menit dan rasakan langsung
+                        kemudahan mengelola bisnis Anda. Gratis, selamanya.</p>
+                    <a href="/register"
+                        class="inline-block bg-white text-indigo-600 font-bold py-3 px-8 rounded-full shadow-lg hover:bg-gray-200 transform hover:scale-105 transition-all duration-300">
+                        Buat Akun Gratis
+                    </a>
+                </div>
+            </div>
         </div>
     </section>
+
 @endsection
-
-@push('styles')
-    <style>
-        @keyframes textReveal {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes buttonReveal {
-            from {
-                opacity: 0;
-                transform: scale(0.8);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-20px);
-            }
-        }
-
-        @keyframes floatSlow {
-
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-30px);
-            }
-        }
-
-        @keyframes subtleMove {
-
-            0%,
-            100% {
-                transform: translate(0, 0);
-            }
-
-            50% {
-                transform: translate(10px, 10px);
-            }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .animate-text-reveal {
-            animation: textReveal 0.8s ease-out forwards !important;
-        }
-
-        .animate-button-reveal {
-            animation: buttonReveal 0.6s ease-out forwards !important;
-        }
-
-        .animate-float {
-            animation: float 6s ease-in-out infinite !important;
-        }
-
-        .animate-float-slow {
-            animation: floatSlow 8s ease-in-out infinite !important;
-        }
-
-        .animate-subtle-move {
-            animation: subtleMove 20s ease-in-out infinite !important;
-            transform-box: fill-box;
-            /* Ensure transform applies to SVG */
-        }
-
-        .feature-card {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-
-        .feature-card.visible {
-            opacity: 1;
-            transform: translateY(0);
-            animation: fadeInUp 0.6s ease-out forwards !important;
-        }
-
-        @media (max-width: 640px) {
-            .container {
-                padding-left: 0.5rem;
-                padding-right: 0.5rem;
-            }
-
-            h1 {
-                font-size: 1.875rem;
-            }
-
-            h2 {
-                font-size: 1.5rem;
-            }
-
-            p {
-                font-size: 0.875rem;
-            }
-        }
-    </style>
-@endpush
-
-@push('scripts')
-    <script>
-        document.querySelectorAll('.scroll-to-features').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    window.scrollTo({
-                        top: target.offsetTop - 80,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const elements = document.querySelectorAll('.feature-card');
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach((entry, index) => {
-                    if (entry.isIntersecting) {
-                        setTimeout(() => {
-                            entry.target.classList.add('visible');
-                        }, index * 150);
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, {
-                threshold: 0.2
-            });
-
-            elements.forEach(element => observer.observe(element));
-        });
-    </script>
-@endpush

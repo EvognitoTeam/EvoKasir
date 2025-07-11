@@ -30,6 +30,8 @@ Route::get('/privacy', function () {
     return view('privacy');
 })->name('privacy');
 
+Route::get('/terms-conditions', fn() => view('terms'))->name('terms');
+
 // Route::get('/login', function () {
 //     return view('auth.login');
 // })->name('login');
@@ -44,6 +46,18 @@ Route::get('/privacy', function () {
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('admin.register');
 Route::post('/register', [AuthController::class, 'register']);
 
+
+Route::prefix('admEvokasir')->group(function () {
+    Route::get('/', function () {
+        return response()->json([
+            'error_code' => 403,
+            'message' => 'Forbidden Access!! You do not have permission to access this resource.',
+        ], 403);
+    });
+    Route::get('/home', function () {
+        return view('welcome');
+    });
+});
 
 Route::prefix('{slug}')->group(function () {
     Route::prefix('cashier')->group(function () {
@@ -113,6 +127,8 @@ Route::prefix('{slug}')->group(function () {
             Route::get('/table/{id}/edit', [AdminTableController::class, 'edit'])->name('admin.table.edit');
             Route::put('/table/{id}/update', [AdminTableController::class, 'update'])->name('admin.table.update');
             Route::delete('/table/{id}/destroy', [AdminTableController::class, 'destroy'])->name('admin.table.destroy');
+            Route::get('/table/qr/{table}', [AdminTableController::class, 'downloadQr'])->name('admin.table.qr.download');
+            Route::get('/table/qr-all', [AdminTableController::class, 'downloadAllQr'])->name('admin.table.qr.downloadAll');
 
             Route::get('/categories', [AdminCategoryController::class, 'index'])->name('admin.categories.index');
             Route::get('/categories/create', [AdminCategoryController::class, 'create'])->name('admin.categories.create');
@@ -134,8 +150,10 @@ Route::prefix('{slug}')->group(function () {
 
     Route::get('/login', [UserAuthController::class, 'showLoginForm'])->name('user.login');
     Route::post('/login', [UserAuthController::class, 'userLogin'])->name('user.login');
+
     Route::get('/register', [UserAuthController::class, 'showRegisterForm'])->name('user.register');
     Route::post('/register', [UserAuthController::class, 'userRegister'])->name('user.register');
+
     Route::middleware('role:User')->group(function () {
         Route::post('/logout', [UserAuthController::class, 'userLogout'])->name('user.logout');
         // Route::get('/logout', [UserAuthController::class, 'userLogout'])->name('user.logout');

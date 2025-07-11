@@ -28,6 +28,7 @@
                         <th class="py-3 sm:py-4 px-4 sm:px-6 font-semibold">Metode Pembayaran</th>
                         <th class="py-3 sm:py-4 px-4 sm:px-6 font-semibold">Status Pembayaran</th>
                         <th class="py-3 sm:py-4 px-4 sm:px-6 font-semibold">Status Pesanan</th>
+                        <th class="py-3 sm:py-4 px-4 sm:px-6 font-semibold">Nama Kasir</th>
                         <th class="py-3 sm:py-4 px-4 sm:px-6 font-semibold">Aksi</th>
                     </tr>
                 </thead>
@@ -83,6 +84,9 @@
                                     class="px-2 sm:px-3 py-1 rounded-full text-white text-xs sm:text-sm {{ $color }}">
                                     {{ ucfirst($order->status) }}
                                 </span>
+                            </td>
+                            <td class="py-3 sm:py-4 px-4 sm:px-6 text-gray-300">
+                                {{ $order->user_cashier->name ?? '-' }}
                             </td>
                             <td class="py-3 sm:py-4 px-4 sm:px-6">
                                 <div class="flex gap-2 flex-wrap">

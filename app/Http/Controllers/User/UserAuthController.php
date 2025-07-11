@@ -9,6 +9,7 @@ use App\Models\Activities;
 use Illuminate\Http\Request;
 use App\Models\LoyaltyPoints;
 use App\Helpers\ActivityHelper;
+use Illuminate\Validation\Rule;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -44,13 +45,7 @@ class UserAuthController extends Controller
             ->take(10)
             ->get();
         $orders = Auth::user()->orders()->where('mitra_id', $mitra->id)->with(['items.product', 'rating'])->latest()->get();
-        // $orders = Auth::user()->orders()
-        //     ->where('mitra_id', $mitra->id)
-        //     ->with(['items.product', 'rating'])
-        //     ->latest()
-        //     ->take(10)
-        //     ->get();
-        // dd($orders);
+
         $coupons = Coupon::where('mitra_id', $mitra->id)->where('is_member_only', 1)->where('expired_date', '>=', now())->get();
         // dd($loyaltyId);
         return view('main.user.profile', compact('mitra', 'slug', 'loyaltyPoints', 'loyaltyId', 'activities', 'orders', 'coupons'));
@@ -77,12 +72,24 @@ class UserAuthController extends Controller
     public function userRegister(Request $request, $slug)
     {
         $mitra = Mitra::where('mitra_slug', $slug)->firstOrFail();
+
+        // --- PERUBAHAN UTAMA ADA DI SINI ---
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'phone' => 'required|string|max:15|unique:users,phone',
+            'email' => [
+                'required',
+                'email:rfc,dns',
+                // Periksa apakah email unik di tabel 'users' HANYA untuk 'mitra_id' yang sama.
+                Rule::unique('users')->where('mitra_id', $mitra->id),
+            ],
+            'phone' => 'required|string|max:15',
             'password' => 'required|string|min:8|confirmed',
+        ], [
+            // Pesan error kustom jika email sudah ada
+            'email.unique' => 'Email ini sudah terdaftar pada mitra ini.',
+            'email.email' => 'Format email tidak valid. Pastikan Anda memasukkan alamat email yang lengkap.'
         ]);
+        // --- AKHIR DARI PERUBAHAN ---
 
         $user = User::create([
             'name' => $validated['name'],
@@ -92,7 +99,7 @@ class UserAuthController extends Controller
             'mitra_id' => $mitra->id, // Asosiasi dengan mitra
         ]);
 
-        // Generate loyalty_id (contoh: CDM-U123-M456-2025)
+        // Generate loyalty_id
         $initials = collect(explode(' ', $mitra->mitra_name))
             ->map(fn($word) => strtoupper(substr($word, 0, 1)))
             ->implode('');
@@ -108,16 +115,17 @@ class UserAuthController extends Controller
 
         // Catat aktivitas registrasi
         ActivityHelper::createActivity(
-            description: 'Pengguna memperbarui profil',
-            activityType: 'profile_update',
+            description: 'Pengguna baru telah mendaftar',
+            activityType: 'user_register',
             mitraId: $mitra->id,
-            userId: Auth::check() ? Auth::id() : null,
+            userId: $user->id,
             request: $request
         );
 
         Auth::login($user);
         return redirect()->route('user.profile', ['slug' => $slug]);
     }
+
     public function userLogout(Request $request, $slug)
     {
         $mitra = Mitra::where('mitra_slug', $slug)->first();

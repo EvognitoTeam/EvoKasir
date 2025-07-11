@@ -236,7 +236,7 @@ class CartController extends Controller
 
         session()->put("totalPrice.$slug", $totalPrice);
 
-        return redirect()->route('cart.index', ['slug' => $slug])->with('success', 'Kupon berhasil dihapus.');
+        return redirect()->route('cart.checkout', ['slug' => $slug])->with('success', 'Kupon berhasil dihapus.');
     }
 
     public function checkout($slug)

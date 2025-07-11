@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Mitra;
 use App\Models\Order;
 use Carbon\CarbonPeriod;
+use Illuminate\Support\Str;
 use App\Models\PrintSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -22,6 +23,7 @@ class ApiAuthController extends Controller
         $request->validate([
             'email' => 'required|email',
             'password' => 'required',
+            'onesignalid' => 'nullable',
         ]);
 
         $user = User::with('mitra')->where('email', $request->email)->first();
@@ -33,8 +35,11 @@ class ApiAuthController extends Controller
             ], 401);
         }
 
-        // Token pakai sanctum atau token manual
-        $token = $user->token;
+        // $user->tokens()->delete();
+        // Buat token baru
+        $token = (string) Str::uuid();
+
+        $user->update(['onesignalid' => $request->onesignalid]);
 
         return response()->json([
             'status' => true,

@@ -60,6 +60,11 @@ class Order extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function user_cashier()
+    {
+        return $this->belongsTo(User::class, 'cashier_id');
+    }
     public function rating()
     {
         return $this->hasOne(Rating::class, 'order_id');

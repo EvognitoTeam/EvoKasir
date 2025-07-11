@@ -63,7 +63,7 @@
                                                     <span>{{ $item['name'] }}</span>
                                                     @if (!empty($item['notes']))
                                                         <p
-                                                            class="text-gray-400 text-xs sm:text-sm mt-1 bg-gray-700/50 p-2 rounded-md">
+                                                            class="text-gray-400 text-xs sm:text-sm mt-1 mr-5 bg-gray-700/50 p-2 rounded-md">
                                                             <span class="font-semibold text-teal-400">Catatan:</span>
                                                             {{ $item['notes'] }}
                                                         </p>
@@ -136,7 +136,7 @@
                             <div class="flex justify-between font-bold text-base sm:text-lg border-t border-gray-700 pt-3">
                                 <span class="text-coral-500">Total Bayar:</span>
                                 <span
-                                    class="text-teal-400">Rp{{ number_format(session("totalPrice.$slug", $totalPrice) - session("discount.$slug", 0), 0, ',', '.') }}</span>
+                                    class="text-teal-400">Rp{{ number_format(session("totalPrice.$slug", $totalPrice), 0, ',', '.') }}</span>
                             </div>
                         </div>
                     </div>

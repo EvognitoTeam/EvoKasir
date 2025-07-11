@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Coupon extends Model
 {
@@ -28,9 +29,10 @@ class Coupon extends Model
 
     public static function validateCoupon($coupon_code)
     {
-        $coupon = self::where('coupon_code', $coupon_code)
+        // Ganti 'self' dengan 'static' untuk late static binding, ini praktik yang lebih baik
+        $coupon = static::where(DB::raw('BINARY `coupon_code`'), $coupon_code) // 1. Perbaikan Case-Sensitive
             ->where('expired_date', '>', now())
-            ->where('max_use', '>', 'already_used')
+            ->whereColumn('max_use', '>', 'already_used') // 2. Perbaikan Perbandingan Kolom
             ->first();
 
         return $coupon;

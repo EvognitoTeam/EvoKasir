@@ -26,6 +26,7 @@ class User extends Authenticatable
         'phone',
         'role',
         'mitra_id',
+        'onesignalid',
         'is_login',
         'login_at',
     ];
