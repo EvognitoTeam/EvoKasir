@@ -47,7 +47,7 @@
                             style="animation-delay: {{ $loop->index * 0.2 }}s;">
                             @php
                                 $promoImage = $promo->image
-                                    ? asset('storage/images/promos/' . $promo->image)
+                                    ? asset('storage/' . $promo->image)
                                     : 'https://dummyimage.com/1920x1080/cccccc/000000.png&text=Promo+Image+1920+x+1080';
                             @endphp
                             <a href="javascript:void(0)" onclick="showImage('{{ $promoImage }}')">
