@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
 use App\Models\Mitra;
+use Illuminate\Support\Str;
 use App\Models\PrintSetting;
 use Illuminate\Http\Request;
 use App\Helpers\ActivityHelper;
@@ -58,12 +59,15 @@ class AdminAuthController extends Controller
             'role' => 'required|string',
         ]);
 
+        $token = (string) Str::uuid();
+
         $user = new User();
         $user->mitra_id = $mitra->id;
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
         $user->role = $request->role;
+        $user->token = $token;
         $user->save();
 
         return redirect()->route('admin.users.index', ['slug' => $slug])

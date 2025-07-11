@@ -39,7 +39,7 @@ class ApiAuthController extends Controller
         // Buat token baru
         $token = (string) Str::uuid();
 
-        $user->update(['onesignalid' => $request->onesignalid]);
+        $user->update(['onesignalid' => $request->onesignalid, 'token' => $token]);
 
         return response()->json([
             'status' => true,
