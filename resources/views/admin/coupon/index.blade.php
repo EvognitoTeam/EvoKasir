@@ -70,7 +70,7 @@
                                     <span class="italic text-gray-400">No Image</span>
                                 @else
                                     <img src="{{ asset('storage/' . $coupon->image) }}" alt="{{ $coupon->title }}"
-                                        class="w-20 sm:w-24 h-auto rounded shadow-sm">
+                                        class="w-48 sm:w-36 h-auto rounded shadow-sm">
                                 @endif
                             </td>
                             <td class="py-3 sm:py-4 px-4 sm:px-6 text-gray-300">{{ $coupon->title }}</td>

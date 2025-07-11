@@ -40,7 +40,7 @@ class AdminCouponController extends Controller
         $data = $request->only(['title', 'coupon_code', 'discount_price', 'discount_rate', 'max_use', 'expired_date', 'description']);
         $data['mitra_id'] = $mitra->id;
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('menu', 'public');
+            $data['image'] = $request->file('image')->store('promos', 'public');
         }
         Coupon::create($data);
         return redirect()->route('admin.coupon.index', ['slug' => $slug])->with('success', 'Kupon berhasil ditambahkan.');
@@ -66,7 +66,7 @@ class AdminCouponController extends Controller
         $data = $request->only(['title', 'coupon_code', 'discount_price', 'discount_rate', 'max_use', 'expired_date', 'description']);
         if ($request->hasFile('image')) {
 
-            $data['image'] = $request->file('image')->store('menu', 'public');
+            $data['image'] = $request->file('image')->store('promos', 'public');
         }
         $coupon->update($data);
         return redirect()->route('admin.coupon.index', ['slug' => $slug])->with('success', 'Kupon berhasil diperbarui.');
