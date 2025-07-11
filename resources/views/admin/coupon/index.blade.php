@@ -69,7 +69,7 @@
                                 @if (empty($coupon->image))
                                     <span class="italic text-gray-400">No Image</span>
                                 @else
-                                    <img src="{{ asset('storage/menu/' . $coupon->image) }}" alt="{{ $coupon->title }}"
+                                    <img src="{{ asset('storage/' . $coupon->image) }}" alt="{{ $coupon->title }}"
                                         class="w-20 sm:w-24 h-auto rounded shadow-sm">
                                 @endif
                             </td>
