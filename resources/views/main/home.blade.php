@@ -8,18 +8,7 @@
     <!-- Main Content -->
     <section class="bg-gray-900 py-10 sm:py-12 overflow-hidden">
         <!-- Background Geometric Overlay -->
-        <div class="absolute inset-0 opacity-10">
-            <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"
-                preserveAspectRatio="xMidYMid slice">
-                <defs>
-                    <pattern id="geo-pattern" patternUnits="userSpaceOnUse" width="30" height="30">
-                        <path d="M0 30L15 0L30 30Z" fill="none" stroke="#34d399" stroke-width="1" />
-                        <circle cx="15" cy="15" r="3" fill="#f87171" />
-                    </pattern>
-                </defs>
-                <rect width="100%" height="100%" fill="url(#geo-pattern)" class="animate-subtle-pulse" />
-            </svg>
-        </div>
+        <div class="absolute inset-0 bg-geo-pattern animate-pan"></div>
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
             <!-- Profil Cafe/Toko -->
             <div
@@ -37,7 +26,8 @@
             </div>
 
             <!-- Promo & Diskon Terbaru -->
-            <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-teal-400 animate-text-reveal">Promo & Diskon Terbaru
+            <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-teal-400 animate-text-reveal">Promo & Diskon
+                Terbaru
                 🤑</h2>
 
             @if ($promos->count())
@@ -57,7 +47,8 @@
                             <h3 class="text-base sm:text-lg font-semibold text-coral-500 mb-2">{{ $promo->title }}</h3>
                             <p class="text-gray-300 text-sm sm:text-base">{!! $promo->description !!}</p>
                             <div class="mt-2 text-xs sm:text-sm text-red-400 font-bold">
-                                Berlaku sampai {{ \Carbon\Carbon::parse($promo->expired_date)->format('d F Y H:i') }} WIB
+                                Berlaku sampai {{ \Carbon\Carbon::parse($promo->expired_date)->format('d F Y H:i') }}
+                                WIB
                             </div>
                             <div class="mt-3 sm:mt-4 flex items-center justify-between">
                                 @if ($promo->is_member_only && !Auth::check())
@@ -169,7 +160,8 @@
                     @endforeach
                 </div>
             @else
-                <p class="text-gray-400 text-sm sm:text-base italic animate-fade-in">Belum ada menu favorit saat ini.</p>
+                <p class="text-gray-400 text-sm sm:text-base italic animate-fade-in">Belum ada menu favorit saat ini.
+                </p>
             @endif
         </div>
     </section>

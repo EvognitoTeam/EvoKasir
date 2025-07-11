@@ -7,18 +7,7 @@
 @section('content')
     <section class="bg-gray-900 py-10 sm:py-12 overflow-hidden">
         <!-- Background Geometric Overlay -->
-        <div class="absolute inset-0 opacity-10">
-            <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"
-                preserveAspectRatio="xMidYMid slice">
-                <defs>
-                    <pattern id="geo-pattern" patternUnits="userSpaceOnUse" width="30" height="30">
-                        <path d="M0 30L15 0L30 30Z" fill="none" stroke="#34d399" stroke-width="1" />
-                        <circle cx="15" cy="15" r="3" fill="#f87171" />
-                    </pattern>
-                </defs>
-                <rect width="100%" height="100%" fill="url(#geo-pattern)" class="animate-subtle-pulse" />
-            </svg>
-        </div>
+        <div class="absolute inset-0 bg-geo-pattern animate-pan"></div>
 
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
             <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-coral-500 mb-6 sm:mb-8 animate-text-reveal">

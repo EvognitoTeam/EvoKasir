@@ -261,6 +261,33 @@
         .animate-pulse {
             animation: pulse 2s ease-in-out infinite;
         }
+
+        /* resources/css/app.css */
+
+        /* Definisikan @keyframes untuk animasi gerak */
+        @keyframes pan {
+            0% {
+                background-position: 0% 0%;
+            }
+
+            100% {
+                background-position: 100% 100%;
+            }
+        }
+
+        /* Terapkan animasi dan pola SVG ke class utility */
+        .bg-geo-pattern {
+            /* SVG Anda diubah menjadi data URI untuk background */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' preserveAspectRatio='xMidYMid slice'%3E%3Cdefs%3E%3Cpattern id='geo-pattern' patternUnits='userSpaceOnUse' width='30' height='30'%3E%3Cpath d='M0 30L15 0L30 30Z' fill='none' stroke='%2334d399' stroke-width='1' /%3E%3Ccircle cx='15' cy='15' r='3' fill='%23f87171' /%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100%25' height='100%25' fill='url(%23geo-pattern)' /%3E%3C/svg%3E");
+            background-size: auto;
+            opacity: 0.1;
+            /* Opacity dipindahkan ke sini */
+        }
+
+        /* Buat class animasi kustom */
+        .animate-pan {
+            animation: pan 40s linear infinite;
+        }
     </style>
 </body>
 

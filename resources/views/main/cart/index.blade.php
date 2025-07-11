@@ -7,18 +7,7 @@
 @section('content')
     <section class="bg-gray-900 py-10 sm:py-12 overflow-hidden">
         <!-- Background Geometric Overlay -->
-        <div class="absolute inset-0 opacity-60">
-            <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"
-                preserveAspectRatio="xMidYMid slice">
-                <defs>
-                    <pattern id="geo-pattern" patternUnits="userSpaceOnUse" width="30" height="30">
-                        <path d="M0 30L15 0L30 30Z" fill="none" stroke="#34d399" stroke-width="1" />
-                        <circle cx="15" cy="15" r="3" fill="#f87171" />
-                    </pattern>
-                </defs>
-                <rect width="100%" height="100%" fill="url(#geo-pattern)" class="animate-subtle-pulse" />
-            </svg>
-        </div>
+        <div class="absolute inset-0 bg-geo-pattern animate-pan"></div>
 
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-5xl">
             <h1 class="text-2xl sm:text-3xl font-extrabold text-coral-500 mb-6 animate-text-reveal">🛒 Keranjang Belanja
@@ -161,7 +150,7 @@
                 <div class="text-center text-gray-400 mt-12 sm:mt-16 animate-fade-in">
                     <p class="text-lg sm:text-xl">Keranjang kamu masih kosong 😢</p>
                     <a href="{{ route('menu.index', ['slug' => $slug]) }}"
-                        class="mt-4 inline-block bg-coral-500 hover:bg-coral-600 text-white px-4 sm:px-5 py-2 rounded-lg shadow-md transition-all duration-200 transform hover:scale-105">
+                        class="mt-4 inline-block bg-emerald-500 hover:bg-emerald-600 text-white px-4 sm:px-5 py-2 rounded-lg shadow-md transition-all duration-200 transform hover:scale-105">
                         Lihat Menu
                     </a>
                 </div>

@@ -8,21 +8,9 @@
     <div
         class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-teal-900 py-6 sm:py-8 relative overflow-hidden">
         <!-- Background Geometric Overlay -->
-        <div class="absolute inset-0 opacity-10">
-            <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"
-                preserveAspectRatio="xMidYMid slice">
-                <defs>
-                    <pattern id="geo-pattern" patternUnits="userSpaceOnUse" width="30" height="30">
-                        <path d="M0 30L15 0L30 30Z" fill="none" stroke="#34d399" stroke-width="1" />
-                        <circle cx="15" cy="15" r="3" fill="#f87171" />
-                    </pattern>
-                </defs>
-                <rect width="100%" height="100%" fill="url(#geo-pattern)" class="animate-subtle-pulse" />
-            </svg>
-        </div>
+        <div class="absolute inset-0 bg-geo-pattern animate-pan"></div>
 
-        <div
-            class="w-full max-w-5xl mx-auto bg-gray-800/90 backdrop-blur-md rounded-2xl shadow-xl p-4 sm:p-6 relative z-10">
+        <div class="w-full max-w-5xl mx-auto bg-gray-800/90 backdrop-blur-md rounded-2xl shadow-xl p-4 sm:p-6 relative z-10">
             {{-- Success Message --}}
             @if (session('success'))
                 <div id="success-message"
