@@ -341,7 +341,7 @@
 
             const isOutOfStock = menuStock === 0;
             const imageClass = isOutOfStock ? 'filter grayscale' : '';
-            const stockText = isOutOfStock ? 'Stok Habis' : `Stock: ${menuStock}`;
+            const stockText = isOutOfStock ? 'Stok Habis' : `${menuStock}`;
             const actionHtml = isOutOfStock ?
                 '' :
                 `
