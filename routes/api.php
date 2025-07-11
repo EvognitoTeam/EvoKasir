@@ -10,9 +10,10 @@ Route::post('/update-order-status', [ApiOrderController::class, 'updateOrderStat
 Route::get('/payment-status/{orderId}', [ApiOrderController::class, 'updatePaymentStatus']);
 
 Route::post('/login', [ApiAuthController::class, 'getLogin']);
+Route::post('/logout', [ApiAuthController::class, 'logout']);
 Route::post('/getUser', [ApiAuthController::class, 'getUserData']);
 Route::post('/getMitraData', [ApiAuthController::class, 'getMitraData']);
 Route::post('/getMenu', [ApiMenuController::class, 'getMenu']);
 Route::post('/sendOrder', [ApiOrderController::class, 'sendOrder']);
-Route::post('/getOrders', [ApiMenuController::class, 'getOrders']);
+Route::post('/getOrders', [ApiOrderController::class, 'getOrders']);
 Route::post('/getDiscounts', [ApiOrderController::class, 'getDiscount']);

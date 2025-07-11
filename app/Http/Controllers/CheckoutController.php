@@ -14,6 +14,7 @@ use App\Helpers\ActivityHelper;
 use App\Services\MidtransService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 class CheckoutController extends Controller
 {
@@ -172,6 +173,8 @@ class CheckoutController extends Controller
             request: $request
         );
 
+        $this->sendNotification($order);
+
         session()->forget(["cart.$slug", "totalPrice.$slug", "discount.$slug", "applied_coupon.$slug"]);
 
         return redirect()->route('checkout.success', [
@@ -270,5 +273,47 @@ class CheckoutController extends Controller
 
         // Tampilkan halaman sukses checkout
         return view('main.cart.failed', compact('order', 'order_code', 'totalPaid', 'slug'));
+    }
+
+    private function sendNotification(Order $order)
+    {
+        try {
+            $order->loadMissing(['table', 'mitra']);
+
+            $playerIds = User::where('mitra_id', $order->mitra_id)
+                ->where('is_login', 1)
+                ->whereNotNull('onesignalid')
+                ->pluck('onesignalid')
+                ->toArray();
+            // Log::info($playerIds);
+            if (empty($playerIds)) {
+                return;
+            }
+
+            $appId = config('services.onesignal.app_id');
+            $apiKey = config('services.onesignal.api_key');
+
+            $fields = [
+                'app_id' => $appId,
+                'include_player_ids' => $playerIds, // <-- Sesuai dokumentasi OneSignal
+                'headings' => ['en' => "Pesanan Baru #{$order->order_code}"],
+                'contents' => ['en' => "Meja {$order->table->table_name} memesan, total Rp " . number_format($order->total_price, 0, ',', '.') . ". Atas nama {$order->name}"],
+                'url' => route('admin.orders.detail', [
+                    'slug' => $order->mitra->mitra_slug,
+                    'order_code' => $order->order_code
+                ]),
+            ];
+
+            $response = Http::withHeaders([
+                'Authorization' => 'Basic ' . $apiKey,
+                'Content-Type' => 'application/json'
+            ])->post('https://onesignal.com/api/v1/notifications', $fields);
+
+            if (!$response->successful()) {
+                Log::error('OneSignal Failed: ' . $response->body());
+            }
+        } catch (\Exception $e) {
+            Log::error('OneSignal Exception: ' . $e->getMessage());
+        }
     }
 }

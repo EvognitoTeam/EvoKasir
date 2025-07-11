@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Menu;
+use App\Models\User;
 use App\Models\Mitra;
 use App\Models\Order;
 use App\Models\Coupon;
@@ -12,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Http;
 
 class ApiOrderController extends Controller
 {
@@ -28,6 +30,8 @@ class ApiOrderController extends Controller
             $order->payment_status = '2'; // Atur status sesuai kebutuhan
             $order->issuer = $issuer; // Atur status sesuai kebutuhan
             $order->save();
+
+            $this->sendNotification($order);
 
             return response()->json(['message' => 'Order status updated successfully.']);
         }
@@ -154,5 +158,73 @@ class ApiOrderController extends Controller
         }
 
         return response()->json(['response_code' => 200, 'message' => 'Discount retrieved successfully', 'data' => $discounts]);
+    }
+
+    public function getOrders(Request $request)
+    {
+        $request->validate([
+            'mitra_id' => 'required|integer|exists:mitra,id',
+            'cashier_id' => 'nullable|integer|exists:users,id',
+        ]);
+
+        $mitra = Mitra::find($request->mitra_id);
+
+        $query = Order::with(['items.product', 'table', 'user'])
+            ->orderBy('created_at', 'desc')
+            ->where('mitra_id', $mitra->id);
+
+        if ($request->filled('cashier_id')) {
+            $query->where('cashier_id', $request->cashier_id);
+        }
+
+        $orders = $query->get();
+
+        return response()->json([
+            'response_code' => '200',
+            'message' => 'Orders data successfully retrieved',
+            'orders' => $orders,
+        ]);
+    }
+
+    private function sendNotification(Order $order)
+    {
+        try {
+            $order->loadMissing(['table', 'mitra']);
+
+            $playerIds = User::where('mitra_id', $order->mitra_id)
+                ->where('is_login', 1)
+                ->whereNotNull('onesignalid')
+                ->pluck('onesignalid')
+                ->toArray();
+
+            if (empty($playerIds)) {
+                return;
+            }
+
+            $appId = config('services.onesignal.app_id');
+            $apiKey = config('services.onesignal.api_key');
+
+            $fields = [
+                'app_id' => $appId,
+                'include_player_ids' => $playerIds, // <-- Sesuai dokumentasi OneSignal
+                'headings' => ['en' => "Pesanan Baru #{$order->order_code}"],
+                'contents' => ['en' => "Meja {$order->table->name} memesan, total Rp " . number_format($order->total_price, 0, ',', '.')],
+                'url' => route('admin.orders.detail', [
+                    'slug' => $order->mitra->mitra_slug,
+                    'order_code' => $order->order_code
+                ]),
+            ];
+
+            $response = Http::withHeaders([
+                'Authorization' => 'Basic ' . $apiKey,
+                'Content-Type' => 'application/json'
+            ])->post('https://onesignal.com/api/v1/notifications', $fields);
+
+            if (!$response->successful()) {
+                Log::error('OneSignal Failed: ' . $response->body());
+            }
+        } catch (\Exception $e) {
+            Log::error('OneSignal Exception: ' . $e->getMessage());
+        }
     }
 }

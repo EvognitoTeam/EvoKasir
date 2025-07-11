@@ -37,7 +37,8 @@ class ApiAuthController extends Controller
 
         // $user->tokens()->delete();
         // Buat token baru
-        $token = (string) Str::uuid();
+
+        $token = Str::uuid();
 
         $user->update(['onesignalid' => $request->onesignalid, 'token' => $token]);
 
@@ -151,6 +152,18 @@ class ApiAuthController extends Controller
             'weeklyEarnings' => $weeklyEarnings,
             'yearlyEarnings' => $yearlyEarnings, // ← tambahkan ini
             'notifSound' => $notifSound,
+        ]);
+    }
+
+    public function logout(Request $request)
+    {
+        $user = User::where('token', $request->token)->first();
+
+        $user->update(['is_login' => 0]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Logout Success',
         ]);
     }
 }

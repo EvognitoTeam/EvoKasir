@@ -47,29 +47,4 @@ class ApiMenuController extends Controller
             'tables' => $tables,
         ]);
     }
-
-    public function getOrders(Request $request)
-    {
-        $request->validate([
-            'mitra_id' => 'required|integer|exists:mitra,id',
-            'cashier_id' => 'nullable|integer|exists:users,id',
-        ]);
-
-        $mitra = Mitra::find($request->mitra_id);
-
-        $query = Order::with(['items.product', 'table', 'user'])
-            ->where('mitra_id', $mitra->id);
-
-        if ($request->filled('cashier_id')) {
-            $query->where('cashier_id', $request->cashier_id);
-        }
-
-        $orders = $query->get();
-
-        return response()->json([
-            'response_code' => '200',
-            'message' => 'Orders data successfully retrieved',
-            'orders' => $orders,
-        ]);
-    }
 }

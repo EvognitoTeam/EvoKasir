@@ -27,6 +27,7 @@ class User extends Authenticatable
         'role',
         'mitra_id',
         'onesignalid',
+        'token',
         'is_login',
         'login_at',
     ];

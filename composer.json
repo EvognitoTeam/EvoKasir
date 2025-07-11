@@ -8,6 +8,7 @@
     "require": {
         "php": "^8.2",
         "barryvdh/laravel-dompdf": "^3.1",
+        "berkayk/onesignal-laravel": "^2.4",
         "binarytorch/larecipe": "^2.8",
         "dedoc/scramble": "^0.12.19",
         "intervention/image": "^2.7",
