@@ -27,7 +27,7 @@ class AdminCouponController extends Controller
         if ($mitra->mitra_slug !== $slug) {
             abort(403, 'Unauthorized');
         }
-        $request->validate([
+        $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'coupon_code' => 'required|string|max:50',
             'discount_price' => 'nullable|numeric|min:0',
@@ -35,9 +35,10 @@ class AdminCouponController extends Controller
             'max_use' => 'required|integer|min:1',
             'expired_date' => 'required|date|after:now',
             'description' => 'nullable|string',
+            'is_member_only' => 'required|boolean',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-        $data = $request->only(['title', 'coupon_code', 'discount_price', 'discount_rate', 'max_use', 'expired_date', 'description']);
+        $data = $validatedData;
         $data['mitra_id'] = $mitra->id;
         if ($request->hasFile('image')) {
             $data['image'] = $request->file('image')->store('promos', 'public');

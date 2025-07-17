@@ -40,7 +40,7 @@ class ApiAuthController extends Controller
 
         $token = Str::uuid();
 
-        $user->update(['onesignalid' => $request->onesignalid, 'token' => $token, 'is_login' => 1]);
+        $user->update(['onesignalid' => $request->onesignalid, 'token' => $token, 'is_login' => 1, 'login_at' => now()]);
 
         return response()->json([
             'status' => true,

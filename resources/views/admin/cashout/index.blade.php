@@ -93,9 +93,8 @@
                     </div>
                     <p class="text-3xl font-bold text-white">Rp {{ number_format($availableCashout, 0, ',', '.') }}</p>
                     <div class="text-sm text-gray-400 mt-2">
-                        <p>Biaya Midtrans (0.7%): Rp {{ number_format($midtransFee, 0, ',', '.') }}</p>
                         <p>Biaya Platform (12%): Rp {{ number_format($platformFee, 0, ',', '.') }}</p>
-                        <p class="mt-1">Dana yang dapat ditarik setelah biaya Midtrans (0.7%) dan platform (12%).</p>
+                        <p class="mt-1">Dana yang dapat ditarik setelah biaya platform (12%).</p>
                         <p class="mt-1">Dana akan masuk maksimal 2x24 jam sejak pengajuan.</p>
                     </div>
                     <div class="mt-4">

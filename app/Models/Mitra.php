@@ -15,6 +15,7 @@ class Mitra extends Model
         'mitra_name',
         'mitra_address',
         'mitra_welcome',
+        'bank_name',
         'no_rek',
         'nama_rek',
         'rek_added_at',

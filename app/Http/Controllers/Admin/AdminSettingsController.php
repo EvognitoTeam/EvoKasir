@@ -52,8 +52,8 @@ class AdminSettingsController extends Controller
         // Cek apakah sudah pernah menambahkan rekening
         if (!empty($mitra->rek_added_at)) {
             $selisihHari = now()->diffInDays($mitra->rek_added_at);
-
-            if ($selisihHari < 7) {
+            // dd($selisihHari * -1);
+            if (($selisihHari * -1) < 7) {
                 return back()->with('error', 'Perubahan rekening hanya dapat dilakukan setelah 7 hari dari perubahan terakhir.');
             }
         }
@@ -62,26 +62,42 @@ class AdminSettingsController extends Controller
         $request->validate([
             'nama_rek' => ['required', 'string', 'max:255'],
             'no_rek' => ['required', 'numeric', 'digits_between:8,25'],
+
+            // Validasi untuk bank
+            'bank_name' => ['required', 'string', 'max:50'],
+
+            // 'input_bank_lainnya' hanya wajib jika 'bank_tujuan' nilainya adalah 'Lainnya'
+            'bank_lainnya' => ['required_if:bank_name,Lainnya', 'nullable', 'string', 'max:50'],
         ], [
             'nama_rek.required' => 'Nama rekening wajib diisi.',
-            'nama_rek.string' => 'Nama rekening harus berupa teks.',
-            'nama_rek.max' => 'Nama rekening maksimal 255 karakter.',
-
             'no_rek.required' => 'Nomor rekening wajib diisi.',
             'no_rek.numeric' => 'Nomor rekening harus berupa angka.',
             'no_rek.digits_between' => 'Nomor rekening harus terdiri dari 8 hingga 25 digit.',
+            'bank_name.required' => 'Silakan pilih bank tujuan.',
+            'bank_lainnya.required_if' => 'Nama bank lainnya wajib diisi.',
         ]);
 
-        // Update rekening
-        $updateRek = Mitra::where('id', Auth::user()->mitra_id)
-            ->update([
-                'no_rek' => $request->no_rek,
-                'nama_rek' => strtoupper($request->nama_rek),
-                'rek_added_at' => now(),
-            ]);
+        $namaBank = $request->bank_name == 'Lainnya'
+            ? $request->bank_lainnya
+            : $request->bank_name;
 
-        if (!$updateRek) {
-            return back()->with('error', 'Gagal menyimpan data rekening.');
+        // dd($namaBank);
+
+        // Update rekening
+        try {
+            // Gunakan updateOrCreate untuk memperbarui rekening yang ada atau membuat yang baru
+            // Ini lebih aman dan efisien.
+            $mitra->update(
+                [
+                    'bank_name' => $namaBank, // Kolom baru untuk nama bank
+                    'no_rek' => $request->no_rek,
+                    'nama_rek' => strtoupper($request->nama_rek),
+                    'rek_added_at' => now(), // Jika Anda masih memerlukan kolom ini
+                ]
+            );
+        } catch (\Exception $e) {
+            // Jika terjadi error saat menyimpan
+            return back()->with('error', 'Gagal menyimpan data rekening. Silakan coba lagi.');
         }
 
         return back()->with('success', 'Rekening berhasil diperbarui.');

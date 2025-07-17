@@ -32,18 +32,18 @@ class AdminCashoutController extends Controller
             ->where('is_cashouted', false)
             ->sum('total_price');
 
-        $midtransFee = $totalRevenue * 0.007;
+        // $midtransFee = $totalRevenue * 0.007;
         // dd($midtransFee);
         // $platformFee = $totalRevenue * 0.15;
-        $platformFee = ($totalRevenue - $midtransFee) * 0.12;
+        $platformFee = $totalRevenue * 0.12;
 
-        $totalFees = $midtransFee + $platformFee;
+        // $totalFees = $midtransFee + $platformFee;
 
         $approvedCashouts = Cashout::where('mitra_id', $mitra->id)
             ->where('status', 'approved')
             ->sum('amount');
 
-        $availableCashout = floor(max(0, $totalRevenue - $totalFees));
+        $availableCashout = floor(max(0, $totalRevenue - $platformFee));
 
         $cashouts = Cashout::where('mitra_id', $mitra->id)
             ->latest()
@@ -51,7 +51,7 @@ class AdminCashoutController extends Controller
             ->get();
         $notifSound = PrintSetting::where('mitra_id', $mitra->id)->where('key', 'notif_sound')->value('value') ?? 'ding.mp3';
 
-        return view('admin.cashout.index', compact('slug', 'mitra', 'totalRevenue', 'availableCashout', 'cashouts', 'midtransFee', 'platformFee', 'notifSound'));
+        return view('admin.cashout.index', compact('slug', 'mitra', 'totalRevenue', 'availableCashout', 'cashouts', 'platformFee', 'notifSound'));
     }
 
     public function create($slug)
@@ -98,17 +98,17 @@ class AdminCashoutController extends Controller
             ->where('is_cashouted', false)
             ->sum('total_price');
 
-        $midtransFee = $totalRevenue * 0.007;
+        // $midtransFee = $totalRevenue * 0.007;
         // $platformFee = $totalRevenue * 0.15;
-        $platformFee = ($midtransFee - $totalRevenue) * 0.12;
+        $platformFee = $totalRevenue * 0.12;
 
-        $totalFees = (float)$midtransFee + ($platformFee * -1);
+        // $totalFees = (float)$midtransFee + ($platformFee * -1);
 
         $approvedCashouts = Cashout::where('mitra_id', $mitra->id)
             ->where('status', 'approved')
             ->sum('amount');
 
-        $availableCashout = floor(max(0, $totalRevenue - $totalFees));
+        $availableCashout = floor(max(0, $totalRevenue - $platformFee));
         // dd($availableCashout);
 
         $request->validate([

@@ -42,7 +42,7 @@
 
     <!-- Navbar -->
     <nav
-        class="bg-gray-800/90 backdrop-blur-md shadow-lg px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center sticky top-0 z-50">
+        class="bg-gray-800/90 backdrop-blur-md shadow-lg px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center sticky top-0 z-40">
         <div class="flex items-center gap-3 sm:gap-4">
             <button id="menu-toggle" class="lg:hidden text-xl sm:text-2xl text-teal-400 focus:outline-none">
                 <i class="fas fa-bars"></i>
@@ -166,8 +166,8 @@
         </aside>
 
         <!-- Overlay for mobile menu -->
-        <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden lg:hidden"
-            onclick="toggleSidebar()"></div>
+        <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-0 hidden lg:hidden" onclick="toggleSidebar()">
+        </div>
 
         <!-- Main Content -->
         <main class="flex-1 overflow-y-auto bg-gray-900/85 pt-4 sm:pt-6 p-4 sm:p-6 pb-16 min-h-screen z-10">

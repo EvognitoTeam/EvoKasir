@@ -1,14 +1,15 @@
 @extends('layouts.admin')
 
 @section('title')
-    Daftar User - {{ $mitra->mitra_name }} - EvoKasir
+    Daftar Kasir -
+    {{ $mitra->mitra_name }} - EvoKasir
 @endsection
 
 @section('content')
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 max-w-5xl space-y-6 sm:space-y-8">
         <h1
             class="text-2xl sm:text-3xl font-extrabold text-coral-500 mb-6 sm:mb-8 animate-text-reveal flex items-center gap-2 sm:gap-3">
-            <i class="fas fa-users text-lg sm:text-xl"></i> Daftar User - {{ $mitra->mitra_name }}
+            <i class="fas fa-users text-lg sm:text-xl"></i> Daftar Kasir - {{ $mitra->mitra_name }}
         </h1>
 
         <!-- Success Message -->
@@ -23,7 +24,7 @@
         <div class="flex justify-between items-center mb-6 sm:mb-8">
             <a href="{{ route('admin.users.create', ['slug' => $slug]) }}"
                 class="bg-teal-500 hover:bg-teal-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow-md text-sm sm:text-base font-semibold transition-all duration-200 transform hover:scale-105">
-                <i class="fas fa-plus mr-2"></i> Tambah User Baru
+                <i class="fas fa-plus mr-2"></i> Tambah Kasir Baru
             </a>
         </div>
 

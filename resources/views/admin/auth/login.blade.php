@@ -41,11 +41,11 @@
             class="bg-gray-800/90 backdrop-blur-md p-6 sm:p-8 rounded-2xl shadow-lg bg-gradient-to-b from-gray-800 to-gray-900/80 animate-scale-in">
             <!-- Logo -->
             <div class="mb-6 text-center">
-                <i class="fas fa-lock text-4xl sm:text-5xl text-coral-500"></i>
+                <i class="fas fa-lock text-4xl sm:text-5xl text-white"></i>
             </div>
 
             <!-- Title -->
-            <h2 class="text-2xl sm:text-3xl font-extrabold text-center text-coral-500 mb-6 sm:mb-8 animate-text-reveal">
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-center text-white mb-6 sm:mb-8 animate-text-reveal">
                 Login Admin</h2>
 
             <!-- Success or Error Messages -->
@@ -97,7 +97,7 @@
                 <!-- Submit Button -->
                 <div class="mb-6">
                     <button type="submit"
-                        class="w-full bg-teal-500 hover:bg-teal-600 text-white py-2 sm:py-3 rounded-lg shadow-md text-sm sm:text-base font-semibold transition-all duration-200 transform hover:scale-105">
+                        class="w-full bg-gray-400 hover:bg-gray-600 text-black hover:text-white py-2 sm:py-3 rounded-lg shadow-md text-sm sm:text-base font-semibold transition-all duration-200 transform hover:scale-105">
                         Login
                     </button>
                 </div>

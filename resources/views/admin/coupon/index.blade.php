@@ -52,6 +52,7 @@
                         <th class="py-3 sm:py-4 px-4 sm:px-6 font-semibold text-center">Terpakai</th>
                         <th class="py-3 sm:py-4 px-4 sm:px-6 font-semibold text-center">Maks. Penggunaan</th>
                         <th class="py-3 sm:py-4 px-4 sm:px-6 font-semibold">Batas Waktu</th>
+                        <th class="py-3 sm:py-4 px-4 sm:px-6 font-semibold text-center">Member Only</th>
                         <th class="py-3 sm:py-4 px-4 sm:px-6 font-semibold text-center">Status</th>
                         <th class="py-3 sm:py-4 px-4 sm:px-6 font-semibold text-right">Aksi</th>
                     </tr>
@@ -113,6 +114,13 @@
                                         {{ $hoursFuture > 0 ? $hoursFuture . ' jam' : '' }}
                                         {{ $minutesFuture > 0 ? $minutesFuture . ' menit lagi' : '' }}
                                     </span>
+                                @endif
+                            </td>
+                            <td class="py-3 sm:py-4 px-4 sm:px-6 text-center">
+                                @if ($coupon->is_member_only)
+                                    <span class="text-teal-400 font-semibold">Ya</span>
+                                @else
+                                    <span class="text-red-400 font-semibold">Tidak</span>
                                 @endif
                             </td>
                             <td class="py-3 sm:py-4 px-4 sm:px-6 text-center">
@@ -231,6 +239,26 @@
                             class="mt-1 block w-full border border-gray-700 rounded-lg px-4 py-2 sm:py-3 text-gray-300 bg-gray-900 focus:outline-none focus:ring-2 focus:ring-coral-500 transition-all duration-200 @error('image') border-red-500 @enderror">
                         @error('image')
                             <div class="text-red-400 text-xs sm:text-sm mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-span-1 sm:col-span-2">
+                        <label for="is_member_only" class="block text-sm sm:text-base font-semibold text-gray-300 mb-2">
+                            Member only
+                        </label>
+
+                        <label for="is_member_only" class="relative inline-flex items-center cursor-pointer">
+                            <input type="hidden" name="is_member_only" value="0">
+                            <input type="checkbox" name="is_member_only" id="is_member_only" value="1"
+                                class="sr-only peer"
+                                {{ old('is_member_only', $your_model->is_member_only ?? 0) ? 'checked' : '' }}>
+
+                            <div
+                                class="w-11 h-6 bg-gray-600 rounded-full peer peer-focus:ring-2 peer-focus:ring-coral-500 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-coral-600">
+                            </div>
+                        </label>
+
+                        @error('is_member_only')
+                            <div class="text-red-400 text-xs sm:text-sm mt-2">{{ $message }}</div>
                         @enderror
                     </div>
                 </div>

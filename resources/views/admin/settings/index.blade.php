@@ -100,48 +100,128 @@
             <form action="{{ route('admin.setting.rekening', ['slug' => $slug]) }}" method="POST"
                 enctype="multipart/form-data" class="space-y-6">
                 @csrf
-                <div>
-                    <label for="nama_rek" class="block text-sm font-medium text-white mb-1">Nama Rekening</label>
-                    <input type="text" id="nama_rek" name="nama_rek"
-                        value="{{ old('nama_rek', $mitra->nama_rek ?? '') }}" {{ $isDisabled ? 'disabled' : '' }}
-                        class="w-full rounded-lg border px-4 py-3 text-sm text-white placeholder-gray-400 
-                focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent
-                bg-gray-800 border-gray-600 disabled:bg-gray-700 disabled:cursor-not-allowed"
-                        placeholder="Evognito Team" autocomplete="off">
-                    @error('nama_rek')
-                        <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
+                {{-- Bagian Dropdown Bank --}}
+                <form action="{{ route('admin.setting.rekening', ['slug' => $slug]) }}" method="POST"
+                    enctype="multipart/form-data" class="space-y-6">
+                    @csrf
 
-                <div>
-                    <label for="no_rek" class="block text-sm font-medium text-white mb-1">Nomor Rekening</label>
-                    <input type="text" id="no_rek" name="no_rek" value="{{ old('no_rek', $mitra->no_rek ?? '') }}"
-                        {{ $isDisabled ? 'disabled' : '' }}
-                        class="w-full rounded-lg border px-4 py-3 text-sm text-white placeholder-gray-400 
-                focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent
-                bg-gray-800 border-gray-600 disabled:bg-gray-700 disabled:cursor-not-allowed"
-                        placeholder="1234567890" autocomplete="off">
-                    @error('no_rek')
-                        <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
+                    @php
+                        // 1. Definisikan daftar bank standar Anda
+                        $standardBanks = ['BCA', 'Mandiri', 'BNI', 'BRI', 'Jago'];
 
-                <button type="submit" {{ $isDisabled ? 'disabled' : '' }}
-                    class="w-full rounded-lg px-4 py-3 text-sm font-semibold 
-            bg-gradient-to-r from-teal-500 to-green-500 hover:from-teal-600 hover:to-green-600
-            disabled:bg-gray-600 disabled:cursor-not-allowed text-white transition-all duration-200">
-                    Simpan Rekening
-                </button>
+                        // 2. Tentukan nilai bank saat ini (prioritaskan input lama, lalu database)
+                        $currentBankValue = old('bank_name', $mitra->bank_name ?? '');
 
-                @if ($isDisabled)
-                    <p class="text-yellow-400 text-center text-sm mt-3">
-                        Anda dapat mengubah rekening kembali pada:
-                        <strong>{{ $canEditAt->locale('id')->translatedFormat('d F Y H:i') }}</strong>
-                    </p>
-                @endif
-            </form>
-        @else
-            <p class="text-center text-gray-400">Anda tidak memiliki akses ke pengaturan ini.</p>
+                        // 3. Siapkan variabel untuk nilai akhir
+                        $dropdownSelection = $currentBankValue;
+                        $otherBankValue = old('bank_lainnya');
+
+                        // 4. Logika utama: Jika bank saat ini tidak ada di daftar standar (dan tidak kosong)
+                        if (!in_array($currentBankValue, $standardBanks) && !empty($currentBankValue)) {
+                            // Maka, paksa dropdown untuk memilih 'Lainnya'
+                            $dropdownSelection = 'Lainnya';
+                            // Dan isi input 'bank_lainnya' dengan nilai dari database
+                            // (hanya jika tidak ada input lama untuk 'bank_lainnya')
+                            if (empty(old('bank_lainnya'))) {
+                                $otherBankValue = $currentBankValue;
+                            }
+                        }
+                    @endphp
+
+                    {{-- Bagian Dropdown Bank --}}
+                    <div>
+                        <label for="bank_name" class="block text-sm font-medium text-white mb-1">Pilih Bank Tujuan:</label>
+                        <select id="bank_name" name="bank_name" {{ $isDisabled ? 'disabled' : '' }}
+                            class="w-full rounded-lg border px-4 py-3 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-gray-800 border-gray-600 disabled:bg-gray-700 disabled:cursor-not-allowed">
+
+                            <option value="" disabled {{ empty($dropdownSelection) ? 'selected' : '' }}>Pilih salah
+                                satu</option>
+
+                            {{-- Gunakan $dropdownSelection untuk menentukan item yang dipilih --}}
+                            <option value="BCA" {{ $dropdownSelection == 'BCA' ? 'selected' : '' }}>BCA</option>
+                            <option value="Mandiri" {{ $dropdownSelection == 'Mandiri' ? 'selected' : '' }}>Mandiri
+                            </option>
+                            <option value="BNI" {{ $dropdownSelection == 'BNI' ? 'selected' : '' }}>BNI</option>
+                            <option value="BRI" {{ $dropdownSelection == 'BRI' ? 'selected' : '' }}>BRI</option>
+                            <option value="Jago" {{ $dropdownSelection == 'Jago' ? 'selected' : '' }}>Bank Jago</option>
+                            <option value="Lainnya" {{ $dropdownSelection == 'Lainnya' ? 'selected' : '' }}>Lainnya
+                            </option>
+                        </select>
+                        @error('bank_name')
+                            <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Bagian Input untuk "Bank Lainnya" --}}
+                    <div id="input_bank_lainnya" class="mt-4" style="display: none;">
+                        <label for="bank_lainnya" class="block text-sm font-medium text-white mb-1">Nama Bank
+                            Lainnya:</label>
+                        {{-- Gunakan $otherBankValue untuk mengisi nilai input --}}
+                        <input type="text" id="bank_lainnya" name="bank_lainnya" value="{{ $otherBankValue }}"
+                            {{ $isDisabled ? 'disabled' : '' }}
+                            class="w-full rounded-lg border px-4 py-3 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-gray-800 border-gray-600 disabled:bg-gray-700 disabled:cursor-not-allowed"
+                            placeholder="Masukkan nama bank" autocomplete="off">
+                        @error('bank_lainnya')
+                            <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- SCRIPT (Tidak ada perubahan, sudah benar) --}}
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const bankTujuanSelect = document.getElementById('bank_name');
+                            const bankLainnyaInputDiv = document.getElementById('input_bank_lainnya');
+
+                            function toggleBankLainnyaInput() {
+                                if (bankTujuanSelect.value === 'Lainnya') {
+                                    bankLainnyaInputDiv.style.display = 'block';
+                                } else {
+                                    bankLainnyaInputDiv.style.display = 'none';
+                                }
+                            }
+                            toggleBankLainnyaInput();
+                            bankTujuanSelect.addEventListener('change', toggleBankLainnyaInput);
+                        });
+                    </script>
+
+                    {{-- Input Nama & Nomor Rekening (Tidak ada perubahan) --}}
+                    <div>
+                        <label for="nama_rek" class="block text-sm font-medium text-white mb-1">Nama Rekening</label>
+                        <input type="text" id="nama_rek" name="nama_rek"
+                            value="{{ old('nama_rek', $mitra->nama_rek ?? '') }}" {{ $isDisabled ? 'disabled' : '' }}
+                            class="w-full rounded-lg border px-4 py-3 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-gray-800 border-gray-600 disabled:bg-gray-700 disabled:cursor-not-allowed"
+                            placeholder="Evognito Team" autocomplete="off">
+                        @error('nama_rek')
+                            <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div>
+                        <label for="no_rek" class="block text-sm font-medium text-white mb-1">Nomor Rekening</label>
+                        <input type="text" id="no_rek" name="no_rek"
+                            value="{{ old('no_rek', $mitra->no_rek ?? '') }}" {{ $isDisabled ? 'disabled' : '' }}
+                            class="w-full rounded-lg border px-4 py-3 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent bg-gray-800 border-gray-600 disabled:bg-gray-700 disabled:cursor-not-allowed"
+                            placeholder="1234567890" autocomplete="off">
+                        @error('no_rek')
+                            <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Tombol Simpan & Tampilan Disabled (Tidak ada perubahan) --}}
+                    <button type="submit" {{ $isDisabled ? 'disabled' : '' }}
+                        class="w-full rounded-lg px-4 py-3 text-sm font-semibold bg-gradient-to-r from-teal-500 to-green-500 hover:from-teal-600 hover:to-green-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white transition-all duration-200">
+                        Simpan Rekening
+                    </button>
+
+                    @if ($isDisabled)
+                        <p class="text-yellow-400 text-center text-sm mt-3">
+                            Anda dapat mengubah rekening kembali pada:
+                            <strong>{{ $canEditAt->locale('id')->translatedFormat('d F Y H:i') }}</strong>
+                        </p>
+                    @endif
+                </form>
+            @else
+                <p class="text-center text-gray-400">Anda tidak memiliki akses ke pengaturan ini.</p>
         @endif
 
     </div>
